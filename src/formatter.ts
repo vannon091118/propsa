@@ -6,8 +6,7 @@
  * eine Datei entsteht und nichts doppelt vorkommt.
  */
 import { GescannteDatei } from './scanner';
-import { codeBlockSprache } from './sprache';
-import { SchemaMeta } from './schema';
+import { codeBlockSprache, SchemaMeta } from '@propsa/core';
 
 /** Markdown: Header, Übersicht der ersten 50 Dateien, Codeblock je Datei. */
 export function formatContext(dateien: GescannteDatei[], meta: SchemaMeta): string {

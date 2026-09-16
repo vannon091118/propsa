@@ -3,10 +3,10 @@
  *
  * Gegenstück in der GUI: `tauri-app/src-tauri/src/pakettexte.rs`.
  */
-import { Domaene, quellenName } from './domaene';
+import { Domaene, quellenName } from '@propsa/core';
 import { baum, hinweisblock, kopf, prozent, sprachverteilung } from './paketBasis';
 import { GescannteDatei } from './scanner';
-import { SCHEMA_VERSION, SchemaMeta } from './schema';
+import { SCHEMA_VERSION, SchemaMeta } from '@propsa/core';
 
 /** Einstiegstext: Kennzahlen, Domänen, Sprachen, Hotspots. */
 export function zusammenfassung(

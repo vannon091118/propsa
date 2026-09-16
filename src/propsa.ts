@@ -1,12 +1,13 @@
 import { Command } from 'commander';
 import { scanDirectory, LimitFehler } from './scanner';
 import { formatContext } from './formatter';
-import { resolveExcludes, resolveIncludes } from './filters';
+import { resolveExcludes, resolveIncludes } from '@propsa/core';
 import { ausschluesseMergen, PROPSAIGNORE_DATEI } from './propsaignore';
 import { paketBauen, paketSchreiben } from './paket';
-import { kontextAlsJson, zeitstempelJetzt } from './schema';
+import { kontextAlsJson, zeitstempelJetzt } from '@propsa/core';
 import { selektieren } from './slice';
 import { laufVerarbeiten } from './history';
+import { updateKommandoRegistrieren } from './updateKommando';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -26,7 +27,7 @@ program
   .option('--entrypoint <datei>', 'Slice: Einstiegsdatei plus lokale Import-Kette')
   .option('--depth <n>', 'Slice: nur Dateien bis zu dieser Ordnertiefe', parseInt)
   .option('--top-files <n>', 'Slice: nur die n größten Dateien nach Zeilen', parseInt)
-  .option('--delta', 'Delta zum letzten Lauf derselben Projekt-Identität melden (.propsa/history.json)')
+  .option('--delta', 'Delta zum letzten Lauf derselben Projekt-Identität melden (~/.propsa/history/)')
   .action(async (pfad: string, options: {
     output: string;
     einzeln: string | undefined;
@@ -164,5 +165,7 @@ program
       process.exit(1);
     }
   });
+
+updateKommandoRegistrieren(program);
 
 program.parse();

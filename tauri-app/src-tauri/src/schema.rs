@@ -1,6 +1,7 @@
 //! Gemeinsames Export-Schema (Version 2) des JSON-Exports.
 //!
-//! Vertrag: `wiki/Export-Schema.md`. Gegenstück in der CLI: `src/schema.ts`.
+//! Vertrag: `wiki/Export-Schema.md`. Gegenstück im Core:
+//! `packages/core/src/schema.ts`.
 //! Beide Seiten müssen zusammen geändert werden; Feldnamen und Reihenfolge
 //! sind dort beschrieben. Bewusst ohne `absoluter_pfad`: der Export wandert in
 //! geteilte Kontexte und darf keine lokalen Pfade verraten.

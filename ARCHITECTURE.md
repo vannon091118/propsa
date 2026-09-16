@@ -8,7 +8,8 @@ Sprachmodelle. Es gibt zwei Oberflächen:
 - **CLI** (TypeScript, `src/`) – Skripting und Automatisierung.
 - **Desktop-App** (Tauri v2, Rust + React, `tauri-app/`) – klickbasierte Bedienung.
 
-Beide teilen den **Vertrag**, nicht den Code. Verbindlich sind
+Beide teilen den **Vertrag**; die TypeScript-Seite des Vertrags lebt im
+eigenen Paket **`@propsa/core`** (`packages/core/`). Verbindlich sind
 [wiki/Export-Schema.md](wiki/Export-Schema.md) (JSON) und
 [wiki/Kontextpaket.md](wiki/Kontextpaket.md) (Dateien des Pakets).
 
@@ -51,21 +52,23 @@ Fortschritt sind eigene Ausgabe, keine Fremdbibliothek.
 
 | Modul | Aufgabe |
 |---|---|
+| `packages/core/src/` | **@propsa/core**: geteilter Kern (Sprache, Filter, Domänen, Schema) |
 | `src/propsa.ts` | Einstieg: Argumente, Ablauf, Ausgabe |
+| `src/update.ts` | Git-basierter Auto-Updater: Check + Update-Lauf |
 | `src/scanner.ts` | Kandidaten sammeln, sortieren, Guardrails und Zähler |
 | `src/slice.ts` | Slice-Selektoren: `--entrypoint`, `--depth`, `--top-files` |
-| `src/history.ts` | Delta/History: `.propsa/history.json`, Root-Commit-Identität |
-| `src/filters.ts` | Include/Exclude-Muster und Katalog der Ignorierten |
+| `src/history.ts` | Delta/History: `~/.propsa/history/`, Root-Commit-Identität |
+| `packages/core/src/filters.ts` | Include/Exclude-Muster und Katalog der Ignorierten |
 | `src/propsaignore.ts` | `.propsaignore`: projektspezifische Ausschlüsse laden/mergen |
 | `src/datei.ts` | Datei lesen, Binär-/Leerdateien erkennen, Zeilen zählen |
-| `src/sprache.ts` | Sprache nach Endung, Codeblock-Kennung |
-| `src/domaene.ts` | Domänen-Regel und Dateinamen im Paket |
+| `packages/core/src/sprache.ts` | Sprache nach Endung, Codeblock-Kennung |
+| `packages/core/src/domaene.ts` | Domänen-Regel und Dateinamen im Paket |
 | `src/paket.ts` | Paket bauen und schreiben |
 | `src/paketBasis.ts` | gemeinsame Bausteine der Pakettexte |
 | `src/paketKritik.ts` | `Kritik.md` (Godfiles, Mischungen, Artefakte, Doku) |
 | `src/paketTexte.ts` | `Zusammenfassung.md`, `Architektur.md` |
 | `src/paketQuellen.ts` | `Dokumentation.md`, `Quellen/<Domäne>.md` |
-| `src/schema.ts` | JSON-Vertrag (`kontext.json`, `--einzeln *.json`) |
+| `packages/core/src/schema.ts` | JSON-Vertrag (`kontext.json`, `--einzeln *.json`) |
 | `src/formatter.ts` | Einzeldatei-Markdown |
 
 ## Desktop-App
@@ -85,20 +88,23 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 | `src-tauri/src/domaene.rs` | Domänen-Regel |
 | `src-tauri/src/paketbasis.rs`, `pakettexte.rs`, `paketquellen.rs` | Pakettexte |
 | `src-tauri/src/kritik_regeln.rs`, `paketkritik.rs` | `Kritik.md` (Schwellwerte, Befunde) |
-| `src-tauri/src/history.rs` | Delta/History im Backend: `.propsa/history.json`, Identität |
+| `src-tauri/src/history.rs` | Delta/History im Backend: `~/.propsa/history/`, Identität |
 | `src-tauri/src/filterignore.rs` | `.propsaignore` im Backend (Spiegel zu `src/propsaignore.ts`) |
 | `src-tauri/src/schema.rs` | JSON-Vertrag |
 | `src-tauri/src/sprache.rs` | Sprache und Codeblock-Kennung |
 | `src-tauri/src/fortschritt.rs` | Ereignis `scan-fortschritt` |
+| `src-tauri/src/update.rs` | Auto-Updater: Kommandos `update_check`, `update_ausfuehren` |
 | `src/App.tsx` | Ablauf der Oberfläche |
 | `src/EinstellungenPanel.tsx`, `ErgebnisTabelle.tsx`, `ExportBereich.tsx` | Bedienung |
 | `src/StatistikKarten.tsx`, `Hotspots.tsx`, `ScanHinweise.tsx` | Auswertung |
 | `src/StatusLeiste.tsx`, `Fortschrittsbalken.tsx` | Rückmeldung |
 | `src/api.ts`, `typen.ts`, `devMock.ts` | Backend-Zugriff, Typen, Vorschau-Mock |
 
-**Kommandos:** `scan` (Rückgabe: `ScanErgebnis`) und `paket_schreiben` (Rückgabe:
-geschriebene Dateinamen). Der Fortschritt läuft als Ereignis an der Oberfläche
-vorbei, damit ein langer Scan nicht wie ein Hänger aussieht.
+**Kommandos:** `scan` (Rückgabe: `ScanErgebnis`), `paket_schreiben`
+(geschriebene Dateinamen), `update_check`/`update_ausfuehren`
+(Auto-Updater, Fortschritt per Ereignis `update-fortschritt`). Der
+Fortschritt läuft als Ereignis an der Oberfläche vorbei, damit ein langer
+Scan nicht wie ein Hänger aussieht.
 
 ## Was beide gleich machen müssen
 
@@ -106,9 +112,10 @@ Die Gleichheit von CLI und App ist keine Absicht, sondern eine Prüfbedingung.
 Beide Seiten setzen dieselben Regeln um:
 
 - **Ignorier-Katalog:** Verzeichnisse wie `node_modules`, `.venv`, `target` oder
-  `__pycache__` werden nie betreten. Die Liste steht inhaltsgleich in
-  `src/filters.ts`, `src-tauri/src/filter.rs` und als Vorbelegung in
-  `tauri-app/src/typen.ts`; `npm run pruefen` vergleicht sie.
+  `__pycache__` werden nie betreten. Die Liste lebt in
+  `packages/core/src/filters.ts` (@propsa/core); das Frontend bezieht die
+  Vorbelegung seines Ausschlussfelds von dort, das Rust-Backend spiegelt sie
+  (`src-tauri/src/filter.rs`); `npm run pruefen` vergleicht die Kataloge.
 - **Muster:** `*` überspannt keinen Verzeichnistrenner, Punktdateien sind
   eingeschlossen, geprüft werden relativer Pfad und Dateiname.
 - **Reihenfolge:** Excludes vor Includes, leere Include-Liste bedeutet „alles“.
@@ -122,19 +129,19 @@ Beide Seiten setzen dieselben Regeln um:
 
 ## Bewusste Grenzen
 
-- **Kein geteilter Code:** Zwei Sprachen, zwei Umsetzungen. Der Vergleich ist
-  deshalb als Prüfung organisiert (`npm run pruefen`) statt als gemeinsame
-  Bibliothek. Ein `@propsa/core`-Adapter, den CLI und GUI beide nutzen, ist
-  als Ziel notiert und noch nicht umgesetzt.
+- **Geteilter Kern statt geteilter Baustelle:** TypeScript-Regeln (Sprache,
+  Filterkatalog, Domänen, Schema) leben einmal in `@propsa/core`
+  (`packages/core/src/`) und werden von der CLI importiert. Das Rust-Backend
+  spiegelt sie; der Abgleich bleibt als Prüfung organisiert (`npm run pruefen`).
 - **Kein Git-Zugriff im Scan:** PROPSA liest das Dateisystem. Einzige
   Ausnahme: die Delta-Module (`src/history.ts`, `src-tauri/src/history.rs`)
   fragen für die Identität den Root-Commit-Hash ab (`git rev-list
   --max-parents=0 HEAD`); Version, Branch oder Änderungen im Paket selbst
   bleiben außen vor.
 - **Zwei Delta-Umsetzungen, ein Format:** CLI (`--delta`) und App (Checkbox
-  „Änderungen zum letzten Lauf melden“) führen dieselbe
-  `.propsa/history.json` mit derselben Identitätslogik; der JSON-Vertrag
-  `kontext.json` (Schema v2) bleibt delta-frei.
+  „Änderungen zum letzten Lauf melden“) führen dieselbe zentrale History
+  (`~/.propsa/history/<identitaet>.jsonl`) mit derselben Identitätslogik;
+  der JSON-Vertrag `kontext.json` (Schema v2) bleibt delta-frei.
 - **Keine Konfigurationsdatei:** Alle Optionen kommen aus Argumenten bzw. der
   Oberfläche; der Standard ist vollständig und nachvollziehbar.
 - **Kein Inkognito-Modus:** Das Paket enthält Dateiinhalte im Klartext. Wer

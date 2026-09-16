@@ -2,7 +2,8 @@
 
 `kontext.json` – in der CLI zusätzlich über `--einzeln <datei>.json` – ist **ein
 Format** für beide Oberflächen. Diese Datei ist der Vertrag; die Umsetzungen
-stehen in `src/schema.ts` (CLI) und `tauri-app/src-tauri/src/schema.rs` (GUI).
+stehen in `packages/core/src/schema.ts` (@propsa/core, von der CLI importiert)
+und `tauri-app/src-tauri/src/schema.rs` (GUI).
 Beide Seiten werden zusammen geändert. In der GUI entsteht das JSON nur als
 Bestandteil des Kontextpakets (`wiki/Kontextpaket.md`).
 
@@ -76,9 +77,10 @@ Beide Oberflächen nutzen dieselben Regeln: Ignorier-Katalog für Verzeichnisse,
 Excludes vor Includes, leere Include-Liste = alles, Sortierung vor dem Lesen,
 Guardrails auf der sortierten Reihenfolge, übersprungene Dateien zählen.
 
-Die Ausschlusslisten sind inhaltsgleich: dieselbe Liste steht in `filters.ts`,
-`filter.rs` und als Vorbelegung in `tauri-app/src/typen.ts`. `npm run pruefen`
-vergleicht sie.
+Die Ausschlusslisten sind inhaltsgleich: die Liste lebt in
+`packages/core/src/filters.ts` (@propsa/core), das Frontend bezieht die
+Vorbelegung von dort, und `filter.rs` spiegelt sie. `npm run pruefen`
+vergleicht die Kataloge.
 
 Bekannte, hingenommene Unterschiede:
 

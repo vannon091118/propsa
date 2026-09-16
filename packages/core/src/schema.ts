@@ -10,7 +10,7 @@
  * Limits brechen jetzt **vor** der Verarbeitung ab (Fail Loud), es gibt kein
  * Teilergebnis mehr, das einen Abbruchgrund erklären müsste.
  */
-import { GescannteDatei } from './scanner';
+import { KontextDatei } from './datei';
 
 /** Version des Schemas: bei jeder inkompatiblen Änderung erhöhen. */
 export const SCHEMA_VERSION = 2;
@@ -63,7 +63,7 @@ export function zeitstempelJetzt(): string {
 /** Baut das Export-Objekt; die Reihenfolge der Dateien bleibt erhalten. */
 export function kontextObjekt(
   meta: SchemaMeta,
-  dateien: GescannteDatei[]
+  dateien: KontextDatei[]
 ): SchemaKontext {
   return {
     schemaVersion: SCHEMA_VERSION,
@@ -86,7 +86,7 @@ export function kontextObjekt(
 /** JSON-Ausgabe (zwei Leerzeichen Einrückung, wie `to_string_pretty` in Rust). */
 export function kontextAlsJson(
   meta: SchemaMeta,
-  dateien: GescannteDatei[]
+  dateien: KontextDatei[]
 ): string {
   return JSON.stringify(kontextObjekt(meta, dateien), null, 2);
 }

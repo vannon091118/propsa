@@ -8,7 +8,7 @@
  * Dieselbe Regel gilt in der GUI (`tauri-app/src-tauri/src/domaene.rs`); der
  * Vertrag steht in `wiki/Kontextpaket.md`.
  */
-import { GescannteDatei } from './scanner';
+import { KontextDatei } from './datei';
 
 /** Domäne der Dateien, die direkt in der Scan-Basis liegen. */
 export const WURZEL_DOMAENE = 'wurzel';
@@ -18,7 +18,7 @@ export interface Domaene {
   name: string;
   /** Dateiname der Quellendatei (ohne `.md`). */
   dateiname: string;
-  dateien: GescannteDatei[];
+  dateien: KontextDatei[];
   zeilen: number;
 }
 
@@ -45,8 +45,8 @@ export function dateinameFuerSprache(domaene: string): string {
  * Reihenfolge: Domänen alphabetisch, `wurzel` zuletzt (es ist der Rest, nicht
  * der Einstieg). Innerhalb der Domäne bleibt die Scan-Reihenfolge erhalten.
  */
-export function gruppiereNachDomaene(dateien: GescannteDatei[]): Domaene[] {
-  const nachName = new Map<string, GescannteDatei[]>();
+export function gruppiereNachDomaene(dateien: KontextDatei[]): Domaene[] {
+  const nachName = new Map<string, KontextDatei[]>();
 
   for (const datei of dateien) {
     const name = domaeneVon(datei.relativerPfad);
@@ -73,7 +73,7 @@ export function gruppiereNachDomaene(dateien: GescannteDatei[]): Domaene[] {
 }
 
 /** Ist die Datei eine Dokumentationsdatei (Markdown)? */
-export function istDokumentation(datei: GescannteDatei): boolean {
+export function istDokumentation(datei: KontextDatei): boolean {
   return datei.sprache === 'Markdown';
 }
 

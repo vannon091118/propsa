@@ -3,9 +3,9 @@
  *
  *  1. Zeilenbegrenzung (200 LOC) für alle Quelldateien
  *  2. eine Version in package.json, Cargo.toml und tauri.conf.json
- *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles
- *  4. Ignorier-Katalog in CLI, Rust und Frontend inhaltsgleich
- *  5. alle relativen Links in den Dokumenten zeigen auf vorhandene Dateien
+ *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles * 4. Ignorier-Katalog in Core, Rust und Frontend inhaltsgleich
+ * 5. alle relativen Links in den Dokumenten zeigen auf vorhandene Dateien
+ * 6. Sprachkataloge (Endungen und Fences) in Core und Rust deckungsgleich
  *
  * Aufruf: `npm run pruefen`
  */
@@ -70,15 +70,19 @@ function katalogLesen(pfad, blockMuster) {
   const block = readFileSync(pfad, "utf8").match(blockMuster);
   return block ? [...block[1].matchAll(/['"]([^'"]+)['"]/g)].map(t => t[1]) : null;
 }
-const cliKatalog = katalogLesen(join(WURZEL, "src/filters.ts"), /export const IGNORIERTE_VERZEICHNISSE = \[([\s\S]*?)\r?\n\];/);
+const coreKatalog = katalogLesen(join(WURZEL, "packages/core/src/filters.ts"), /export const IGNORIERTE_VERZEICHNISSE = \[([\s\S]*?)\r?\n\];/);
+const coreDateien = katalogLesen(join(WURZEL, "packages/core/src/filters.ts"), /export const AUSGESCHLOSSENE_DATEIEN = \[([\s\S]*?)\r?\n\];/);
 const rustKatalog = katalogLesen(join(WURZEL, "tauri-app/src-tauri/src/filter.rs"), /const IGNORIERTE_VERZEICHNISSE: &\[&str\] = &\[([\s\S]*?)\r?\n\];/);
-const frontendKatalog = katalogLesen(join(WURZEL, "tauri-app/src/typen.ts"), /export const STANDARD_AUSSCHLUESSE = \[([\s\S]*?)\]\.join/);
-if (!cliKatalog || !rustKatalog || !frontendKatalog) fehler.push("Ausschlusskatalog nicht gefunden (CLI, Rust oder Frontend)");
+const rustDateien = katalogLesen(join(WURZEL, "tauri-app/src-tauri/src/filter.rs"), /const AUSGESCHLOSSENE_DATEIEN: &\[&str\] = &\[([\s\S]*?)\r?\n\];/);
+if (!coreKatalog || !rustKatalog || !coreDateien || !rustDateien) fehler.push("Ausschlusskatalog nicht gefunden (Core oder Rust)");
 else {
-  if (cliKatalog.join(",") !== rustKatalog.join(",")) fehler.push(`Katalog CLI ↔ Rust weicht ab (CLI ${cliKatalog.length}, Rust ${rustKatalog.length} Einträge)`);
-  const fehlend = cliKatalog.filter(name => !frontendKatalog.includes(name));
-  if (fehlend.length > 0) fehler.push(`Katalog Frontend fehlt: ${fehlend.join(", ")}`);
-  console.log(`✓ Ausschlusskatalog: CLI und Rust je ${cliKatalog.length} Einträge, Frontend ${frontendKatalog.length}`);
+  if (coreKatalog.join(",") !== rustKatalog.join(",")) fehler.push(`Verzeichnis-Katalog Core ↔ Rust weicht ab (Core ${coreKatalog.length}, Rust ${rustKatalog.length} Einträge)`);
+  if (coreDateien.join(",") !== rustDateien.join(",")) fehler.push(`Datei-Katalog Core ↔ Rust weicht ab (Core ${coreDateien.length}, Rust ${rustDateien.length} Einträge)`);
+  const typen = readFileSync(join(WURZEL, "tauri-app/src/typen.ts"), "utf8");
+  if (!/@propsa\/core/.test(typen) || !/STANDARD_AUSSCHLUESSE/.test(typen)) {
+    fehler.push("Frontend (tauri-app/src/typen.ts) bezieht STANDARD_AUSSCHLUESSE nicht aus @propsa/core");
+  }
+  console.log(`✓ Ausschlusskatalog: Core und Rust je ${coreKatalog.length} Verzeichnisse und ${coreDateien.length} Dateien; Frontend bezieht STANDARD_AUSSCHLUESSE aus @propsa/core`);
 }
 
 // 5. Links
@@ -93,6 +97,77 @@ for (const pfad of dokumente) {
   }
 }
 console.log(`✓ Links: ${linkAnzahl} relative Verweise in ${dokumente.length} Dokumenten geprüft`);
+
+// 6. Sprachkataloge – Endungs-Tabelle und Fence-Tabelle müssen zwischen
+//    @propsa/core (TypeScript) und sprache.rs (Rust) deckungsgleich sein.
+function tsKatalogAusBlock(text, blockMuster) {
+  const block = text.match(blockMuster);
+  if (!block) return null;
+  const katalog = {};
+  for (const zeile of block[1].split(/\r?\n/)) {
+    // Key wie im Quelltext: quoted oder bare (`ts: 'TypeScript'`).
+    const treffer = zeile.match(
+      /^\s*(?:['"]([^'"]+)['"]|([A-Za-z0-9_.$]+))\s*:\s*['"]([^'"]+)['"],?\s*$/
+    );
+    if (treffer) katalog[treffer[1] ?? treffer[2]] = treffer[3];
+  }
+  return katalog;
+}
+
+function rustKatalogAusFunktion(text, funktionsName) {
+  const start = text.indexOf(`pub fn ${funktionsName}`);
+  const naechster = text.indexOf("pub fn ", start + 1);
+  if (start === -1) return null;
+  const block = text.slice(start, naechster === -1 ? text.length : naechster);
+  const katalog = {};
+  for (const zeile of block.split(/\r?\n/)) {
+    const treffer = zeile.match(/^\s*[^=]+=>\s*"([^"]+)"/);
+    if (!treffer) continue;
+    for (
+      const schluessel of [...zeile.slice(0, zeile.indexOf("=>")).matchAll(/"([^"]+)"/g)].map(t => t[1])
+    ) {
+      katalog[schluessel] = treffer[1];
+    }
+  }
+  return katalog;
+}
+
+function katalogeVergleichen(tsKatalog, rustKatalog, bezeichnung) {
+  if (!tsKatalog || !rustKatalog) {
+    fehler.push(`${bezeichnung}: Katalog nicht gefunden (Core oder Rust)`);
+    return;
+  }
+  const tsSchluessel = Object.keys(tsKatalog).sort();
+  const rustSchluessel = Object.keys(rustKatalog).sort();
+  if (tsSchluessel.join(",") !== rustSchluessel.join(",")) {
+    const nurTs = tsSchluessel.filter(s => !(s in rustKatalog));
+    const nurRust = rustSchluessel.filter(s => !(s in tsKatalog));
+    fehler.push(
+      `${bezeichnung}: Schlüssel weichen ab` +
+        (nurTs.length ? ` (nur Core: ${nurTs.join(", ")})` : "") +
+        (nurRust.length ? ` (nur Rust: ${nurRust.join(", ")})` : "")
+    );
+    return;
+  }
+  const abweichend = tsSchluessel.filter(s => tsKatalog[s] !== rustKatalog[s]);
+  if (abweichend.length > 0) {
+    fehler.push(
+      `${bezeichnung}: Werte weichen ab: ` +
+        abweichend.map(s => `${s} (Core ${tsKatalog[s]} ↔ Rust ${rustKatalog[s]})`).join(", ")
+    );
+    return;
+  }
+  console.log(`✓ ${bezeichnung}: ${tsSchluessel.length} Einträge deckungsgleich (Core ↔ Rust)`);
+}
+
+const spracheTs = readFileSync(join(WURZEL, "packages/core/src/sprache.ts"), "utf8");
+const spracheRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/sprache.rs"), "utf8");
+const endungenTs = tsKatalogAusBlock(spracheTs, /const SPRACHE_NACH_ENDUNG: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+const fenceTs = tsKatalogAusBlock(spracheTs, /const FENCE_NACH_SPRACHE: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+const endungenRust = rustKatalogAusFunktion(spracheRust, "sprache_fuer_endung");
+const fenceRust = rustKatalogAusFunktion(spracheRust, "code_block_sprache");
+katalogeVergleichen(endungenTs, endungenRust, "Sprachkatalog (Endungen)");
+katalogeVergleichen(fenceTs, fenceRust, "Fence-Katalog");
 
 // Ergebnis
 if (fehler.length > 0) {

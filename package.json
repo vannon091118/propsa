@@ -1,17 +1,23 @@
 {
   "name": "propsa",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "PROPSA — Projekt-Scankontext als Kontextpaket für LLMs",
   "main": "dist/propsa.js",
   "bin": {
     "propsa": "./dist/propsa.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build --workspace @propsa/core && tsc",
     "start": "ts-node src/propsa.ts",
-    "pruefen": "node scripts/pruefen.mjs"
+    "pruefen": "node scripts/pruefen.mjs",
+    "installieren": "node scripts/install.mjs",
+    "deinstallieren": "node scripts/deinstall.mjs"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
+    "@propsa/core": "*",
     "commander": "^15.0.0",
     "minimatch": "^10.2.6"
   },

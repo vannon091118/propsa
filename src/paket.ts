@@ -13,12 +13,12 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { gruppiereNachDomaene, quellenName } from './domaene';
+import { gruppiereNachDomaene, quellenName } from '@propsa/core';
 import { architektur, zusammenfassung } from './paketTexte';
 import { dokumentation, quellen } from './paketQuellen';
 import { kritik } from './paketKritik';
 import { GescannteDatei } from './scanner';
-import { kontextAlsJson, SchemaMeta } from './schema';
+import { kontextAlsJson, SchemaMeta } from '@propsa/core';
 
 /** Eine Datei des Pakets; `name` darf einen Unterordner enthalten. */
 export interface Paketdatei {

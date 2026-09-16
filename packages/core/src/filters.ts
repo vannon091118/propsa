@@ -1,10 +1,10 @@
 /**
  * Pattern-Auflösung für Ein-/Ausschluss-Filter (minimatch-kompatibel).
  *
- * Der Katalog unten ist die **einzige** Quelle der CLI. Die GUI führt dieselbe
- * Liste in `tauri-app/src-tauri/src/filter.rs` (nie betretene Verzeichnisse) und
- * als Vorbelegung des Ausschlussfelds in `tauri-app/src/typen.ts`;
- * `npm run pruefen` vergleicht alle drei.
+ * Dieser Katalog ist die **einzige** TypeScript-Quelle. Das Rust-Backend
+ * spiegelt ihn (`tauri-app/src-tauri/src/filter.rs`), und das Frontend
+ * bezieht die Vorbelegung seines Ausschlussfelds (`STANDARD_AUSSCHLUESSE`)
+ * von hier statt einer eigenen Kopie; `npm run pruefen` vergleicht die Kataloge.
  */
 
 /**
@@ -60,7 +60,7 @@ export const IGNORIERTE_VERZEICHNISSE = [
 ];
 
 /** Einzelne Dateien, die zusätzlich ausgeschlossen werden. */
-const AUSGESCHLOSSENE_DATEIEN = [
+export const AUSGESCHLOSSENE_DATEIEN = [
   '.DS_Store',
   'Thumbs.db',
   '*.log',
@@ -80,6 +80,15 @@ const AUSGESCHLOSSENE_DATEIEN = [
   'pnpm-lock.yaml',
   'Cargo.lock',
 ];
+
+/**
+ * Vorbelegung des Ausschlussfelds (GUI) bzw. der Vorgabe-Excludes (CLI):
+ * alle Katalog-Einträge als kommatrennter Text.
+ */
+export const STANDARD_AUSSCHLUESSE = [
+  ...IGNORIERTE_VERZEICHNISSE,
+  ...AUSGESCHLOSSENE_DATEIEN,
+].join(', ');
 
 /**
  * Setzt vordefinierte Ausschluss-Patterne zusammen mit benutzerdefinierten.

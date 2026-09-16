@@ -6,7 +6,7 @@
  * ohne Tausendertrenner, damit beide Oberflächen dieselbe Datei erzeugen.
  */
 import { GescannteDatei } from './scanner';
-import { SchemaMeta } from './schema';
+import { SchemaMeta } from '@propsa/core';
 
 /** Kopfzeilen, die in jeder Datei des Pakets stehen. */
 export function kopf(titel: string, meta: SchemaMeta, zeilen: string[]): string {

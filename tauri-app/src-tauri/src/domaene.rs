@@ -4,7 +4,7 @@
 //! gehören zur Domäne ihres Root-Ordners (`tauri-app/src/App.tsx` ⇒ `tauri-app`).
 //! Dateien ohne Ordner bilden die Domäne `wurzel`.
 //!
-//! Gegenstück in der CLI: `src/domaene.ts`; der Vertrag steht in
+//! Gegenstück im Core: `packages/core/src/domaene.ts`; der Vertrag steht in
 //! `wiki/Kontextpaket.md`.
 
 use crate::scan::DateiInfo;

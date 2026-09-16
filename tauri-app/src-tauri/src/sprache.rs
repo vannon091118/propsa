@@ -1,8 +1,8 @@
 //! Sprach-Erkennung und Codeblock-Mapping für den Export.
 //!
-//! Die Tabellen spiegeln bewusst `src/scanner.ts` (Erkennung) und
-//! `src/formatter.ts` (Markdown-Fence) der CLI, damit CLI und GUI bei
-//! gleichem Input dieselben Sprachnamen und Fences erzeugen.
+//! Die Tabellen spiegeln bewusst `packages/core/src/sprache.ts` (@propsa/core,
+//! von der CLI importiert), damit CLI und GUI bei gleichem Input dieselben
+//! Sprachnamen und Fences erzeugen. `npm run pruefen` vergleicht beide Kataloge.
 
 /// Ordnet einer Dateiendung einen Sprachnamen zu. Unbekannt ⇒ `Text`.
 pub fn sprache_fuer_endung(endung: &str) -> &'static str {
@@ -34,8 +34,8 @@ pub fn sprache_fuer_endung(endung: &str) -> &'static str {
 
 /// Markdown-Fence-Sprache für einen Sprachnamen.
 ///
-/// Muss zu `codeBlockSpracheFür` in `src/formatter.ts` passen: dort wird
-/// `JavaScript` als `javascript` und `TOML` als `toml` ausgegeben.
+/// Muss zu `codeBlockSprache` in `packages/core/src/sprache.ts` passen: dort
+/// wird `JavaScript` als `javascript` und `TOML` als `toml` ausgegeben.
 pub fn code_block_sprache(sprache: &str) -> &'static str {
     match sprache {
         "TypeScript" => "typescript",

@@ -4,6 +4,7 @@
  * Die Feldnamen der Backend-Typen sind bewusst snake_case, weil sie 1:1 den
  * Rust-Structs in `src-tauri/src/scan.rs` und `export.rs` entsprechen.
  */
+import { STANDARD_AUSSCHLUESSE } from "@propsa/core";
 
 /**
  * Eine gescannte Datei (Rust: `DateiInfo`).
@@ -77,78 +78,15 @@ export type ScanEinstellungen = {
   maxZeilen: number | null;
   includeMuster: string;
   excludeMuster: string;
-  /** Delta zum letzten Lauf melden (.propsa/history.json). */
+  /** Delta zum letzten Lauf melden (~/.propsa/history/). */
   delta: boolean;
 };
 
 /**
- * Standardausschlüsse: Abhängigkeiten, Caches und Build-Artefakte.
- *
- * Standard ist damit „alles außer Modulen und Caches“. Dieselbe Liste steht in
- * `src-tauri/src/filter.rs` (IGNORIERTE_VERZEICHNISSE) und in der CLI
- * (`src/filters.ts`).
+ * Standardausschlüsse des Ausschlussfelds: aus `@propsa/core` – dieselbe
+ * Quelle wie in der CLI und als Spiegel in `src-tauri/src/filter.rs`.
  */
-export const STANDARD_AUSSCHLUESSE = [
-  // Abhängigkeiten
-  "node_modules",
-  "bower_components",
-  "vendor",
-  ".venv",
-  "venv",
-  // Versionsverwaltung
-  ".git",
-  ".svn",
-  ".hg",
-  // Build-Artefakte
-  "dist",
-  "build",
-  "out",
-  "target",
-  "coverage",
-  ".next",
-  ".nuxt",
-  ".output",
-  ".svelte-kit",
-  ".angular",
-  ".turbo",
-  ".parcel-cache",
-  // Caches
-  ".cache",
-  "__pycache__",
-  "*.pyc",
-  ".mypy_cache",
-  ".pytest_cache",
-  ".ruff_cache",
-  ".tox",
-  ".npm",
-  ".pnpm-store",
-  ".yarn",
-  ".gradle",
-  ".m2",
-  // System- und Editor-Rauschen
-  ".idea",
-  ".vscode",
-  ".propsa",
-  ".tmp",
-  ".DS_Store",
-  "Thumbs.db",
-  "*.log",
-  "*.min.js",
-  "*.min.css",
-  "*.pyc",
-  "*.bak",
-  // Eigene früherer Outputs: sonst frisst sich das Paket selbst.
-  "context.md",
-  "context.json",
-  "kontext.md",
-  "kontext.json",
-  // Lockfiles interessieren kein Sprachmodell.
-  "package-lock.json",
-  "npm-shrinkwrap.json",
-  "yarn.lock",
-  "pnpm-lock.yaml",
-  "Cargo.lock",
-].join(", ");
+export { STANDARD_AUSSCHLUESSE };
 
 /** Startwerte: vollständiger Scan (keine Limits gesetzt). */
 export const BASIS_EINSTELLUNGEN: ScanEinstellungen = {

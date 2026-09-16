@@ -2,8 +2,9 @@
 //! das Sammeln der Kandidaten (Phase 1 des Scans).
 //!
 //! Standard ist bewusst „alles außer Abhängigkeiten, Caches und
-//! Build-Artefakten“. Derselbe Katalog steht im Frontend
-//! (`tauri-app/src/typen.ts`) und in der CLI (`src/filters.ts`).
+//! Build-Artefakten“. Die TypeScript-Wahrheit steht im Core
+//! (`packages/core/src/filters.ts`); das Frontend bezieht die Vorbelegung
+//! von dort, dieser Spiegel wird per `npm run pruefen` verglichen.
 //! `.propsaignore`-Logik liegt in `filterignore.rs`.
 
 use glob::Pattern;
@@ -34,7 +35,7 @@ const IGNORIERTE_VERZEICHNISSE: &[&str] = &[
 ];
 
 /// Einzelne Dateien, die zusätzlich ausgeschlossen werden – Spiegel von
-/// `AUSGESCHLOSSENE_DATEIEN` in `src/filters.ts`.
+/// `AUSGESCHLOSSENE_DATEIEN` in `packages/core/src/filters.ts`.
 const AUSGESCHLOSSENE_DATEIEN: &[&str] = &[
     ".DS_Store", "Thumbs.db", "*.log", "*.min.js", "*.min.css", "*.pyc", "*.bak",
     "context.md", "context.json", "kontext.md", "kontext.json",

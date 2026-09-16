@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { minimatch } from 'minimatch';
 import { dateiLesen, zeilenZaehlen } from './datei';
-import { IGNORIERTE_VERZEICHNISSE } from './filters';
+import { IGNORIERTE_VERZEICHNISSE } from '@propsa/core';
 import { negierteVerzeichnisse } from './propsaignore';
-import { spracheErkennen } from './sprache';
+import { spracheErkennen } from '@propsa/core';
 
 export interface ScannerOptionen {
   basisPfad: string;
