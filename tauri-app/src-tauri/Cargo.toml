@@ -1,6 +1,6 @@
 [package]
 name = "propsa"
-version = "0.1.1"
+version = "0.1.2"
 description = "PROPSA — Projekt-Scankontext als Kontextpaket (Tauri v2 + React)"
 authors = ["Vannon"]
 edition = "2021"

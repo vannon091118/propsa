@@ -8,7 +8,7 @@ files instead of one giant blob, split by domain, every file complete.
 [Deutsche Fassung](README.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.1.1-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.1.2-4aa3ff)](package.json)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---

@@ -1,6 +1,6 @@
 # PROPSA – Changelog
 
-## Unveröffentlicht
+## 0.1.2
 
 **Neu**
 
@@ -13,6 +13,11 @@
   Änderungen vor dem Pull automatisch und holt sie nach dem Update zurück;
   bei Konflikten bleibt der Stash erhalten und die Meldung nennt den Weg
   zurück. Ohne das Flag bleibt es bei der klaren Ablehnung mit Hinweis.
+
+**Geändert**
+
+- **Version überall 0.1.2** in den fünf Manifesten samt Lockfiles und
+  Versions-Badges in beiden READMEs.
 
 ## 0.1.1
 
