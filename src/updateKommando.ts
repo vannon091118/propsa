@@ -6,7 +6,7 @@
  * Pfad-Argument des Scans.
  */
 import { Command } from 'commander';
-import { updatePruefen, updateAusfuehren } from './update';
+import { updatePruefen, updateAusfuehren, UpdateFehler } from './update';
 
 /** Registriert das `update`-Unterkommando am CLI-Programm. */
 export function updateKommandoRegistrieren(program: Command): void {
@@ -33,9 +33,17 @@ export function updateKommandoRegistrieren(program: Command): void {
         return;
       }
       console.log('▸ Übernehme Commits (fast-forward) und installiere neu …');
-      const ergebnis = updateAusfuehren();
-      console.log(
-        `✅ Aktualisiert: ${ergebnis.vorher} → ${ergebnis.nachher} (neu installiert)`
-      );
+      try {
+        const ergebnis = updateAusfuehren();
+        console.log(
+          `✅ Aktualisiert: ${ergebnis.vorher} → ${ergebnis.nachher} (neu installiert)`
+        );
+      } catch (fehler) {
+        if (fehler instanceof UpdateFehler) {
+          console.error(`⛔ ${fehler.message}`);
+          process.exit(1);
+        }
+        throw fehler;
+      }
     });
 }

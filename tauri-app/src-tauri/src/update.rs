@@ -31,15 +31,41 @@ fn projekt_wurzel() -> PathBuf {
     std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
 }
 
+/// Übersetzt einen git-Fehlertext in eine deutsche Meldung mit Lösungshinweis
+/// (Spiegel zu `gitHinweis` in `src/update.ts`).
+fn git_hinweis(args: &[&str], text: &str) -> String {
+    if text.contains("ENOENT") || text.contains("not found") {
+        return "Git ist nicht installiert oder nicht im PATH.\nLösung: Git installieren (https://git-scm.com) und erneut versuchen.".into();
+    }
+    if args.first() == Some(&"fetch") || args.first() == Some(&"pull") {
+        if text.contains("No such remote") || text.contains("does not appear to be a git repository") {
+            return "Kein Remote `origin` oder keine Verbindung zu ihm.\nLösung: `git remote add origin <url>` setzen oder Netzwerk/Anmeldung prüfen.".into();
+        }
+        if text.contains("Could not resolve host")
+            || text.contains("Connection")
+            || text.contains("authentication")
+            || text.contains("Permission")
+        {
+            return "Fernquelle nicht erreichbar (Netzwerk oder Anmeldung).\nLösung: Internetverbindung und Git-Zugang prüfen, dann erneut versuchen.".into();
+        }
+    }
+    if text.contains("Please commit") || text.contains("stash") || text.contains("would be overwritten") {
+        return "Lokale Änderungen blockieren den Fast-Forward.\nLösung: Änderungen commiten (`git commit`) oder zur Seite legen (`git stash`), dann den Scan mit Update erneut ausführen.".into();
+    }
+    if text.contains("Diverging") || text.contains("not possible to fast-forward") {
+        return "Lokaler Stand ist von origin/main abgezweigt (Divergenz).\nLösung: `git pull --rebase` ausführen oder den lokalen Stand verwerfen (`git reset --hard origin/main` – überschreibt lokale Commits!).".into();
+    }
+    format!("git {} fehlgeschlagen: {}", args.join(" "), text.trim())
+}
+
 fn git(wurzel: &PathBuf, args: &[&str]) -> Result<String, String> {
     let ausgabe = Command::new("git")
         .args(args)
         .current_dir(wurzel)
         .output()
-        .map_err(|fehler| format!("git nicht startbar: {fehler}"))?;
+        .map_err(|fehler| git_hinweis(args, &format!("ENOENT: {fehler}")))?;
     if !ausgabe.status.success() {
-        let fehler = String::from_utf8_lossy(&ausgabe.stderr);
-        return Err(format!("git {} fehlgeschlagen: {}", args.join(" "), fehler.trim()));
+        return Err(git_hinweis(args, &String::from_utf8_lossy(&ausgabe.stderr)));
     }
     Ok(String::from_utf8_lossy(&ausgabe.stdout).trim().to_string())
 }
@@ -82,6 +108,14 @@ pub fn update_check() -> Result<UpdateCheck, String> {
 #[tauri::command]
 pub fn update_ausfuehren(app: tauri::AppHandle) -> Result<UpdateCheck, String> {
     let wurzel = projekt_wurzel();
+    // Vorab prüfen: lokale Änderungen blockieren den Fast-Forward.
+    let schmutzig = git(&wurzel, &["status", "--porcelain"])?;
+    if !schmutzig.is_empty() {
+        return Err(git_hinweis(
+            &["status"],
+            "Please commit your changes or stash them before you merge.",
+        ));
+    }
     let _ = app.emit(
         "update-fortschritt",
         serde_json::json!({ "schritt": "uebernehmen", "text": "Übernehme Commits …" }),
