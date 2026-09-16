@@ -1,5 +1,19 @@
 # PROPSA – Changelog
 
+## Unveröffentlicht
+
+**Neu**
+
+- **Release-Workflow:** GitHub-Action `.github/workflows/release.yml` läuft
+  bei Push eines `v*`-Tags: `npm run pruefen` und Doku-Tests, CLI-Build
+  (Artefakt `propsa-cli-<tag>.tar.gz`), Desktop-App-Build für Windows,
+  Linux und macOS, dann ein GitHub-Release mit allen Artefakten und der
+  Changelog-Notiz des Tags.
+- **Updater `--force-stash`:** `propsa update --force-stash` stasht lokale
+  Änderungen vor dem Pull automatisch und holt sie nach dem Update zurück;
+  bei Konflikten bleibt der Stash erhalten und die Meldung nennt den Weg
+  zurück. Ohne das Flag bleibt es bei der klaren Ablehnung mit Hinweis.
+
 ## 0.1.1
 
 **Neu / Geändert**

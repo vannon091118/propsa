@@ -92,8 +92,11 @@ npm run deinstallieren  # ~/.propsa entfernen (mit Bestätigung)
 
 **Auto-Update:** `npm start -- update --nur-pruefen` prüft gegen
 `origin/main`, `npm start -- update` übernimmt neue Commits per
-Fast-Forward und installiert neu. Die App zeigt in der Kopfzeile denselben
-Check und einen Update-Button.
+Fast-Forward und installiert neu; `--force-stash` stasht lokale
+Änderungen vorab und holt sie zurück. Die App zeigt in der Kopfzeile
+denselben Check und einen Update-Button. Releases entstehen automatisch:
+Ein Push eines `v*`-Tags löst die GitHub-Action aus (prüfen, bauen,
+Release mit Artefakten für Windows/Linux/macOS).
 
 `~/.propsa` nimmt alles auf, was PROPSA zwischen den Läufen behält – außer
 dem Output: Kontextpakete und `--einzeln`-Dateien landen dort, wo sie

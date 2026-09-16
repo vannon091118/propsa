@@ -1,0 +1,145 @@
+# Release-Build: Läuft bei Push eines v*-Tags (z. B. v0.1.1).
+#
+# 1. npm run pruefen (Konsistenzprüfung: LOC, Versionen, Namen, Kataloge, Links)
+# 2. CLI-Build (Core-Workspace + tsc) – Artefakt: propsa-cli-<tag>.tar.gz (dist/)
+# 3. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
+# 4. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
+#
+# Die Version stammt aus dem Tag; die Manifeste müssen übereinstimmen
+# (das prüft `npm run pruefen` und schlägt sonst fehl).
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  pruefen:
+    name: Prüfen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Abhängigkeiten installieren
+        run: npm install
+      - name: npm run pruefen
+        run: npm run pruefen
+      - name: Doku-Tests
+        run: npx ts-node tests/paketKritik.test.ts
+
+  cli:
+    name: CLI bauen
+    runs-on: ubuntu-latest
+    needs: pruefen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Abhängigkeiten installieren
+        run: npm install
+      - name: CLI bauen (Core + tsc)
+        run: npm run build
+      - name: CLI-Smoke-Test
+        run: node dist/propsa.js . --einzeln "${RUNNER_TEMP}/smoke.json"
+      - name: Artefakt packen
+        run: |
+          mkdir -p propsa-cli
+          cp -r dist propsa-cli/dist
+          cp package.json README.md LICENSE propsa-cli/
+          tar -czf "propsa-cli-${GITHUB_REF_NAME}.tar.gz" propsa-cli
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli
+          path: propsa-cli-*.tar.gz
+
+  app:
+    name: Desktop-App bauen (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: pruefen
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows
+          - os: ubuntu-latest
+            name: linux
+          - os: macos-latest
+            name: macos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Rust-Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: tauri-app/src-tauri
+      - name: Frontend-Abhängigkeiten installieren
+        run: npm install
+        working-directory: tauri-app
+      - name: App bauen (Tauri, ohne Bundle auf Linux wegen Systempaketen)
+        run: npm run tauri:exe
+        working-directory: tauri-app
+      - name: Artefakte sammeln (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p out
+          cp tauri-app/src-tauri/target/release/propsa.exe "out/propsa-${GITHUB_REF_NAME}-windows-x64.exe"
+      - name: Artefakte sammeln (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p out
+          cp tauri-app/src-tauri/target/release/propsa "out/propsa-${GITHUB_REF_NAME}-${{ matrix.name }}-$(uname -m)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.name }}
+          path: out/*
+
+  release:
+    name: Release anlegen
+    runs-on: ubuntu-latest
+    needs: [cli, app]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artefakte
+      - name: Artefakte flach kopieren
+        run: |
+          mkdir -p release
+          find artefakte -type f -exec cp {} release/ \;
+          ls -la release/
+      - name: Release-Notiz aus dem Changelog ziehen
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          # Abschnitt "## <version>" bis zur nächsten "## "-Zeile extrahieren.
+          awk -v ver="$tag" '
+            $0 ~ "^## " ver "$" { drin=1; next }
+            drin && /^## / { exit }
+            drin { print }
+          ' wiki/Changelog.md > notiz.md
+          {
+            echo "## PROPSA $GITHUB_REF_NAME"
+            echo
+            cat notiz.md
+            echo
+            echo "---"
+            echo "Aktualisieren mit \`propsa update\` – siehe [README](https://github.com/${GITHUB_REPOSITORY}#auto-update)."
+          } > release-notiz.md
+      - name: GitHub-Release anlegen
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notiz.md
+          files: release/*
+          fail_on_unmatched_files: true
