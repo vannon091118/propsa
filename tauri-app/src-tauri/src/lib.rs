@@ -20,6 +20,7 @@ mod pakettexte;
 mod scan;
 mod schema;
 mod sprache;
+mod update;
 
 /// Startet die Anwendung und registriert die Kommandos für das Frontend.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -29,7 +30,9 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             scan::scan,
-            paket::paket_schreiben
+            paket::paket_schreiben,
+            update::update_check,
+            update::update_ausfuehren
         ])
         .run(tauri::generate_context!())
         .expect("PROPSA konnte nicht gestartet werden");

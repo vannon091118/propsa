@@ -1,4 +1,5 @@
 import { StatusLeiste } from "./StatusLeiste";
+import { UpdateBereich } from "./UpdateBereich";
 import type { ScanZustand } from "./typen";
 
 type Props = {
@@ -25,7 +26,10 @@ export function KopfBereich({ zustand, laeuft, meldung }: Props) {
           <p className="mt-1 text-[13px] text-leise">Projekt-Scankontext für LLMs</p>
         </div>
       </div>
-      <StatusLeiste zustand={zustand} laeuft={laeuft} meldung={meldung} />
+      <div className="flex items-center gap-3">
+        <UpdateBereich />
+        <StatusLeiste zustand={zustand} laeuft={laeuft} meldung={meldung} />
+      </div>
     </header>
   );
 }

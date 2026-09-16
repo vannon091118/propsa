@@ -10,6 +10,7 @@ import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
 import { istVorschauMock, mockOrdnerWaehlen, mockPaketSchreiben, mockScan } from "./devMock";
 import type { Fortschritt, ScanEinstellungen, ScanErgebnis } from "./typen";
+import type { UpdateCheck } from "@propsa/core";
 
 /** Komma-getrennte Muster in eine Liste umwandeln (analog zur CLI). */
 function musterListe(text: string): string[] {
@@ -55,6 +56,52 @@ export async function scanStarten(
       includeMuster: musterListe(einstellungen.includeMuster),
       excludeMuster: musterListe(einstellungen.excludeMuster),
     });
+  } finally {
+    abmelden();
+  }
+}
+
+/**
+ * Prüft auf Updates über origin/main (Rust: `update_check`).
+ *
+ * In der Browser-Vorschau (Mock) immer „alles aktuell“.
+ */
+export async function updatePruefen(): Promise<UpdateCheck> {
+  if (istVorschauMock()) {
+    return {
+      erreichbar: true,
+      lokal: "vorschau",
+      fern: "vorschau",
+      update_verfuegbar: false,
+      fehler: undefined,
+    };
+  }
+  return invoke<UpdateCheck>("update_check");
+}
+
+/**
+ * Übernimmt Updates (fast-forward + Neuinstallation) mit Fortschritts-
+ * rückmeldung über `update-fortschritt` (Rust: `update_ausfuehren`).
+ */
+export async function updateStarten(
+  beiFortschritt: (text: string) => void,
+): Promise<UpdateCheck> {
+  if (istVorschauMock()) {
+    beiFortschritt("Vorschau: nichts zu aktualisieren.");
+    return {
+      erreichbar: true,
+      lokal: "vorschau",
+      fern: "vorschau",
+      update_verfuegbar: false,
+      fehler: undefined,
+    };
+  }
+  const abmelden = await listen<{ schritt: string; text: string }>(
+    "update-fortschritt",
+    (ereignis) => beiFortschritt(ereignis.payload.text),
+  );
+  try {
+    return await invoke<UpdateCheck>("update_ausfuehren");
   } finally {
     abmelden();
   }
