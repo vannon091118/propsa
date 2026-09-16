@@ -1,6 +1,6 @@
 {
   "name": "propsa",
-  "version": "0.1.2",
+  "version": "0.0.13",
   "description": "PROPSA — Projekt-Scankontext als Kontextpaket für LLMs",
   "main": "dist/propsa.js",
   "bin": {
