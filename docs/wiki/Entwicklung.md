@@ -80,4 +80,4 @@ Frontend sowie alle relativen Links in den Dokumenten.
 
 ## Lizenz
 
-MIT – siehe [../LICENSE](../LICENSE).
+MIT – siehe [../../LICENSE](../../LICENSE).

@@ -11,7 +11,7 @@ npm run tauri build   # Installer bauen (Windows: MSI und NSIS-Setup)
 ```
 
 Voraussetzungen, Kommandos und Stolperfallen beim Bauen:
-[../wiki/Tauri-App.md](../wiki/Tauri-App.md) und
-[../wiki/Entwicklung.md](../wiki/Entwicklung.md).
+[../docs/wiki/Tauri-App.md](../docs/wiki/Tauri-App.md) und
+[../docs/wiki/Entwicklung.md](../docs/wiki/Entwicklung.md).
 
 Lizenz: MIT – siehe [../LICENSE](../LICENSE).

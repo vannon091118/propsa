@@ -5,7 +5,7 @@ Format** für beide Oberflächen. Diese Datei ist der Vertrag; die Umsetzungen
 stehen in `packages/core/src/schema.ts` (@propsa/core, von der CLI importiert)
 und `tauri-app/src-tauri/src/schema.rs` (GUI).
 Beide Seiten werden zusammen geändert. In der GUI entsteht das JSON nur als
-Bestandteil des Kontextpakets (`wiki/Kontextpaket.md`).
+Bestandteil des Kontextpakets (`docs/wiki/Kontextpaket.md`).
 
 ## Fassung
 

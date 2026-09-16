@@ -39,7 +39,7 @@ npm run tauri build   # Installer bauen
 5. Zielordner wählen und Paket schreiben.
 
 Die Aufteilung der Dateien im Frontend und im Rust-Backend steht in
-[../ARCHITECTURE.md](../ARCHITECTURE.md).
+[../../ARCHITECTURE.md](../../ARCHITECTURE.md).
 
 ## Vorschau ohne Rust-Build
 
@@ -53,4 +53,4 @@ Rust-Build prüfen. Port 1420 muss dafür frei sein.
 
 ## Lizenz
 
-MIT – siehe [../LICENSE](../LICENSE).
+MIT – siehe [../../LICENSE](../../LICENSE).

@@ -1,4 +1,5 @@
-# AGENTS.md
+DU FRAG IMMER OB u EINEN NPM BEFEHL AUSFÜHREN DARFsT IM sPRINT Task wir arbeiten auf alter harware und tören sont parallelarbeiten! 
+ # AGENTS.md
 
 Dieses Dokument legt die Richtlinien für die Entwicklung in diesem Projekt fest.
 
@@ -31,7 +32,7 @@ npm run installieren / deinstallieren    # Build + ~/.propsa einrichten / entfer
 ```
 
 Ein Lauf von `npm run pruefen` gehört vor jede Abgabe. Build-Stolperfallen
-stehen in `wiki/Entwicklung.md`.
+stehen in `docs/wiki/Entwicklung.md`.
 
 Smoke-Tests: Einzelausgabe per
 `npm start -- . --einzeln "$TMP/…json"`; Delta-Lauf zweimal mit `--delta`
@@ -114,8 +115,8 @@ Die Einstellungen befinden sich in `config.json` unter dem Schlüssel `shinon`:
 
 - **On-Demand**: `!shinon status` oder `!shinon report`
 - **Herzschlag**: Andere Bots nutzen `/heartbeat` für alle 3 Minuten einen schnellen Abgleich
-- Snapshots finden sich in `snapshots/repo_snapshots/`
-- Diffs und Erklärungen in `snapshots/diffs/`
+- Snapshots finden sich in `docs/snapshots/repo_snapshots/`
+- Diffs und Erklärungen in `docs/snapshots/diffs/`
 
 ### Wichtige Hinweise
 

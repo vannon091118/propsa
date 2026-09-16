@@ -172,4 +172,4 @@ Die Regeln des Projekts prüft `npm run pruefen` (siehe
 
 ## Lizenz
 
-MIT – siehe [../LICENSE](../LICENSE).
+MIT – siehe [../../LICENSE](../../LICENSE).

@@ -35,7 +35,7 @@ export it will not even notice that something is missing. PROPSA writes
 
 A **domain is the top-level folder** of a relative path: `tauri-app/src-tauri/src/scan.rs`
 lands in `Quellen/tauri-app.md`, `README.md` in `Quellen/wurzel.md`.
-Details (German): [wiki/Kontextpaket.md](wiki/Kontextpaket.md).
+Details (German): [docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md).
 
 ## CLI
 
@@ -108,7 +108,7 @@ npm run tauri build   # installers (Windows: MSI and NSIS setup)
 
 Requirements: Node.js 18+, Rust 1.70+ and, on Windows, the **C++ build tools**
 (Visual Studio Build Tools or Community with “Desktop development with C++”).
-Build pitfalls are documented in [wiki/Entwicklung.md](wiki/Entwicklung.md) (German).
+Build pitfalls are documented in [docs/wiki/Entwicklung.md](docs/wiki/Entwicklung.md) (German).
 
 ## Both surfaces agree
 

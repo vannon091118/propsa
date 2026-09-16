@@ -236,4 +236,4 @@ Nicht veröffentlicht: es gibt keine Release-Tags.
 
 ## Lizenz
 
-MIT – siehe [../LICENSE](../LICENSE).
+MIT – siehe [../../LICENSE](../../LICENSE).

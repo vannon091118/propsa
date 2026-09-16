@@ -29,14 +29,14 @@ Optionen ergeben dieselben Dateien. Verbindlich sind
 
 ## Dokumente
 
-- [INSTALL](../INSTALL.md) – kanonische Installationsanleitung
+- [INSTALL](../../INSTALL.md) – kanonische Installationsanleitung
 - [CLI-Usage](CLI-Usage.md) – Befehle, Optionen, Beispiele
 - [Kontextpaket](Kontextpaket.md) – der Vertrag für die Ausgabedateien
 - [Export-Schema](Export-Schema.md) – der Vertrag für `kontext.json`
 - [Tauri-App](Tauri-App.md) – Voraussetzungen, Bauen, Bedienung
 - [Entwicklung](Entwicklung.md) – Bauen, Prüfen, Stolperfallen
 - [Changelog](Changelog.md) – Versionshistorie
-- [Architektur](../ARCHITECTURE.md) – technischer Aufbau (liegt in der Wurzel)
+- [Architektur](../../ARCHITECTURE.md) – technischer Aufbau (liegt in der Wurzel)
 
 ## Version
 
@@ -46,7 +46,7 @@ Optionen ergeben dieselben Dateien. Verbindlich sind
 
 ## Lizenz
 
-MIT – siehe [../LICENSE](../LICENSE).
+MIT – siehe [../../LICENSE](../../LICENSE).
 
 ## Autor
 

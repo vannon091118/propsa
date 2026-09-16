@@ -36,7 +36,7 @@ PROPSA folgt deshalb einem Prinzip: **Fail Loud, Never Truncate Silent.**
 
 Eine Domäne ist der **oberste Ordner** eines relativen Pfads: `tauri-app/src-tauri/src/scan.rs`
 landet in `Quellen/tauri-app.md`, `README.md` in `Quellen/wurzel.md`.
-Details: [wiki/Kontextpaket.md](wiki/Kontextpaket.md).
+Details: [docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md).
 
 ## CLI
 
@@ -75,7 +75,7 @@ Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
 
 Projektspezifische, versionierbare Ausschlüsse gehören in eine
 **`.propsaignore`** im Projekt-Root (Glob-Muster je Zeile, `!muster` hebt
-einen Standard-Ausschluss auf). Details: [wiki/CLI-Usage.md](wiki/CLI-Usage.md).
+einen Standard-Ausschluss auf). Details: [docs/wiki/CLI-Usage.md](docs/wiki/CLI-Usage.md).
 
 Mit `--delta` (CLI) bzw. der Checkbox „Änderungen zum letzten Lauf melden“
 (App) meldet PROPSA die Änderungen zum letzten Lauf: Die History wohnt
@@ -105,7 +105,7 @@ angefordert werden.
 Der frühere Kompaktmodus (`-c`) ist entfernt. Statt arbiträrer Grenzen
 (≤ 500 Zeilen, ≤ 50 Dateien) wählt man ein Ziel: `--entrypoint` folgt der
 Import-Kette, `--depth` begrenzt die Tiefe, `--top-files` nimmt die größten
-Dateien. Details: [wiki/CLI-Usage.md](wiki/CLI-Usage.md).
+Dateien. Details: [docs/wiki/CLI-Usage.md](docs/wiki/CLI-Usage.md).
 
 ## Desktop-App
 
@@ -124,7 +124,7 @@ npm run tauri build   # Installer bauen (Windows: MSI und NSIS-Setup)
 
 Voraussetzungen: Node.js 18+, Rust 1.70+ und auf Windows die **C++ Build Tools**
 (Visual Studio Build Tools oder Visual Studio Community mit „Desktopentwicklung
-mit C++“). Stolperfallen beim Bauen stehen in [wiki/Entwicklung.md](wiki/Entwicklung.md).
+mit C++“). Stolperfallen beim Bauen stehen in [docs/wiki/Entwicklung.md](docs/wiki/Entwicklung.md).
 
 ## Beide Oberflächen liefern dasselbe
 
@@ -153,7 +153,7 @@ npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge,
 ├── assets/             Banner und Logo
 ├── INSTALL.md          kanonische Installationsanleitung
 ├── scripts/            pruefen.mjs – Konsistenzprüfung
-├── wiki/               Verträge und Anleitungen
+├── docs/wiki/               Verträge und Anleitungen
 ├── ARCHITECTURE.md     Module und Datenfluss
 └── LICENSE             MIT
 ```

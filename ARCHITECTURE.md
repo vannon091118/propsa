@@ -10,8 +10,8 @@ Sprachmodelle. Es gibt zwei Oberflächen:
 
 Beide teilen den **Vertrag**; die TypeScript-Seite des Vertrags lebt im
 eigenen Paket **`@propsa/core`** (`packages/core/`). Verbindlich sind
-[wiki/Export-Schema.md](wiki/Export-Schema.md) (JSON) und
-[wiki/Kontextpaket.md](wiki/Kontextpaket.md) (Dateien des Pakets).
+[docs/wiki/Export-Schema.md](docs/wiki/Export-Schema.md) (JSON) und
+[docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md) (Dateien des Pakets).
 
 ## Datenfluss
 
@@ -152,7 +152,7 @@ Beide Seiten setzen dieselben Regeln um:
 
 ## Prüfen
 
-Die Kommandos stehen in [wiki/Entwicklung.md](wiki/Entwicklung.md); die Regeln
+Die Kommandos stehen in [docs/wiki/Entwicklung.md](docs/wiki/Entwicklung.md); die Regeln
 dahinter in [AGENTS.md](AGENTS.md).
 
 ## Lizenz
