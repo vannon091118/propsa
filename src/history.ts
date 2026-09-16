@@ -30,6 +30,10 @@ export interface HistoryEintrag {
   identitaet: string;
   herkunft: 'root-commit' | 'pfad';
   dateien: Record<string, string>;
+  metriken: {
+    anzahl_dateien: number;
+    gesamt_zeilen: number;
+  };
 }
 
 /** Unterschied zweier Läufe, je Datei genau eine Kategorie. */
@@ -185,11 +189,17 @@ export function laufVerarbeiten(
   const früher = letztenEintragFinden(eintraege, identitaet);
   const delta = früher ? deltaBerechnen(dateien, früher) : null;
 
+  const gesamtZeilen = dateien.reduce((sum, d) => sum + d.zeilen, 0);
+
   historyErgänzen(identitaet, {
     zeitstempel,
     identitaet,
     herkunft,
     dateien: fingerabdrücke(dateien),
+    metriken: {
+      anzahl_dateien: dateien.length,
+      gesamt_zeilen: gesamtZeilen,
+    },
   });
 
   return { delta, erstlauf: früher === null, identitaet, herkunft };

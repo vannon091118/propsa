@@ -27,6 +27,7 @@
     }
   },
   "bundle": {
+    "resources": ["Changelog.md"],
     "active": true,
     "targets": [
       "deb",

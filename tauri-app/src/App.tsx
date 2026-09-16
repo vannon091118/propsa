@@ -7,7 +7,9 @@ import { Hintergrund } from "./Hintergrund";
 import { Hotspots } from "./Hotspots";
 import { ScanHinweise } from "./ScanHinweise";
 import { StatistikKarten } from "./StatistikKarten";
-import { ordnerWaehlen, paketSchreiben, scanStarten } from "./api";
+import { MarkdownRenderer } from "./MarkdownRenderer";
+import { HistoryGraph, type HistoryPoint } from "./HistoryGraph";
+import { ordnerWaehlen, paketSchreiben, scanStarten, invoke } from "./api";
 import { DeltaAnzeige } from "./DeltaAnzeige";
 import { istVorschauMock } from "./devMock";
 import { KopfBereich } from "./KopfBereich";
@@ -30,6 +32,10 @@ function App() {
   const [zustand, setZustand] = useState<ScanZustand>("bereit");
   const [fehler, setFehler] = useState<string | null>(null);
   const [meldung, setMeldung] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'scan' | 'changelog'>('scan');
+  const [changelogContent, setChangelogContent] = useState<string | null>(null);
+  const [changelogLoading, setChangelogLoading] = useState<boolean>(false);
+  const [historyDaten, setHistoryDaten] = useState<HistoryPoint[]>([]);
 
   // Erfolgsmeldungen verschwinden von selbst.
   useEffect(() => {
@@ -42,6 +48,30 @@ function App() {
 
   const aendern = useCallback((teil: Partial<ScanEinstellungen>) => {
     setEinstellungen((alt) => ({ ...alt, ...teil }));
+  }, []);
+
+  const loadChangelog = useCallback(async () => {
+    setChangelogLoading(true);
+    setChangelogContent(null);
+    try {
+      const result = await invoke<string>("fetch_changelog");
+      setChangelogContent(result);
+    } catch (e) {
+      console.error("Failed to load changelog:", e);
+      setChangelogContent("???");
+    } finally {
+      setChangelogLoading(false);
+    }
+  }, []);
+
+  const loadHistory = useCallback(async (identitaet: string) => {
+    try {
+      const result = await invoke<HistoryPoint[]>("get_history_metrics", { identitaet });
+      setHistoryDaten(result);
+    } catch (e) {
+      console.error("Failed to load history:", e);
+      setHistoryDaten([]);
+    }
   }, []);
 
   const pfadWaehlen = useCallback(async () => {
@@ -78,6 +108,8 @@ function App() {
           `${zahl(neu.gesamt_zeilen)} Zeilen · ` +
           dauerText((performance.now() - start) / 1000),
       );
+      // History-Daten für den Graph laden
+      loadHistory(neu.identitaet);
     } catch (e) {
       setFehler(String(e));
       setZustand("fehler");
@@ -111,76 +143,125 @@ function App() {
     }
   }, [ergebnis]);
 
+  // Handle tab changes: load changelog when switching to changelog tab if not loaded
+  useEffect(() => {
+    if (activeTab === 'changelog' && !changelogContent && !changelogLoading) {
+      loadChangelog();
+    }
+  }, [activeTab, changelogContent, changelogLoading, loadChangelog]);
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <Hintergrund />
       <TitleLeiste vorschau={istVorschauMock()} />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
-        <KopfBereich
-          zustand={zustand}
-          laeuft={zustand === "scanne" || zustand === "export"}
-          meldung={meldung ?? undefined}
-        />
+      {/* Tab bar */}
+      <div className="flex flex-row border-b border-leise/20">
+        <button
+          onClick={() => setActiveTab('scan')}
+          className={`
+            flex-1 items-center justify-center py-2 text-leise
+            ${activeTab === 'scan' ? 'border-b-2 border-neon-cyan' : 'border-b-transparent hover:bg-leise/10'}
+          `}
+          aria-label="Scan-Ansicht"
+        >
+          Scan
+        </button>
+        <button
+          onClick={() => setActiveTab('changelog')}
+          className={`
+            flex-1 items-center justify-center py-2 text-leise
+            ${activeTab === 'changelog' ? 'border-b-2 border-neon-cyan' : 'border-b-transparent hover:bg-leise/10'}
+          `}
+          aria-label="Changelog-Ansicht"
+        >
+          Changelog
+        </button>
+      </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-[320px_1fr] gap-4">
-        <EinstellungenPanel
-          einstellungen={einstellungen}
-          laedt={zustand === "scanne"}
-          onAendern={aendern}
-          onPfadWaehlen={pfadWaehlen}
-          onScan={scanAusloesen}
-        />
-
-        <section className="glas flex flex-col gap-3 overflow-auto rounded-panel p-4">
-          <Fortschrittsbalken
-            fortschritt={fortschritt}
-            sichtbar={zustand === "scanne"}
-          />
-
-          {fehler && (
-            <div className="animate-einfahren rounded-knopf border border-fehler bg-fehler/10 px-3 py-2.5 text-[13px] text-fehler">
-              {fehler}
-            </div>
-          )}
-          {meldung && zustand !== "scanne" && (
-            <div className="animate-einfahren rounded-knopf border border-ok bg-ok/10 px-3 py-2.5 text-[13px] text-[#7fe0a3] shadow-neon-gruen">
-              {meldung}
-            </div>
-          )}
-
-          {!ergebnis ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-1.5 text-center text-leise">
-              <p>Noch keine Scan-Daten.</p>
-              <p>Wähle ein Projektverzeichnis und starte den Scan.</p>
-            </div>
-          ) : (
-            <div
-              className={`flex flex-col gap-3 ${
-                zustand === "fertig" ? "animate-aufleuchten" : "animate-einfahren"
-              }`}
-            >
-              <div className="flex flex-wrap gap-[18px] rounded-knopf border border-white/10 bg-white/4 px-3.5 py-3 text-[13px] text-leise">
-                <div>
-                  <strong className="text-tinte">Projekt:</strong> {ergebnis.titel}
+      <div className="flex-1 flex overflow-hidden">
+        {activeTab === 'changelog' ? (
+          <>
+            <div className="flex-1 overflow-auto p-4">
+              {changelogLoading ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <span className="animate-spin text-leise">Lade Changelog...</span>
                 </div>
-                <div>
-                  <strong className="text-tinte">Erzeugt:</strong>{" "}
-                  {ergebnis.zeitstempel}
-                </div>
+              ) : (
+                <MarkdownRenderer markdown={changelogContent ?? ""} />
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
+              <KopfBereich
+                zustand={zustand}
+                laeuft={zustand === "scanne" || zustand === "export"}
+                meldung={meldung ?? undefined}
+              />
+
+              <div className="grid min-h-0 flex-1 grid-cols-[320px_1fr] gap-4">
+                <EinstellungenPanel
+                  einstellungen={einstellungen}
+                  laedt={zustand === "scanne"}
+                  onAendern={aendern}
+                  onPfadWaehlen={pfadWaehlen}
+                  onScan={scanAusloesen}
+                />
+
+                <section className="glas flex flex-col gap-3 overflow-auto rounded-panel p-4">
+                  <Fortschrittsbalken
+                    fortschritt={fortschritt}
+                    sichtbar={zustand === "scanne"}
+                  />
+
+                  {fehler && (
+                    <div className="animate-einfahren rounded-knopf border border-fehler bg-fehler/10 px-3 py-2.5 text-[13px] text-fehler">
+                      {fehler}
+                    </div>
+                  )}
+                  {meldung && zustand !== "scanne" && (
+                    <div className="animate-einfahren rounded-knopf border border-ok bg-ok/10 px-3 py-2.5 text-[13px] text-[#7fe0a3] shadow-neon-gruen">
+                      {meldung}
+                    </div>
+                  )}
+
+                  {!ergebnis ? (
+                    <div className="flex flex-1 flex-col items-center justify-center gap-1.5 text-center text-leise">
+                      <p>Noch keine Scan-Daten.</p>
+                      <p>Wähle ein Projektverzeichnis und starte den Scan.</p>
+                    </div>
+                  ) : (
+                    <div
+                      className={`flex flex-col gap-3 ${
+                        zustand === "fertig" ? "animate-aufleuchten" : "animate-einfahren"
+                      }`}
+                    >
+                      <div className="flex flex-wrap gap-[18px] rounded-knopf border border-white/10 bg-white/4 px-3.5 py-3 text-[13px] text-leise">
+                        <div>
+                          <strong className="text-tinte">Projekt:</strong> {ergebnis.titel}
+                        </div>
+                        <div>
+                          <strong className="text-tinte">Erzeugt:</strong>{" "}
+                          {ergebnis.zeitstempel}
+                        </div>
+                      </div>
+
+                      <ScanHinweise ergebnis={ergebnis} />
+                      {ergebnis.delta_info && <DeltaAnzeige info={ergebnis.delta_info} />}
+                      <StatistikKarten ergebnis={ergebnis} />
+                      <Hotspots ergebnis={ergebnis} />
+                      {/* Ein neues Ergebnis beginnt wieder mit der begrenzten Liste. */}
+                      <ErgebnisTabelle key={ergebnis.zeitstempel} ergebnis={ergebnis} />
+                      <ExportBereich laedt={zustand === "export"} onSchreiben={paketAusloesen} />
+                    </div>
+                  )}
+                </section>
               </div>
-
-              <ScanHinweise ergebnis={ergebnis} />
-              {ergebnis.delta_info && <DeltaAnzeige info={ergebnis.delta_info} />}
-              <StatistikKarten ergebnis={ergebnis} />
-              <Hotspots ergebnis={ergebnis} />
-              {/* Ein neues Ergebnis beginnt wieder mit der begrenzten Liste. */}
-              <ErgebnisTabelle key={ergebnis.zeitstempel} ergebnis={ergebnis} />
-              <ExportBereich laedt={zustand === "export"} onSchreiben={paketAusloesen} />
             </div>
-          )}
-        </section>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

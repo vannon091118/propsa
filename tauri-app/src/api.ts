@@ -12,6 +12,9 @@ import { istVorschauMock, mockOrdnerWaehlen, mockPaketSchreiben, mockScan } from
 import type { Fortschritt, ScanEinstellungen, ScanErgebnis } from "./typen";
 import type { UpdateCheck } from "@propsa/core";
 
+
+export { invoke };
+
 /** Komma-getrennte Muster in eine Liste umwandeln (analog zur CLI). */
 function musterListe(text: string): string[] {
   return text
@@ -42,6 +45,14 @@ export async function scanStarten(
   if (istVorschauMock()) {
     return mockScan(einstellungen, beiFortschritt);
   }
+
+  // TODO: Implement scan-metrics cache.
+  // Idea: Before invoking the scan, compute a cheap fingerprint of the file tree
+  // (e.g., list of relative paths and file sizes) and compare with cached version.
+  // If unchanged, return cached ScanErgebnis from cache.
+  // This requires a backend command to provide file metadata, or we could
+  // replicate the scanning logic in the frontend (which would duplicate work).
+  // For now, we always invoke the scan.
 
   const abmelden = await listen<Fortschritt>("scan-fortschritt", (ereignis) => {
     beiFortschritt(ereignis.payload);

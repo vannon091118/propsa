@@ -9,7 +9,11 @@ import type { DateiInfo, Fortschritt, ScanEinstellungen, ScanErgebnis } from "./
 
 /** Läuft die Seite außerhalb von Tauri (Browser-Vorschau)? */
 export function istVorschauMock(): boolean {
-  return import.meta.env.DEV && !("__TAURI_INTERNALS__" in window);
+  // Check if we are not in Tauri (i.e., running in a browser preview)
+  // and if we are in development mode (via localhost or process.env.NODE_ENV)
+  return !("__TAURI_INTERNALS__" in window) &&
+    ( (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') ||
+      window.location.hostname === 'localhost' );
 }
 
 /** Beispieldaten: [Pfad, Sprache, Zeilen]. */
@@ -66,6 +70,7 @@ function beispieldateien(einstellungen: ScanEinstellungen): ScanErgebnis {
   return {
     titel: basis,
     zeitstempel: new Date().toISOString().replace("T", " ").substring(0, 19),
+    identitaet: "8c36bfdc2e96…(Mock)",
     dateien,
     gesamt_zeilen: dateien.reduce((summe, datei) => summe + datei.zeilen, 0),
     gesamt_zeichen: dateien.reduce((summe, datei) => summe + datei.zeichen, 0),

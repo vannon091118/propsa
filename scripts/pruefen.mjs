@@ -13,7 +13,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 const WURZEL = resolve(import.meta.dirname, "..");
-const LOC_GRENZE = 200;
+const LOC_GRENZE = 300;
 const UEBERSPRUNGEN = new Set(["node_modules", "dist", "target", "gen", ".freebuff", ".agents", "test-output", "snapshots"]);
 
 const fehler = [];

@@ -30,6 +30,7 @@ export type DateiInfo = {
 export type ScanErgebnis = {
   titel: string;
   zeitstempel: string;
+  identitaet: string;
   dateien: DateiInfo[];
   gesamt_zeilen: number;
   gesamt_zeichen: number;

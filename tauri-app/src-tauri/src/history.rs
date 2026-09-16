@@ -28,6 +28,13 @@ pub struct HistoryEintrag {
     pub identitaet: String,
     pub herkunft: String,
     pub dateien: HashMap<String, String>,
+    pub metriken: Option<ProjektMetriken>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ProjektMetriken {
+    pub anzahl_dateien: usize,
+    pub gesamt_zeilen: usize,
 }
 
 /// Unterschied zweier Läufe, je Datei genau eine Kategorie.
@@ -76,7 +83,7 @@ fn root_commit_hash(basis: &Path) -> Option<String> {
 }
 
 /// Projektidentität: Root-Commit-Hash vorrangig, sonst normierter Pfad.
-fn projekt_identitaet(basis: &Path) -> (String, String) {
+pub fn projekt_identitaet(basis: &Path) -> (String, String) {
     if let Some(hash) = root_commit_hash(basis) {
         return (hash, "root-commit".to_string());
     }
@@ -112,6 +119,16 @@ pub fn history_lesen(identitaet: &str) -> Vec<HistoryEintrag> {
             .collect(),
         Err(_) => Vec::new(),
     }
+}
+
+/// Liefert die Metrik-Historie eines Projekts als Zeitreihe.
+pub fn get_metrik_historie(identitaet: &str) -> Vec<(String, ProjektMetriken)> {
+    history_lesen(identitaet)
+        .into_iter()
+        .filter_map(|e| {
+            e.metriken.map(|m| (e.zeitstempel, m))
+        })
+        .collect()
 }
 
 /// Letzter Eintrag derselben Identität oder `None` bei Erstlauf.
@@ -177,6 +194,10 @@ pub fn lauf_verarbeiten(basis: &Path, scan: &ScanErgebnis) -> DeltaInfo {
             identitaet: identitaet.clone(),
             herkunft: herkunft.clone(),
             dateien: fingerabdruecke(&scan.dateien),
+            metriken: Some(ProjektMetriken {
+                anzahl_dateien: scan.dateien.len(),
+                gesamt_zeilen: scan.gesamt_zeilen,
+            }),
         },
     );
 

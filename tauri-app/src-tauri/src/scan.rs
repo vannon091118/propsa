@@ -43,6 +43,7 @@ pub struct ScanOptionen {
 pub struct ScanErgebnis {
     pub titel: String,
     pub zeitstempel: String,
+    pub identitaet: String,
     pub dateien: Vec<DateiInfo>,
     pub gesamt_zeilen: usize,
     pub gesamt_zeichen: usize,
@@ -177,12 +178,17 @@ pub fn scan(
     let mut ergebnis = ScanErgebnis {
         titel: basis.display().to_string(),
         zeitstempel: chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
+        identitaet: String::new(),
         dateien,
         gesamt_zeilen,
         gesamt_zeichen,
         uebersprungen,
         delta_info: None,
     };
+
+    // Identität ermitteln (für History-Tracking)
+    let (identitaet, _) = crate::history::projekt_identitaet(basis);
+    ergebnis.identitaet = identitaet;
 
     // Delta/History nur auf ausdrückliche Anfrage; Fehler werden in
     // `lauf_verarbeiten` still ignoriert, damit der Scan nicht scheitert.

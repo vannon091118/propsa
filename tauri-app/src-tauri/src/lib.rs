@@ -6,6 +6,7 @@
 //! Pakets), `paket` (Schreiben in einen Ordner), `schema` (JSON-Vertrag) und
 //! `sprache` (Sprach- und Fence-Mapping).
 
+mod app;
 mod domaene;
 mod filter;
 mod filterignore;
@@ -32,7 +33,10 @@ pub fn run() {
             scan::scan,
             paket::paket_schreiben,
             update::update_check,
-            update::update_ausfuehren
+            update::update_ausfuehren,
+            app::fetch_version,
+            app::fetch_changelog,
+            app::get_history_metrics
         ])
         .run(tauri::generate_context!())
         .expect("PROPSA konnte nicht gestartet werden");
