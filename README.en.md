@@ -8,7 +8,7 @@ files instead of one giant blob, split by domain, every file complete.
 [Deutsche Fassung](README.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.1.0-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.1.1-4aa3ff)](package.json)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---
@@ -65,7 +65,7 @@ npm start ~/code/my-project --einzeln context.json
 | `--entrypoint <file>` | Slice: entry file plus its local import chain |
 | `--depth <n>` | Slice: only files up to this folder depth |
 | `--top-files <n>` | Slice: only the n largest files by lines |
-| `--delta` | Report the delta against the last run (`.propsa/history.json`) |
+| `--delta` | Report the delta against the last run (`~/.propsa/history/`) |
 
 The default is a **complete scan**: no limits. Only dependencies, version
 control, build artifacts and caches are excluded. `node_modules`,
@@ -77,12 +77,20 @@ The former compact mode (`-c`) has been removed. Instead of arbitrary caps
 chain, `--depth` caps the depth, `--top-files` takes the largest files.
 
 With `--delta` (CLI) or the “Report changes since last run” checkbox (app)
-PROPSA reports the changes since the last run: It stores
-`.propsa/history.json` in the scanned project and identifies it via the root
-commit hash (`git rev-list --max-parents=0 HEAD`) — stable across branches,
-paths and remote URLs. Without git the identity falls back to the path.
-`.propsa/` is added to the project's `.gitignore` automatically and never
-enters a package.
+PROPSA reports the changes since the last run: The history lives centrally
+in the user directory (`~/.propsa/history/<identity>.jsonl`); nothing is left
+behind in the scanned project. The project is identified via the root commit
+hash (`git rev-list --max-parents=0 HEAD`) — stable across branches, paths
+and remote URLs; without git the identity falls back to the path. Install
+and remove:
+
+```bash
+npm run installieren    # build + set up central storage ~/.propsa
+npm run deinstallieren  # remove ~/.propsa (with confirmation)
+```
+
+`~/.propsa` holds everything PROPSA keeps between runs — except the output:
+context packages and `--einzeln` files go where they are requested.
 
 ## Desktop app
 
@@ -115,9 +123,7 @@ npm run pruefen   # project rules: line limit, versions, names, catalogs, links
 
 ## Not in this version
 
-So nobody hunts for features that do not exist: no shared core package (an
-`@propsa/core` adapter is a stated goal, not yet built — CLI and app remain
-two implementations of the same contract), no GitHub URL input, no CI
+So nobody hunts for features that do not exist: no GitHub URL input, no CI
 workflows and no release tags. PROPSA works on the filesystem only.
 
 ## License

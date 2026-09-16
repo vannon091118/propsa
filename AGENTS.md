@@ -8,7 +8,7 @@ Dieses Dokument legt die Richtlinien für die Entwicklung in diesem Projekt fest
 - **Modularer Aufbau**: Der Code soll modular aufgebaut sein, um Wartbarkeit und Übersichtlichkeit zu gewährleisten.
 - **LOC-Grenze pro Datei**: Um Backdoors zu vermeiden und die Lesbarkeit zu erhöhen, soll jede Datei eine maximale Größe von 200 Zeilen Code (LOC) nicht überschreiten.
 - **Eine Aufgabe - Ein Besitzer - Ein Modul**: Jede Aufgabe soll klar einem Besitzer zugewiesen werden und in einem eigenen Modul implementiert werden.
-- **Eine Wahrheit je Regel**: Jeder Katalog, jedes Schema und jede Version hat genau eine Quelle; Kopien werden durch `npm run pruefen` verglichen. Der Ausschlusskatalog gehört deshalb immer zusammen geändert: `src/filters.ts`, `tauri-app/src-tauri/src/filter.rs`, `tauri-app/src/typen.ts`.
+- **Eine Wahrheit je Regel**: Jeder Katalog, jedes Schema und jede Version hat genau eine Quelle; Kopien werden durch `npm run pruefen` verglichen. Der Ausschlusskatalog gehört deshalb immer zusammen geändert: `packages/core/src/filters.ts` (einzige TypeScript-Quelle; das Frontend bezieht `STANDARD_AUSSCHLUESSE` von dort) und `tauri-app/src-tauri/src/filter.rs`.
 - **Dokumentation folgt dem Code**: Pfade, Optionen und Versionen in der Dokumentation müssen dem tatsächlichen Stand entsprechen – geplante Funktionen werden nicht als vorhanden beschrieben.
 - **Keine erfundenen Angaben**: Keine Zahlen, Badges, Screenshots oder Funktionen in der Präsentation, die nicht gemessen bzw. umgesetzt sind. Lieber einen Abschnitt „Was diese Version nicht kann“.
 
@@ -23,13 +23,39 @@ Dieses Dokument legt die Richtlinien für die Entwicklung in diesem Projekt fest
 
 ```bash
 npm run pruefen                          # LOC-Grenze, Versionen, Namen, Kataloge, Links
-npm run build                            # CLI: Typecheck
-cd tauri-app && npm run build            # Frontend: tsc + Vite
+npm run build                            # CLI: Core-Workspace + Typecheck
+cd tauri-app && npm run build            # Frontend: baut Core vorab, dann tsc + Vite
 cd tauri-app/src-tauri && cargo check    # Rust
+npx ts-node tests/paketKritik.test.ts    # CLI-Doku-Tests (kein Test-Runner nötig)
+npm run installieren / deinstallieren    # Build + ~/.propsa einrichten / entfernen
 ```
 
 Ein Lauf von `npm run pruefen` gehört vor jede Abgabe. Build-Stolperfallen
 stehen in `wiki/Entwicklung.md`.
+
+Smoke-Tests: Einzelausgabe per
+`npm start -- . --einzeln "$TMP/…json"`; Delta-Lauf zweimal mit `--delta`
+ausführen – der zweite meldet „0 neu · 0 geändert“.
+
+## Geteilter Kern und Spiegel
+
+- `@propsa/core` (`packages/core/`) ist die einzige TypeScript-Quelle für
+  Sprache, Filter, Domänen und Schema. `tauri-app` ist **kein**
+  Workspace-Mitglied – es bindet den Core per `file:../packages/core` und
+  baut ihn in `dev`/`build` vorab (`npm run build --prefix ../packages/core`).
+- Rust-Spiegel, immer zusammen mit dem Core ändern:
+  `filter.rs` ↔ `filters.ts`, `sprache.rs` ↔ `sprache.ts`,
+  `schema.rs` ↔ `schema.ts`, `domaene.rs` ↔ `domaene.ts`,
+  `history.rs` ↔ `history.ts`.
+- `scripts/pruefen.mjs` parst Quelltext per Regex (TS-Objekte mit bare oder
+  quoted Keys, Rust-`match`-Arme). Diese Deklarationen dürfen ihre Form
+  nicht ändern: `SPRACHE_NACH_ENDUNG`/`FENCE_NACH_SPRACHE`,
+  `IGNORIERTE_VERZEICHNISSE`, `AUSGESCHLOSSENE_DATEIEN` (exportiert), und
+  `typen.ts` muss `STANDARD_AUSSCHLUESSE` aus `@propsa/core` importieren.
+- Delta-History liegt zentral: `~/.propsa/history/<identitaet>.jsonl`
+  (JSONL, eine Datei je Identität, 50 Einträge). Im gescannten Projekt
+  bleibt nichts zurück; alte `.propsa/history.json` dort werden nicht mehr
+  gelesen. Rust-Seite nutzt die `dirs`-Crate für `home_dir`.
 
 ## Umgebung und Werkzeuge
 
@@ -50,6 +76,15 @@ stehen in `wiki/Entwicklung.md`.
   per CDP ein Node-Skript gegen das WebView laufen lassen (Kommandos aufrufen,
   `scan-fortschritt`-Ereignisse mitschreiben). Wegwerfskripte in
   `tauri-app/src-tauri/target/` ablegen und danach löschen.
+- **Windows/npm in Node-Skripten:** `execFileSync('npm', …)` schlägt mit
+  `spawnSync npm ENOENT` fehl – npm ist eine `.cmd`, also `shell: true`
+  mitgeben (so machen es es `scripts/install.mjs`/`deinstall.mjs`).
+- **JSX-Text mit Pfaden:** `<identitaet>` in JSX-Text wird als Tag geparst
+  (Fehler: TS17008 „no corresponding closing tag“) – als
+  `&lt;…&gt;` schreiben.
+- **Git-Bash-Pfade:** `/tmp/…` gilt in der Bash, aber Node-Aufrufe wie
+  `node -e require('/tmp/…')` finden die Datei nicht – in Node
+  `$TMP`/`$HOME` (Windows-Pfad) verwenden.
 
 ## Ziel
 

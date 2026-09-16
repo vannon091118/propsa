@@ -7,7 +7,7 @@ einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien sta
 eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.1.0-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.1.1-4aa3ff)](package.json)
 [![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---
@@ -66,7 +66,7 @@ npm start ~/Code/mein-projekt --einzeln kontext.json
 | `--entrypoint <datei>` | Slice: Einstiegsdatei plus lokale Import-Kette |
 | `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe |
 | `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
-| `--delta` | Delta zum letzten Lauf melden (`.propsa/history.json`) |
+| `--delta` | Delta zum letzten Lauf melden (`~/.propsa/history/`) |
 
 Standard ist ein **vollständiger Scan**: kein Limit. Die Vorgabe schließt nur
 Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
@@ -78,12 +78,26 @@ Projektspezifische, versionierbare Ausschlüsse gehören in eine
 einen Standard-Ausschluss auf). Details: [wiki/CLI-Usage.md](wiki/CLI-Usage.md).
 
 Mit `--delta` (CLI) bzw. der Checkbox „Änderungen zum letzten Lauf melden“
-(App) meldet PROPSA die Änderungen zum letzten Lauf: Dazu legt es
-`.propsa/history.json` im Projekt an und identifiziert es über den
-Root-Commit-Hash (`git rev-list --max-parents=0 HEAD`) – stabil über
-Branches, Pfade und Remote-URLs. Ohne Git fällt die Identität auf den Pfad
-zurück. `.propsa/` wird automatisch in die `.gitignore` eingetragen und
-nie in ein Paket aufgenommen.
+(App) meldet PROPSA die Änderungen zum letzten Lauf: Die History wohnt
+zentral im Benutzerverzeichnis (`~/.propsa/history/<identitaet>.jsonl`),
+im gescannten Projekt bleibt nichts zurück. Identifiziert wird das Projekt
+über den Root-Commit-Hash (`git rev-list --max-parents=0 HEAD`) – stabil
+über Branches, Pfade und Remote-URLs; ohne Git fällt die Identität auf den
+Pfad zurück. Installieren und entfernen:
+
+```bash
+npm run installieren    # Build + zentrale Ablage ~/.propsa einrichten
+npm run deinstallieren  # ~/.propsa entfernen (mit Bestätigung)
+```
+
+**Auto-Update:** `npm start -- update --nur-pruefen` prüft gegen
+`origin/main`, `npm start -- update` übernimmt neue Commits per
+Fast-Forward und installiert neu. Die App zeigt in der Kopfzeile denselben
+Check und einen Update-Button.
+
+`~/.propsa` nimmt alles auf, was PROPSA zwischen den Läufen behält – außer
+dem Output: Kontextpakete und `--einzeln`-Dateien landen dort, wo sie
+angefordert werden.
 
 Der frühere Kompaktmodus (`-c`) ist entfernt. Statt arbiträrer Grenzen
 (≤ 500 Zeilen, ≤ 50 Dateien) wählt man ein Ziel: `--entrypoint` folgt der
@@ -111,8 +125,11 @@ mit C++“). Stolperfallen beim Bauen stehen in [wiki/Entwicklung.md](wiki/Entwi
 
 ## Beide Oberflächen liefern dasselbe
 
-CLI und App teilen den **Vertrag**, nicht den Code: gleicher Ordner und gleiche
-Optionen ergeben dieselben Dateien mit denselben Zählern und Inhalten. Der
+CLI und App teilen den **Vertrag** – und seit `@propsa/core` auch den
+typeScript-Kern: Sprach-Erkennung, Filterkatalog, Domänen-Regel und das
+Export-Schema leben einmal in `packages/core/src/` und werden von der CLI
+direkt importiert. Das Rust-Backend setzt dieselben Regeln nach und wird per
+`npm run pruefen` mit dem Kern verglichen. Der
 Scanner sammelt erst alle Kandidaten, sortiert sie und liest sie dann – dadurch
 hängt die Auswahl nicht von der Reihenfolge des Dateisystems ab und ein
 Guardrail trifft immer dieselben Dateien.
@@ -128,6 +145,7 @@ npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge,
 ```text
 .
 ├── src/                CLI (TypeScript), Einstieg: src/propsa.ts
+├── packages/core/      Geteilter Kern @propsa/core (Typen, Regeln, Schema)
 ├── tauri-app/          Desktop-App (React-Frontend, Rust-Backend)
 ├── assets/             Banner und Logo
 ├── INSTALL.md          kanonische Installationsanleitung
@@ -139,12 +157,10 @@ npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge,
 
 ## Was diese Version nicht kann
 
-Damit niemand nach Funktionen sucht, die es nicht gibt: **kein** geteilter
-Kern als eigenes Paket (`@propsa/core` ist als Ziel notiert, aber noch nicht
-umgesetzt – CLI und GUI sind weiterhin zwei Umsetzungen desselben Vertrags),
-**kein** GitHub-URL-Import, **keine** CI-Workflows und **keine**
-Release-Tags (das Repository hat noch keine Versionshistorie). PROPSA arbeitet
-ausschließlich auf dem Dateisystem.
+Damit niemand nach Funktionen sucht, die es nicht gibt: **kein**
+GitHub-URL-Import, **keine** CI-Workflows und **keine** Release-Tags (das
+Repository hat noch keine Versionshistorie). PROPSA arbeitet ausschließlich auf
+dem Dateisystem.
 
 ## Installation
 

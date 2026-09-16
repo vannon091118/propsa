@@ -22,7 +22,7 @@ Visual Studio Community mit „Desktopentwicklung mit C++“).
 git clone <repository-url> propsa    # oder Ordner herunterladen
 cd propsa
 npm install                          # Abhängigkeiten (commander, minimatch)
-npm run build                        # Typecheck und Übersetzung nach dist/
+npm run installieren                 # Build + zentrale Ablage ~/.propsa
 ```
 
 Danach steht der Befehl auf zwei Wegen bereit:
@@ -53,13 +53,31 @@ Für die Entwicklung genügt `npm run tauri dev`; für eine reine Layout-Vorscha
 ohne Rust-Build `npm run dev` (läuft über `src/devMock.ts` und beweist nur
 Layout und Bedienung, nie Backend-Verhalten).
 
+## Zentrale Ablage `~/.propsa`
+
+`npm run installieren` baut CLI und Core und richtet die zentrale Ablage im
+Benutzerverzeichnis ein:
+
+```text
+~/.propsa/
+├── history/        Delta-History je Projekt-Identität (<hash>.jsonl)
+└── version.json    Installations-Metadaten (Version, Zeitstempel)
+```
+
+Dort liegt alles, was PROPSA zwischen den Läufen behält – **außer dem
+Output**: Kontextpakete und `--einzeln`-Dateien landen, wo sie angefordert
+werden. Im gescannten Projekt bleibt nichts zurück.
+
+**Entfernen:** `npm run deinstallieren` löscht `~/.propsa` nach Bestätigung
+und löst ein vorhandenes `npm link`. Ausgaben (Output) und der Projektordner
+selbst werden nicht angerührt.
+
 ## History/Delta einschalten (optional)
 
 Nichts zu konfigurieren: Ab dem ersten Lauf mit `--delta` legt PROPSA
-`.propsa/history.json` im gescannten Projekt an und trägt `.propsa/`
-automatisch in dessen `.gitignore` ein. Ohne Git-Repository arbeitet die
-Identität über den normierten Pfad (Fallback), mit Git über den stabilen
-Root-Commit-Hash.
+`~/.propsa/history/<identitaet>.jsonl` an – eine Datei je Projekt-Identität.
+Ohne Git-Repository arbeitet die Identität über den normierten Pfad
+(Fallback), mit Git über den stabilen Root-Commit-Hash.
 
 ## Fehlerbehebung
 

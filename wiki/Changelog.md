@@ -1,5 +1,66 @@
 # PROPSA – Changelog
 
+## 0.1.1
+
+**Neu / Geändert**
+
+- **Auto-Updater (git-basiert):** CLI (`propsa update [--nur-pruefen]`) und
+  Desktop-App (Update-Bereich in der Kopfzeile) prüfen gegen `origin/main`:
+  `git fetch`, Vergleich HEAD ↔ origin/main, Übernahme per Fast-Forward und
+  Neuinstallation (`npm run installieren`). Der Vertrag
+  (`UpdateCheck`) lebt in `@propsa/core`; Umsetzung in `src/update.ts` und
+  `src-tauri/src/update.rs`. Lokale Änderungen werden nie überschrieben –
+  bei Divergenz bricht der Lauf ab.
+- **Version überall 0.1.1:** `package.json`, `packages/core/package.json`,
+  `tauri-app/package.json`, `Cargo.toml`, `tauri.conf.json` samt Lockfiles
+  (`npm`-Lockfiles und `Cargo.lock` mitgebumpft).
+- **Bump-Skript ergänzt Core:** `scripts/bump-version.ts` aktualisiert jetzt
+  zusätzlich `packages/core/package.json` (vorher nur die vier Manifeste).
+
+**Behoben**
+
+- **CLI-Fehlermeldung präzisiert:** `--delta`-Hilfe und Doku nennen die
+  zentrale History `~/.propsa/history/` statt der ausgemusterten
+  `.propsa/history.json`.
+
+## 0.1.0 (@propsa/core)
+
+**Neu**
+
+- **Geteilter Kern als eigenes Paket:** `@propsa/core`
+  (`packages/core/`) bündelt die Regeln und Verträge, die CLI und Frontend
+  gemeinsam haben: Sprach-Erkennung, Ausschlusskatalog, Domänen-Regel und
+  Export-Schema. Die CLI importiert das Paket als npm-Workspace, das
+  Frontend als `file:`-Abhängigkeit; die Rust-Spiegel bleiben als
+  Zweitumsetzung bestehen und werden von `npm run pruefen` abgeglichen.
+- **Prüfpunkt Sprachkataloge:** `npm run pruefen` vergleicht jetzt auch die
+  Endungs- und Fence-Tabellen zwischen `packages/core/src/sprache.ts` und
+  `tauri-app/src-tauri/src/sprache.rs` (32 + 20 Einträge, deckungsgleich).
+- **Kataloge ohne Kopie:** Der Ausschlusskatalog (35 Verzeichnisse,
+  16 Dateien) lebt nur noch in `@propsa/core`; das Frontend bezieht
+  `STANDARD_AUSSCHLUESSE` von dort statt einer eigenen 52-Zeilen-Kopie.
+  `npm run pruefen` vergleicht beide Kataloge Core ↔ Rust und stellt
+  sicher, dass das Frontend den Core-Wert importiert.
+
+**Zentrale Ablage `~/.propsa` (Verhaltensänderung)**
+
+- **Delta-History umgezogen:** Statt `.propsa/history.json` im gescannten
+  Projekt liegt die History jetzt zentral im Benutzerverzeichnis:
+  `~/.propsa/history/<identitaet>.jsonl` – eine Datei je Projekt-Identität,
+  JSONL, 50 Einträge gekürzt. Im gescannten Projekt bleibt nichts zurück;
+  der `.gitignore`-Eingriff entfällt ersatzlos.
+- **Installation/Deinstallation:** `npm run installieren` baut Core und
+  CLI und richtet `~/.propsa` ein (History + `version.json`);
+  `npm run deinstallieren` entfernt die Ablage nach Bestätigung und löst
+  ein `npm link`. Die Ablage nimmt alles zwischen den Läufen auf –
+  **außer dem Output**: Kontextpakete und `--einzeln`-Dateien landen, wo
+  sie angefordert werden.
+
+**Gleiche Geschichte, neues Format:** Der Umstieg ist für bestehende
+Projekte verlustfrei – das Delta beginnt je Identität einfach wieder bei
+Erstlauf; alte `.propsa/history.json`-Dateien im Projekt können gelöscht
+werden (sie werden nicht mehr gelesen).
+
 ## 0.1.0 (.propsaignore)
 
 **Neu**
