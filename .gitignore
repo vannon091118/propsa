@@ -1,0 +1,37 @@
+# Abhängigkeiten und Build-Ausgaben
+node_modules/
+dist/
+target/
+tauri-app/src-tauri/gen/
+
+# eigene Kontextpakete und Laufzeit-Ausgaben
+propsa-kontext/
+test-output/
+logs/
+snapshots/
+mcp-server/dist/
+mcp-server/node_modules/
+
+# Shinon-Monitor (separates Anliegen, eigenes Repo)
+shinon/
+.agents/
+.freebuff/
+
+# Seitlich abgelegte Fremd-Skripte (nicht Teil von PROPSA)
+*.code.python
+*.code.json
+Beispiel*.md
+
+# Editor und Betriebssystem
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+
+# TypeScript-Zwischenstände
+*.tsbuildinfo
+
+# Hinweis: package-lock.json und Cargo.lock werden bewusst versioniert,
+# damit Builds reproduzierbar sind.

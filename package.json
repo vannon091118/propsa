@@ -1,0 +1,23 @@
+{
+  "name": "propsa",
+  "version": "0.1.0",
+  "description": "PROPSA — Projekt-Scankontext als Kontextpaket für LLMs",
+  "main": "dist/propsa.js",
+  "bin": {
+    "propsa": "./dist/propsa.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/propsa.ts",
+    "pruefen": "node scripts/pruefen.mjs"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "minimatch": "^10.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
