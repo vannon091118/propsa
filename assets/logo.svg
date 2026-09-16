@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" text-rendering="geometricPrecision">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2140"/>
+      <stop offset="100%" stop-color="#0b1120"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4aa3ff"/>
+      <stop offset="100%" stop-color="#1e5bff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="128" height="128" rx="24" fill="url(#bg)"/>
+  <rect width="128" height="128" rx="24" fill="none" stroke="#2f3c72" stroke-width="1.5"/>
+
+  <!-- code lines -->
+  <rect x="22" y="22" width="40" height="6" rx="2" fill="url(#accent)"/>
+  <rect x="22" y="34" width="30" height="6" rx="2" fill="#ffffff" opacity="0.4"/>
+  <rect x="22" y="46" width="38" height="6" rx="2" fill="#7fcaff" opacity="0.7"/>
+  <rect x="22" y="58" width="24" height="6" rx="2" fill="#ffffff" opacity="0.5"/>
+  <rect x="22" y="70" width="32" height="6" rx="2" fill="url(#accent)" opacity="0.7"/>
+
+  <!-- export arcs -->
+  <circle cx="78" cy="64" r="22" fill="url(#accent)" opacity="0.25"/>
+  <path d="M 78 50 L 78 78 M 64 64 L 92 64" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+
+  <!-- typo -->
+  <text x="64" y="88" font-family="ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">PROPSA</text>
+</svg>

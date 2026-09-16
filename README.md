@@ -1,0 +1,160 @@
+![PROPSA – CLI und Desktop-App](assets/banner.svg)
+
+# PROPSA
+
+**PROPSA** (Parser für Repomix Organisiert Prompt-Systeme für Analysen) macht aus
+einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien statt
+eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
+
+[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-0.1.0-4aa3ff)](package.json)
+[![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
+
+---
+
+## Warum nicht einfach `cat`?
+
+Weil ein Modell bei einem einzigen 12-MB-Dump den Zusammenhang verliert. Und
+weil eine still gekürzte Ausgabe gar nicht merken lässt, dass etwas fehlt.
+PROPSA folgt deshalb einem Prinzip: **Fail Loud, Never Truncate Silent.**
+
+- **vollständig** – jede Datei mit ganzem Inhalt, nie abgeschnitten,
+- **geordnet** – eine Datei je Domäne, damit ein Modell gezielt lesen kann,
+- **ehrlich** – Limits sind Guardrails: Sie brechen ab (Exit-Code 2), statt
+  ein unvollständiges Paket zu schreiben.
+
+## Was drin ist
+
+| Datei im Paket | Inhalt |
+|---|---|
+| `Zusammenfassung.md` | Einstieg: Umfang, Domänen, Sprachen, größte Dateien |
+| `Architektur.md` | Verzeichnisbaum und Dateiübersicht je Domäne |
+| `Kritik.md` | Struktur-Befunde: Godfiles, Logikmischung, Artefakte |
+| `Dokumentation.md` | alle Markdown-Dateien im Volltext |
+| `Quellen/<Domäne>.md` | vollständiger Code der Domäne |
+| `kontext.json` | dieselben Daten maschinenlesbar (Schema-Version 2) |
+
+Eine Domäne ist der **oberste Ordner** eines relativen Pfads: `tauri-app/src-tauri/src/scan.rs`
+landet in `Quellen/tauri-app.md`, `README.md` in `Quellen/wurzel.md`.
+Details: [wiki/Kontextpaket.md](wiki/Kontextpaket.md).
+
+## CLI
+
+```bash
+npm install
+
+# Projektordner scannen, Paket nach ./propsa-kontext/ schreiben
+npm start /pfad/zu/meinem-projekt
+
+# Eigener Zielordner, zusätzliche Ausschlüsse
+npm start ~/Code/mein-projekt -o paket/ -e "*.min.js,*.log"
+
+# Alles in eine einzige Datei statt in ein Paket
+npm start ~/Code/mein-projekt --einzeln kontext.md
+npm start ~/Code/mein-projekt --einzeln kontext.json
+```
+
+| Flag | Bedeutung |
+|------|-----------|
+| `-o, --output <ordner>` | Zielordner des Pakets (Standard: `propsa-kontext`) |
+| `--einzeln <datei>` | Statt des Pakets eine einzelne Datei (`.md` oder `.json`) |
+| `-e, --exclude <muster>` | Weitere Glob-Muster zum Ausschließen (Komma-getrennt) |
+| `-i, --include <muster>` | Nur diese Muster einbeziehen (leer = alles) |
+| `-m, --max-files <n>` | Guardrail: hartes Dateilimit (Abbruch mit Exit-Code 2) |
+| `-l, --max-lines <n>` | Guardrail: hartes Zeilenlimit (Abbruch mit Exit-Code 2) |
+| `--no-limits` | Alle Guardrails abschalten |
+| `--entrypoint <datei>` | Slice: Einstiegsdatei plus lokale Import-Kette |
+| `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe |
+| `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
+| `--delta` | Delta zum letzten Lauf melden (`.propsa/history.json`) |
+
+Standard ist ein **vollständiger Scan**: kein Limit. Die Vorgabe schließt nur
+Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
+`node_modules`, `__pycache__`, `.venv`, `target` und `dist` werden nie betreten
+– auch dann nicht, wenn das Ausschlussfeld leer ist.
+
+Projektspezifische, versionierbare Ausschlüsse gehören in eine
+**`.propsaignore`** im Projekt-Root (Glob-Muster je Zeile, `!muster` hebt
+einen Standard-Ausschluss auf). Details: [wiki/CLI-Usage.md](wiki/CLI-Usage.md).
+
+Mit `--delta` (CLI) bzw. der Checkbox „Änderungen zum letzten Lauf melden“
+(App) meldet PROPSA die Änderungen zum letzten Lauf: Dazu legt es
+`.propsa/history.json` im Projekt an und identifiziert es über den
+Root-Commit-Hash (`git rev-list --max-parents=0 HEAD`) – stabil über
+Branches, Pfade und Remote-URLs. Ohne Git fällt die Identität auf den Pfad
+zurück. `.propsa/` wird automatisch in die `.gitignore` eingetragen und
+nie in ein Paket aufgenommen.
+
+Der frühere Kompaktmodus (`-c`) ist entfernt. Statt arbiträrer Grenzen
+(≤ 500 Zeilen, ≤ 50 Dateien) wählt man ein Ziel: `--entrypoint` folgt der
+Import-Kette, `--depth` begrenzt die Tiefe, `--top-files` nimmt die größten
+Dateien. Details: [wiki/CLI-Usage.md](wiki/CLI-Usage.md).
+
+## Desktop-App
+
+Tauri v2, Rust-Backend und React-Frontend mit eigener Titelzeile
+(`decorations: false`): Ordner wählen, Guardrail-Limits setzen,
+Ergebnis-Tabelle ansehen, Zielordner wählen, Paket schreiben. Wird ein Limit
+erreicht, zeigt die App eine Fehlermeldung – niemals ein beschnittenes
+Ergebnis.
+
+```bash
+cd tauri-app
+npm install
+npm run tauri dev     # Entwicklung
+npm run tauri build   # Installer bauen (Windows: MSI und NSIS-Setup)
+```
+
+Voraussetzungen: Node.js 18+, Rust 1.70+ und auf Windows die **C++ Build Tools**
+(Visual Studio Build Tools oder Visual Studio Community mit „Desktopentwicklung
+mit C++“). Stolperfallen beim Bauen stehen in [wiki/Entwicklung.md](wiki/Entwicklung.md).
+
+## Beide Oberflächen liefern dasselbe
+
+CLI und App teilen den **Vertrag**, nicht den Code: gleicher Ordner und gleiche
+Optionen ergeben dieselben Dateien mit denselben Zählern und Inhalten. Der
+Scanner sammelt erst alle Kandidaten, sortiert sie und liest sie dann – dadurch
+hängt die Auswahl nicht von der Reihenfolge des Dateisystems ab und ein
+Guardrail trifft immer dieselben Dateien.
+
+Geprüft wird das:
+
+```bash
+npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge, Links
+```
+
+## Projekt-Struktur
+
+```text
+.
+├── src/                CLI (TypeScript), Einstieg: src/propsa.ts
+├── tauri-app/          Desktop-App (React-Frontend, Rust-Backend)
+├── assets/             Banner und Logo
+├── INSTALL.md          kanonische Installationsanleitung
+├── scripts/            pruefen.mjs – Konsistenzprüfung
+├── wiki/               Verträge und Anleitungen
+├── ARCHITECTURE.md     Module und Datenfluss
+└── LICENSE             MIT
+```
+
+## Was diese Version nicht kann
+
+Damit niemand nach Funktionen sucht, die es nicht gibt: **kein** geteilter
+Kern als eigenes Paket (`@propsa/core` ist als Ziel notiert, aber noch nicht
+umgesetzt – CLI und GUI sind weiterhin zwei Umsetzungen desselben Vertrags),
+**kein** GitHub-URL-Import, **keine** CI-Workflows und **keine**
+Release-Tags (das Repository hat noch keine Versionshistorie). PROPSA arbeitet
+ausschließlich auf dem Dateisystem.
+
+## Installation
+
+Die kanonische Installationsanleitung steht in [INSTALL.md](INSTALL.md);
+sie ist die einzige verbindliche Quelle für Installations-Schritte.
+
+## Lizenz
+
+MIT – siehe [LICENSE](LICENSE).
+
+## Autor
+
+[@vannon091118](https://github.com/vannon091118)
