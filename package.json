@@ -13,7 +13,7 @@
     "installieren": "node scripts/install.mjs",
     "deinstallieren": "node scripts/deinstall.mjs",
     "clean": "node scripts/clean-node.js",
-    "validate": "npm run pruefen && node scripts/check-versions.sh"
+    "validate": "npm run pruefen && bash scripts/check-versions.sh"
   },
   "workspaces": [
     "packages/*"
