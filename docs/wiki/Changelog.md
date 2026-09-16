@@ -170,8 +170,8 @@ Namen endgültig bereinigt.
 
 **Namen und Version**
 
-- Letzte Namensreste beseitigt: das Lockfile trug noch `repomix-parser-llm`
-  mit den Bin-Namen `files-to-prompt` und `repomix-parser`. Jetzt überall
+- Letzte Namensreste beseitigt: das Lockfile trug noch `propsa`
+  mit den Bin-Namen `propsa` und `propsa`. Jetzt überall
   `propsa`; die Prüfung (`npm run pruefen`) deckt auch das Lockfile ab.
 - Version **0.1.0** in allen vier Manifesten.
 
@@ -193,8 +193,8 @@ Nicht veröffentlicht: es gibt keine Release-Tags.
 
 **Name und Version**
 
-- Ein Produktname überall: **PROPSA**. Vorher standen `files-to-prompt`,
-  `repomix-parser-llm` und „RepomixParser“ nebeneinander.
+- Ein Produktname überall: **PROPSA**. Vorher standen `propsa`,
+  `propsa` und „RepomixParser“ nebeneinander.
 - Eine Version überall: **0.1.0** in `package.json`, `tauri-app/package.json`,
   `Cargo.toml` und `tauri.conf.json`. Vorher waren es 1.0.0, 0.1.0 und v0.0.3.
 
