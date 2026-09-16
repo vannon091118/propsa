@@ -33,9 +33,9 @@ npm run tauri build   # Installer bauen
 4. Ergebnis prüfen: Kennzahlen, Sprachverteilung, Dateitabelle mit Sprach-Chips.
    Mit aktiver Delta-Checkbox zeigt ein zusätzlicher Block die Änderungen zum
    letzten Lauf (neu/geändert/entfernt/unverändert) und die Identität
-   (Root-Commit-Hash, sonst Pfad). Die History (`.propsa/history.json`) führt
-   das Rust-Backend (`src-tauri/src/history.rs`), Spiegel des CLI-Moduls
-   `src/history.ts`.
+   (Root-Commit-Hash, sonst Pfad). Die History
+   (`~/.propsa/history/<identitaet>.jsonl`) führt das Rust-Backend
+   (`src-tauri/src/history.rs`), Spiegel des CLI-Moduls `src/history.ts`.
 5. Zielordner wählen und Paket schreiben.
 
 Die Aufteilung der Dateien im Frontend und im Rust-Backend steht in

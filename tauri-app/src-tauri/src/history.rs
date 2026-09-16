@@ -1,8 +1,10 @@
 //! Delta- und History-Erkennung im Backend.
 //!
-//! Die History wohnt lokal im gescannten Projekt: `.propsa/history.json`.
-//! Sie wird nach jedem Scan mit Delta ergänzt; der Vergleich läuft gegen den
-//! letzten Eintrag derselben Projekt-Identität.
+//! Die History wohnt zentral im Benutzerverzeichnis:
+//! `~/.propsa/history/<identitaet>.jsonl` – je Projekt-Identität eine Datei
+//! (pro Zeile ein History-Eintrag, JSONL). Sie wird nach jedem Scan mit
+//! Delta ergänzt; der Vergleich läuft gegen den letzten Eintrag derselben
+//! Identität. Im gescannten Projekt bleibt nichts zurück.
 //!
 //! Identity-Matching über den **Root-Commit-Hash** (`git rev-list
 //! --max-parents=0 HEAD`): stabil über Branches, Pfade und Remote-URLs.
@@ -14,11 +16,9 @@ use crate::scan::{DateiInfo, ScanErgebnis};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const PROPSA_ORDNER: &str = ".propsa";
-const HISTORY_DATEI: &str = "history.json";
 const MAX_EINTRAEGE: usize = 50;
 
 /// Ein History-Eintrag: das Minimum, das ein Delta braucht.
@@ -75,7 +75,7 @@ fn root_commit_hash(basis: &Path) -> Option<String> {
     text.lines().next().filter(|zeile| !zeile.is_empty()).map(String::from)
 }
 
-/// Projektdentität: Root-Commit-Hash vorrangig, sonst normierter Pfad.
+/// Projektidentität: Root-Commit-Hash vorrangig, sonst normierter Pfad.
 fn projekt_identitaet(basis: &Path) -> (String, String) {
     if let Some(hash) = root_commit_hash(basis) {
         return (hash, "root-commit".to_string());
@@ -89,15 +89,27 @@ fn projekt_identitaet(basis: &Path) -> (String, String) {
     (format!("{:x}", hasher.finalize()), "pfad".to_string())
 }
 
-/// Ordner und History-Datei der Scan-Basis.
-fn history_pfad(basis: &Path) -> std::path::PathBuf {
-    basis.join(PROPSA_ORDNER).join(HISTORY_DATEI)
+/// Zentrale Ablage im Benutzerverzeichnis: `~/.propsa` (Spiegel zu
+/// `PROPSA_HEIM` in `src/history.ts`).
+pub fn propsa_heim() -> PathBuf {
+    dirs::home_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".propsa")
+}
+
+/// History-Datei der Identität unter `~/.propsa/history/`.
+fn history_pfad(identitaet: &str) -> PathBuf {
+    propsa_heim().join("history").join(format!("{identitaet}.jsonl"))
 }
 
 /// Liest die History; fehlendes oder fehlerhaftes File ergibt eine leere Liste.
-pub fn history_lesen(basis: &Path) -> Vec<HistoryEintrag> {
-    match std::fs::read_to_string(history_pfad(basis)) {
-        Ok(text) => serde_json::from_str::<Vec<HistoryEintrag>>(&text).unwrap_or_default(),
+pub fn history_lesen(identitaet: &str) -> Vec<HistoryEintrag> {
+    match std::fs::read_to_string(history_pfad(identitaet)) {
+        Ok(text) => text
+            .lines()
+            .filter(|zeile| !zeile.trim().is_empty())
+            .filter_map(|zeile| serde_json::from_str(zeile).ok())
+            .collect(),
         Err(_) => Vec::new(),
     }
 }
@@ -132,54 +144,34 @@ fn delta_berechnen(aktuell: &ScanErgebnis, frueher: &HistoryEintrag) -> Delta {
     delta
 }
 
-/// Hängt den Lauf an die History an und kürzt auf MAX_EINTRAEGE.
-fn history_ergaenzen(basis: &Path, eintrag: HistoryEintrag) {
-    let mut eintraege = history_lesen(basis);
+/// Hängt den Lauf an die History der Identität an und kürzt auf MAX_EINTRAEGE.
+fn history_ergaenzen(identitaet: &str, eintrag: HistoryEintrag) {
+    let _ = std::fs::create_dir_all(propsa_heim().join("history"));
+    let mut eintraege = history_lesen(identitaet);
     eintraege.push(eintrag);
     if eintraege.len() > MAX_EINTRAEGE {
         let start = eintraege.len() - MAX_EINTRAEGE;
         eintraege.drain(..start);
     }
-    let _ = std::fs::create_dir_all(basis.join(PROPSA_ORDNER));
-    if let Ok(text) = serde_json::to_string_pretty(&eintraege) {
-        let _ = std::fs::write(history_pfad(basis), text);
-    }
+    let text: String = eintraege
+        .iter()
+        .filter_map(|eintrag| serde_json::to_string(eintrag).ok())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let _ = std::fs::write(history_pfad(identitaet), format!("{text}\n"));
 }
 
-/// Stellt sicher, dass `.propsa/` in der .gitignore steht (idempotent).
-fn gitignore_sichern(basis: &Path) {
-    let datei = basis.join(".gitignore");
-    let zeile = ".propsa/";
-    let inhalt = std::fs::read_to_string(&datei).unwrap_or_default();
-    let vorhanden = inhalt
-        .lines()
-        .any(|z| z.trim() == zeile || z.trim() == ".propsa");
-    if vorhanden {
-        return;
-    }
-    let basis_text = if inhalt.is_empty() || inhalt.ends_with('\n') {
-        inhalt
-    } else {
-        format!("{inhalt}\n")
-    };
-    let _ = std::fs::write(
-        &datei,
-        format!("{basis_text}\n# PROPSA-History (lokal, nie committen)\n{zeile}\n"),
-    );
-}
-
-/// Delta ermitteln, Eintrag anfügen, .gitignore sichern.
-///
-/// Fehler beim Schreiben werden still ignoriert: Das Delta ist ein
-/// Komfortmerkmal und darf den Scan nicht scheitern lassen.
+/// Delta ermitteln, Eintrag anfügen. Fehler beim Schreiben werden still
+/// ignoriert: Das Delta ist ein Komfortmerkmal und darf den Scan nicht
+/// scheitern lassen.
 pub fn lauf_verarbeiten(basis: &Path, scan: &ScanErgebnis) -> DeltaInfo {
     let (identitaet, herkunft) = projekt_identitaet(basis);
-    let eintraege = history_lesen(basis);
+    let eintraege = history_lesen(&identitaet);
     let frueher = letzten_eintrag_finden(&eintraege, &identitaet);
     let delta = frueher.as_ref().map(|frueher| delta_berechnen(scan, frueher));
 
     history_ergaenzen(
-        basis,
+        &identitaet,
         HistoryEintrag {
             zeitstempel: scan.zeitstempel.clone(),
             identitaet: identitaet.clone(),
@@ -187,7 +179,6 @@ pub fn lauf_verarbeiten(basis: &Path, scan: &ScanErgebnis) -> DeltaInfo {
             dateien: fingerabdruecke(&scan.dateien),
         },
     );
-    gitignore_sichern(basis);
 
     DeltaInfo {
         erstlauf: frueher.is_none(),

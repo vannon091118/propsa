@@ -13,7 +13,7 @@ vollständiger Inhalt, maschinenlesbar als `kontext.json`.
 | **Übersprungen** | Datei, die nicht gelesen werden konnte (binär, leer, gesperrt) |
 | **Guardrail** | Hartes Limit (`-m`/`-l`); wird es erreicht, bricht der Scan ab |
 | **Slice-Selektor** | Zielbasierte Auswahl: `--entrypoint`, `--depth`, `--top-files` (nur CLI) |
-| **Delta** | Vergleich zum letzten Lauf (`--delta` bzw. Checkbox in der App, `.propsa/history.json`) |
+| **Delta** | Vergleich zum letzten Lauf (`--delta` bzw. Checkbox in der App, `~/.propsa/history/`) |
 | **Identität** | Root-Commit-Hash; ohne Git der normierte Pfad (Fallback) |
 | **Einzeldatei** | Alternative Ausgabe `--einzeln datei.md\|json` (nur CLI) |
 

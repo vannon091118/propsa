@@ -95,8 +95,9 @@ export function EinstellungenPanel({
           <span>Änderungen zum letzten Lauf melden</span>
         </label>
         <div className={HINWEIS}>
-          Legt .propsa/history.json im Projekt an und trägt .propsa/ in die
-          .gitignore ein. Identität: Root-Commit-Hash, sonst Pfad.
+          Legt ~/.propsa/history/&lt;identitaet&gt;.jsonl im
+          Benutzerverzeichnis an; im Projekt bleibt nichts zurück.
+          Identität: Root-Commit-Hash, sonst Pfad.
         </div>
       </div>
 

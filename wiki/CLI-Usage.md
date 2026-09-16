@@ -68,15 +68,16 @@ npm start ~/Code/mein-projekt --entrypoint src/main.ts --top-files 30
 Selektoren dürfen kombiniert werden und schneiden Schritt für Schritt zurück;
 die kanonische Scan-Reihenfolge bleibt immer erhalten.
 
-## Delta: `--delta` und `.propsa/history.json`
+## Delta: `--delta` und die zentrale History
 
 ```bash
 npm start ~/Code/mein-projekt --delta
 ```
 
 Nach jedem Lauf mit `--delta` hängt PROPSA einen Eintrag (Zeitstempel,
-Identität, Inhalts-Hash je Datei) an `.propsa/history.json` in der
-Scan-Basis an und trägt `.propsa/` automatisch in deren `.gitignore` ein.
+Identität, Inhalts-Hash je Datei) an die zentrale History im
+Benutzerverzeichnis an: `~/.propsa/history/<identitaet>.jsonl` – eine Datei
+je Projekt-Identität. Im gescannten Projekt bleibt nichts zurück.
 Beim nächsten Lauf meldet die CLI:
 
 - **Erstlauf:** History angelegt, Identität notiert.

@@ -1,9 +1,12 @@
 /**
  * Delta- und History-Erkennung.
  *
- * Die History wohnt lokal im Projekt: `.propsa/history.json`. Sie wird nach
- * jedem erfolgreichen Paketlauf ergänzt; `--delta` vergleicht den aktuellen
- * Lauf mit dem letzten Eintrag derselben Projekt-Identität.
+ * Die History wohnt zentral im Benutzerverzeichnis:
+ * `~/.propsa/history/<identitaet>.json` – je Projekt-Identität eine Datei
+ * (pro Zeile ein History-Eintrag, JSONL). Sie wird nach jedem erfolgreichen
+ * Paketlauf ergänzt; `--delta` vergleicht den aktuellen Lauf mit dem letzten
+ * Eintrag derselben Identität. Im gescannten Projekt bleibt nichts zurück –
+ * auch keine `.propsa/` und kein `.gitignore`-Eintrag mehr.
  *
  * Identity-Matching über den **Root-Commit-Hash** (`git rev-list
  * --max-parents=0 HEAD`): stabil über Branches, Pfade und Remote-URLs.
@@ -12,11 +15,13 @@
 import { execFileSync } from 'child_process';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { GescannteDatei } from './scanner';
 
-const PROPSA_ORDNER = '.propsa';
-const HISTORY_DATEI = 'history.json';
+/** Zentrale Ablage im Benutzerverzeichnis (alles außer Output liegt hier). */
+export const PROPSA_HEIM = path.join(os.homedir(), '.propsa');
+const HISTORY_ORDNER = 'history';
 const MAX_EINTRAEGE = 50;
 
 /** Ein History-Eintrag: das Minimum, das ein Delta braucht. */
@@ -24,7 +29,7 @@ export interface HistoryEintrag {
   zeitstempel: string;
   identitaet: string;
   herkunft: 'root-commit' | 'pfad';
-  dateien: Record<string, number>;
+  dateien: Record<string, string>;
 }
 
 /** Unterschied zweier Läufe, je Datei genau eine Kategorie. */
@@ -33,6 +38,18 @@ export interface Delta {
   geaendert: string[];
   entfernt: string[];
   unverändert: string[];
+}
+
+/**
+ * Die zentrale Ablage anlegen: `~/.propsa` mit Unterordnern.
+ *
+ * Installations- und Deinstallationsskript (`scripts/install.mjs`,
+ * `scripts/deinstall.mjs`) nutzen denselben Ordner; der Lauf allein braucht
+ * ihn aber auch, deshalb legt diese Funktion ihn idempotent an.
+ */
+export function heimSichern(): string {
+  fs.mkdirSync(path.join(PROPSA_HEIM, HISTORY_ORDNER), { recursive: true });
+  return PROPSA_HEIM;
 }
 
 /** Root-Commit-Hash oder `null` ohne Git-Repository/Commit. */
@@ -50,7 +67,7 @@ export function rootCommitHash(basisPfad: string): string | null {
 }
 
 /**
- * Projektdentität: Root-Commit-Hash vorrangig, sonst normierter Pfad.
+ * Projektidentität: Root-Commit-Hash vorrangig, sonst normierter Pfad.
  *
  * Der Pfad-Fallback hält auch Repositories ohne Commit auseinander; er ist
  * bewusst gekennzeichnet, damit ein Delta aus gemischten Herkünften lesbar
@@ -76,28 +93,39 @@ function inhaltsHash(inhalt: string): string {
   return crypto.createHash('sha256').update(inhalt).digest('hex');
 }
 
-/** Pfad → Inhalts-Hash für alle gescannten Dateien. */
-function fingerabdrücke(dateien: GescannteDatei[]): Record<string, number> {
-  const abbild: Record<string, number> = {};
+/**
+ * Pfad → Inhalts-Fingerprint für alle gescannten Dateien.
+ *
+ * Bewusst als Hex-String wie der Rust-Spiegel (`fingerabdruecke` in
+ * `history.rs`): beide Seiten müssen denselben Wert je Datei erzeugen,
+ * sonst vergleicht CLI und App aneinander vorbei.
+ */
+function fingerabdrücke(dateien: GescannteDatei[]): Record<string, string> {
+  const abbild: Record<string, string> = {};
   for (const datei of dateien) {
-    abbild[datei.relativerPfad] = parseInt(inhaltsHash(datei.inhalt).slice(0, 12), 16);
+    abbild[datei.relativerPfad] = inhaltsHash(datei.inhalt);
   }
   return abbild;
 }
 
-/** Ordner und History-Datei der Scan-Basis. */
-function historyPfad(basisPfad: string): string {
-  return path.join(basisPfad, PROPSA_ORDNER, HISTORY_DATEI);
+/** History-Datei der Identität unter `~/.propsa/history/`. */
+function historyPfad(identitaet: string): string {
+  return path.join(PROPSA_HEIM, HISTORY_ORDNER, `${identitaet}.jsonl`);
 }
 
-/** Liest die History; fehlerhaftes oder fehlendes File ergibt eine leere Liste. */
-export function historyLesen(basisPfad: string): HistoryEintrag[] {
+/** Liest die History; fehlendes oder fehlerhaftes File ergibt eine leere Liste. */
+export function historyLesen(identitaet: string): HistoryEintrag[] {
+  let text: string;
   try {
-    const gelesen: unknown = JSON.parse(fs.readFileSync(historyPfad(basisPfad), 'utf8'));
-    return Array.isArray(gelesen) ? (gelesen as HistoryEintrag[]) : [];
+    text = fs.readFileSync(historyPfad(identitaet), 'utf8');
   } catch {
     return [];
   }
+  return text
+    .split(/\r?\n/)
+    .filter(zeile => zeile.trim().length > 0)
+    .map(zeile => JSON.parse(zeile) as HistoryEintrag)
+    .filter(eintrag => typeof eintrag?.identitaet === 'string');
 }
 
 /** Letzter Eintrag derselben Identität oder `null` bei Erstlauf. */
@@ -135,64 +163,34 @@ export function deltaBerechnen(aktuell: GescannteDatei[], früher: HistoryEintra
   return delta;
 }
 
-/** Hängt den Lauf an die History an und kürzt auf MAX_EINTRAEGE. */
-export function historyErgänzen(
-  basisPfad: string,
-  eintrag: HistoryEintrag
-): void {
-  const eintraege = [...historyLesen(basisPfad), eintrag].slice(-MAX_EINTRAEGE);
-  fs.mkdirSync(path.join(basisPfad, PROPSA_ORDNER), { recursive: true });
-  fs.writeFileSync(historyPfad(basisPfad), JSON.stringify(eintraege, null, 2), 'utf8');
-}
-
-/**
- * Stellt sicher, dass `.propsa/` in der .gitignore steht.
- *
- * Idempotent: ein vorhandener, exakter Eintrag bleibt unberührt. Andernfalls
- * wird eine Blocknotiz mit dem Eintrag angehängt.
- */
-export function gitignoreSichern(basisPfad: string): boolean {
-  const datei = path.join(basisPfad, '.gitignore');
-  const zeile = '.propsa/';
-  let inhalt = '';
-  try {
-    inhalt = fs.readFileSync(datei, 'utf8');
-  } catch {
-    // Keine .gitignore: neu anlegen.
-  }
-  const vorhanden = inhalt
-    .split(/\r?\n/)
-    .some(z => z.trim() === zeile || z.trim() === '.propsa');
-  if (vorhanden) {
-    return false;
-  }
-  const basis = inhalt === '' || inhalt.endsWith('\n') ? inhalt : `${inhalt}\n`;
+/** Hängt den Lauf an die History der Identität an und kürzt auf MAX_EINTRAEGE. */
+export function historyErgänzen(identitaet: string, eintrag: HistoryEintrag): void {
+  heimSichern();
+  const eintraege = [...historyLesen(identitaet), eintrag].slice(-MAX_EINTRAEGE);
   fs.writeFileSync(
-    datei,
-    `${basis}\n# PROPSA-History (lokal, nie committen)\n${zeile}\n`,
+    historyPfad(identitaet),
+    `${eintraege.map(eintrag => JSON.stringify(eintrag)).join('\n')}\n`,
     'utf8'
   );
-  return true;
 }
 
-/** Komfort: Delta ermitteln, Eintrag anfügen, .gitignore sichern. */
+/** Komfort: Delta ermitteln, Eintrag anfügen. */
 export function laufVerarbeiten(
   basisPfad: string,
   zeitstempel: string,
   dateien: GescannteDatei[]
 ): { delta: Delta | null; erstlauf: boolean; identitaet: string; herkunft: string } {
   const { identitaet, herkunft } = projektIdentitaet(basisPfad);
-  const eintraege = historyLesen(basisPfad);
+  const eintraege = historyLesen(identitaet);
   const früher = letztenEintragFinden(eintraege, identitaet);
   const delta = früher ? deltaBerechnen(dateien, früher) : null;
 
-  historyErgänzen(basisPfad, {
+  historyErgänzen(identitaet, {
     zeitstempel,
     identitaet,
     herkunft,
     dateien: fingerabdrücke(dateien),
   });
-  gitignoreSichern(basisPfad);
 
   return { delta, erstlauf: früher === null, identitaet, herkunft };
 }
