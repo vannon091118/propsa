@@ -47,11 +47,16 @@ ausführen – der zweite meldet „0 neu · 0 geändert“.
 - Rust-Spiegel, immer zusammen mit dem Core ändern:
   `filter.rs` ↔ `filters.ts`, `sprache.rs` ↔ `sprache.ts`,
   `schema.rs` ↔ `schema.ts`, `domaene.rs` ↔ `domaene.ts`,
-  `history.rs` ↔ `history.ts`.
+  `history.rs` ↔ `history.ts`, `live_anomalie.rs` ↔ `live.ts`
+  (Live-Kataloge, Phase Live-Modus), `zwischenspeicher.rs` ↔
+  `zwischenspeicher.ts` (Scan-Cache, Vertrag + Dateisystem).
 - `scripts/pruefen.mjs` parst Quelltext per Regex (TS-Objekte mit bare oder
   quoted Keys, Rust-`match`-Arme). Diese Deklarationen dürfen ihre Form
   nicht ändern: `SPRACHE_NACH_ENDUNG`/`FENCE_NACH_SPRACHE`,
-  `IGNORIERTE_VERZEICHNISSE`, `AUSGESCHLOSSENE_DATEIEN` (exportiert), und
+  `IGNORIERTE_VERZEICHNISSE`, `AUSGESCHLOSSENE_DATEIEN` (exportiert),
+  `ANOMALIE_SCHWERE`/`ANOMALIE_BESCHREIBUNGEN`/`ANOMALIE_SCHWELLEN`
+  (exportiert) samt der Match-Arme `schwere_fuer`/`beschreibung_fuer`/
+  `schwellwert` in `live_anomalie.rs` (eine Zeile je Schlüssel), und
   `typen.ts` muss `STANDARD_AUSSCHLUESSE` aus `@propsa/core` importieren.
 - Delta-History liegt zentral: `~/.propsa/history/<identitaet>.jsonl`
   (JSONL, eine Datei je Identität, 50 Einträge). Im gescannten Projekt

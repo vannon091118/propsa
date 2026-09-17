@@ -9,6 +9,14 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig(() => ({
   plugins: [react(), tailwindcss()],
 
+  // @propsa/core ist per file:-Link eingebunden und wird als CommonJS
+  // gebaut – ohne Pre-Bundling scheitert der Dev-Server am benannten
+  // Import (z. B. STANDARD_AUSSCHLUESSE). Der Build (Rollup) wandelt
+  // selbst, dieses include betrifft nur `vite dev`.
+  optimizeDeps: {
+    include: ["@propsa/core"],
+  },
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors

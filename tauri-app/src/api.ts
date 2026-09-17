@@ -8,8 +8,26 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
-import { istVorschauMock, mockOrdnerWaehlen, mockPaketSchreiben, mockScan } from "./devMock";
-import type { Fortschritt, ScanEinstellungen, ScanErgebnis } from "./typen";
+import {
+  istVorschauMock,
+  mockLiveAbonnieren,
+  mockLiveStart,
+  mockLiveStatus,
+  mockLiveStoppen,
+  mockLiveZeitreihe,
+  mockOrdnerWaehlen,
+  mockPaketSchreiben,
+  mockScan,
+} from "./devMock";
+import type {
+  AnomalieBefund,
+  Fortschritt,
+  LiveStatus,
+  LiveTick,
+  LiveZeitreihePunkt,
+  ScanEinstellungen,
+  ScanErgebnis,
+} from "./typen";
 import type { UpdateCheck } from "@propsa/core";
 
 
@@ -46,13 +64,9 @@ export async function scanStarten(
     return mockScan(einstellungen, beiFortschritt);
   }
 
-  // TODO: Implement scan-metrics cache.
-  // Idea: Before invoking the scan, compute a cheap fingerprint of the file tree
-  // (e.g., list of relative paths and file sizes) and compare with cached version.
-  // If unchanged, return cached ScanErgebnis from cache.
-  // This requires a backend command to provide file metadata, or we could
-  // replicate the scanning logic in the frontend (which would duplicate work).
-  // For now, we always invoke the scan.
+  // Der Scan-Zwischenspeicher lebt im Backend (Rust-Spiegel
+  // `zwischenspeicher.rs`, Spiegel zum Core-Vertrag); die App schickt
+  // nur den Schalter mit.
 
   const abmelden = await listen<Fortschritt>("scan-fortschritt", (ereignis) => {
     beiFortschritt(ereignis.payload);
@@ -62,6 +76,7 @@ export async function scanStarten(
     return await invoke<ScanErgebnis>("scan", {
       pfad: einstellungen.pfad,
       delta: einstellungen.delta,
+      zwischenspeicher: einstellungen.cache,
       maxDateien: einstellungen.maxDateien,
       maxZeilen: einstellungen.maxZeilen,
       includeMuster: musterListe(einstellungen.includeMuster),
@@ -131,4 +146,69 @@ export async function paketSchreiben(
     return mockPaketSchreiben(ordner);
   }
   return invoke<string[]>("paket_schreiben", { scan: ergebnis, ordner });
+}
+
+// ── Live-Modus (Phase 3) ────────────────────────────────────────────────
+
+/** Ereignisnamen (Rust: `live_kommandos.rs`). */
+export const LIVE_TICK_EREIGNIS = "live-tick";
+export const LIVE_ANOMALIE_EREIGNIS = "live-anomalie";
+
+/** Zustand des Taktgebers ohne Nebenwirkung (Poll-Quelle des Widgets). */
+export async function liveStatus(): Promise<LiveStatus> {
+  if (istVorschauMock()) {
+    return mockLiveStatus();
+  }
+  return invoke<LiveStatus>("live_status");
+}
+
+/** Startet den Live-Zyklus für einen Projekt-Pfad. */
+export async function liveStarten(pfad: string, intervallSekunden?: number): Promise<LiveStatus> {
+  if (istVorschauMock()) {
+    return mockLiveStart(pfad, intervallSekunden);
+  }
+  return invoke<LiveStatus>("live_start", { pfad, intervallSekunden });
+}
+
+/** Beendet den Live-Zyklus; der laufende Tick wird zu Ende geführt. */
+export async function liveStoppen(): Promise<LiveStatus> {
+  if (istVorschauMock()) {
+    return mockLiveStoppen();
+  }
+  return invoke<LiveStatus>("live_stop");
+}
+
+/**
+ * Live-Zeitreihe (Phase 4): Snapshots aus `~/.propsa/live/<identitaet>.db`
+ * als Graph-Punkte; `stunden` begrenzt den Zeitraum (`null` = alles).
+ */
+export async function liveZeitreiheLaden(
+  identitaet: string,
+  stunden: number | null,
+): Promise<LiveZeitreihePunkt[]> {
+  if (istVorschauMock()) {
+    return mockLiveZeitreihe(stunden);
+  }
+  return invoke<LiveZeitreihePunkt[]>("get_live_zeitreihe", { identitaet, stunden });
+}
+
+/**
+ * Abonnieren der Live-Ereignisse: je Tick die Meldung, je schwerer Anomalie
+ * die Befunde. Liefert die Abmelde-Funktion.
+ */
+export async function liveTickAbonnieren(
+  beiTick: (tick: LiveTick) => void,
+  beiAnomalie: (befunde: AnomalieBefund[]) => void,
+): Promise<() => void> {
+  if (istVorschauMock()) {
+    return mockLiveAbonnieren(beiTick, beiAnomalie);
+  }
+  const tickLos = await listen<LiveTick>(LIVE_TICK_EREIGNIS, (e) => beiTick(e.payload));
+  const anomalieLos = await listen<AnomalieBefund[]>(LIVE_ANOMALIE_EREIGNIS, (e) =>
+    beiAnomalie(e.payload),
+  );
+  return () => {
+    tickLos();
+    anomalieLos();
+  };
 }

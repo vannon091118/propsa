@@ -12,6 +12,12 @@ export interface ScannerOptionen {
   includes: string[];
   maxFiles?: number;
   maxLines?: number;
+  /**
+   * Vorgesammelte Kandidaten (kanonisch sortiert, Ausgabe von
+   * `kandidatenSammeln`); spart den zweiten Verzeichnisgang, etwa wenn der
+   * Zwischenspeicher dieselbe Menge bereits signiert hat.
+   */
+  kandidaten?: string[];
 }
 
 export interface GescannteDatei {
@@ -148,7 +154,8 @@ export async function kandidatenSammeln(
 export async function scanDirectory(optionen: ScannerOptionen): Promise<ScanErgebnis> {
   const { basisPfad, excludes, includes, maxFiles, maxLines } = optionen;
 
-  const kandidaten = await kandidatenSammeln(basisPfad, excludes, includes);
+  const kandidaten =
+    optionen.kandidaten ?? (await kandidatenSammeln(basisPfad, excludes, includes));
 
   const dateien: GescannteDatei[] = [];
   let uebersprungen = 0;

@@ -6,6 +6,7 @@
  *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles * 4. Ignorier-Katalog in Core, Rust und Frontend inhaltsgleich
  * 5. alle relativen Links in den Dokumenten zeigen auf vorhandene Dateien
  * 6. Sprachkataloge (Endungen und Fences) in Core und Rust deckungsgleich
+ * 7. Live-Kataloge (Schwere, Beschreibungen, Schwellen) Core ↔ Rust deckungsgleich
  *
  * Aufruf: `npm run pruefen`
  */
@@ -115,13 +116,22 @@ function tsKatalogAusBlock(text, blockMuster) {
 }
 
 function rustKatalogAusFunktion(text, funktionsName) {
+  return rustKatalogAusFunktionMit(text, funktionsName, /^\s*[^=]+=>\s*"([^"]+)"/);
+}
+
+/** Wie oben, aber die match-Arme liefern Zahlen (z. B. Schwere, Schwellen). */
+function rustZahlenKatalogAusFunktion(text, funktionsName) {
+  return rustKatalogAusFunktionMit(text, funktionsName, /^\s*[^=]+=>\s*(\d+)/);
+}
+
+function rustKatalogAusFunktionMit(text, funktionsName, armmuster) {
   const start = text.indexOf(`pub fn ${funktionsName}`);
   const naechster = text.indexOf("pub fn ", start + 1);
   if (start === -1) return null;
   const block = text.slice(start, naechster === -1 ? text.length : naechster);
   const katalog = {};
   for (const zeile of block.split(/\r?\n/)) {
-    const treffer = zeile.match(/^\s*[^=]+=>\s*"([^"]+)"/);
+    const treffer = zeile.match(armmuster);
     if (!treffer) continue;
     for (
       const schluessel of [...zeile.slice(0, zeile.indexOf("=>")).matchAll(/"([^"]+)"/g)].map(t => t[1])
@@ -168,6 +178,38 @@ const endungenRust = rustKatalogAusFunktion(spracheRust, "sprache_fuer_endung");
 const fenceRust = rustKatalogAusFunktion(spracheRust, "code_block_sprache");
 katalogeVergleichen(endungenTs, endungenRust, "Sprachkatalog (Endungen)");
 katalogeVergleichen(fenceTs, fenceRust, "Fence-Katalog");
+
+// 7. Live-Kataloge – Anomalie-Schwere, -Beschreibungen und -Schwellen müssen
+//    zwischen @propsa/core (TypeScript) und live_anomalie.rs deckungsgleich sein.
+const liveTs = readFileSync(join(WURZEL, "packages/core/src/live.ts"), "utf8");
+const liveRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/live_anomalie.rs"), "utf8");
+const schwereTs = tsKatalogAusBlock(liveTs, /export const ANOMALIE_SCHWERE: Record<[^>]*> = \{([\s\S]*?)\r?\n\};/);
+const beschreibungenTs = tsKatalogAusBlock(liveTs, /export const ANOMALIE_BESCHREIBUNGEN: Record<[^>]*> = \{([\s\S]*?)\r?\n\};/);
+const schwellenTs = tsKatalogAusBlock(liveTs, /export const ANOMALIE_SCHWELLEN: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+const schwereRust = rustZahlenKatalogAusFunktion(liveRust, "schwere_fuer");
+const beschreibungenRust = rustKatalogAusFunktion(liveRust, "beschreibung_fuer");
+const schwellenRust = rustZahlenKatalogAusFunktion(liveRust, "schwellwert");
+katalogeVergleichen(schwereTs, schwereRust, "Live-Katalog (Schwere)");
+katalogeVergleichen(beschreibungenTs, beschreibungenRust, "Live-Katalog (Beschreibungen)");
+katalogeVergleichen(schwellenTs, schwellenRust, "Live-Katalog (Schwellen)");
+
+// 8. Zwischenspeicher-Konstanten – Formatversion und Schema-Kennung müssen
+//    zwischen @propsa/core und zwischenspeicher.rs deckungsgleich sein.
+const zwischenspeicherRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/zwischenspeicher.rs"), "utf8");
+const zwischenspeicherTs = readFileSync(join(WURZEL, "packages/core/src/zwischenspeicher.ts"), "utf8");
+const versionTs = zwischenspeicherTs.match(/export const ZWISCHENSPEICHER_VERSION = (\d+);/)?.[1];
+const schemaTs = zwischenspeicherTs.match(/export const ZWISCHENSPEICHER_SCHEMA = '([^']+)';/)?.[1];
+const versionRust = zwischenspeicherRust.match(/ZWISCHENSPEICHER_VERSION: u64 = (\d+);/)?.[1];
+const schemaRust = zwischenspeicherRust.match(/ZWISCHENSPEICHER_SCHEMA: &str = "([^"]+)";/)?.[1];
+if (!versionTs || !schemaTs || !versionRust || !schemaRust) {
+  fehler.push("Zwischenspeicher: Konstanten nicht gefunden (Core oder Rust)");
+} else {
+  if (versionTs !== versionRust) fehler.push(`Zwischenspeicher-Version weicht ab (Core ${versionTs} ↔ Rust ${versionRust})`);
+  if (schemaTs !== schemaRust) fehler.push(`Zwischenspeicher-Schema weicht ab (Core ${schemaTs} ↔ Rust ${schemaRust})`);
+  if (versionTs === versionRust && schemaTs === schemaRust) {
+    console.log(`✓ Zwischenspeicher: Version ${versionTs} und Schema deckungsgleich (Core ↔ Rust)`);
+  }
+}
 
 // Ergebnis
 if (fehler.length > 0) {

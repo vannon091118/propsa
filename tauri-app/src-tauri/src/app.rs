@@ -2,6 +2,8 @@ use tauri::Manager;
 use std::env;
 use std::fs;
 use crate::history::{self, ProjektMetriken};
+use crate::live_zeitreihe::ZeitreihePunkt;
+use crate::live_store;
 
 /// Returns the application version from Cargo.toml.
 #[tauri::command]
@@ -25,4 +27,23 @@ pub fn fetch_changelog(app_handle: tauri::AppHandle) -> Result<String, String> {
 #[tauri::command]
 pub fn get_history_metrics(identitaet: String) -> Vec<(String, ProjektMetriken)> {
     history::get_metrik_historie(&identitaet)
+}
+
+/// Live-Zeitreihe (Phase 4): Snapshots aus `~/.propsa/live/<identitaet>.db`
+/// als Graph-Punkte. `stunden` begrenzt den Zeitraum (`None` = alles);
+/// fehlende Datenbank ergibt eine leere Serie, kein Fehler.
+#[tauri::command]
+pub fn get_live_zeitreihe(
+    identitaet: String,
+    stunden: Option<f64>,
+) -> Vec<ZeitreihePunkt> {
+    let pfad = live_store::db_pfad(&identitaet);
+    if !pfad.exists() {
+        return Vec::new();
+    }
+    match live_store::oeffne_db(&pfad) {
+        Ok(verbindung) => crate::live_zeitreihe::zeitreihe_lesen(&verbindung, stunden)
+            .unwrap_or_default(),
+        Err(_) => Vec::new(),
+    }
 }

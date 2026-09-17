@@ -81,6 +81,8 @@ export type ScanEinstellungen = {
   excludeMuster: string;
   /** Delta zum letzten Lauf melden (~/.propsa/history/). */
   delta: boolean;
+  /** Scan-Zwischenspeicher (~/.propsa/cache/) bei unverändertem Baum. */
+  cache: boolean;
 };
 
 /**
@@ -97,4 +99,56 @@ export const BASIS_EINSTELLUNGEN: ScanEinstellungen = {
   includeMuster: "",
   excludeMuster: STANDARD_AUSSCHLUESSE,
   delta: false,
+  cache: true,
+};
+
+/** Ein Punkt der Live-Zeitreihe (Rust: `ZeitreihePunkt`, Phase 4). */
+export type LiveZeitreihePunkt = {
+  zeitstempel: string;
+  dateien: number;
+  zeilen: number;
+  neu: number;
+  geaendert: number;
+  entfernt: number;
+};
+
+/** Zeitraum-Wahl des History-Graphen (gilt für die Live-Serie). */
+export type Zeitraum = "alle" | "7t" | "24h" | "6h";
+
+/** Journal-Eintrag eines Live-Ticks (Rust: `JournalEintrag`). */
+export type LiveJournalEintrag = {
+  pfad: string;
+  art: string;
+  zeilen_delta: number;
+};
+
+/** Ereignis-Payload eines Live-Ticks (Rust: `TickErgebnis`). */
+export type LiveTick = {
+  identitaet: string;
+  zeitstempel: string;
+  dateien: number;
+  zeilen: number;
+  neu: number;
+  geaendert: number;
+  entfernt: number;
+  unverändert: number;
+  journal: LiveJournalEintrag[];
+  ruhig: boolean;
+};
+
+/** Befund einer Anomalie (Rust: `AnomalieBefund`). */
+export type AnomalieBefund = {
+  art: string;
+  pfad: string | null;
+  beschreibung: string;
+  schwere: number;
+};
+
+/** Zustandsmeldung des Taktgebers (Rust: `LiveStatus`). */
+export type LiveStatus = {
+  laeuft: boolean;
+  pfad: string | null;
+  ticks: number;
+  aenderungs_ticks: number;
+  intervall_sekunden: number;
 };

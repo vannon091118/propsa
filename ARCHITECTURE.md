@@ -58,6 +58,7 @@ Fortschritt sind eigene Ausgabe, keine Fremdbibliothek.
 | `src/scanner.ts` | Kandidaten sammeln, sortieren, Guardrails und Zähler |
 | `src/slice.ts` | Slice-Selektoren: `--entrypoint`, `--depth`, `--top-files` |
 | `src/history.ts` | Delta/History: `~/.propsa/history/`, Root-Commit-Identität |
+| `src/zwischenspeicher.ts` | Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik |
 | `packages/core/src/filters.ts` | Include/Exclude-Muster und Katalog der Ignorierten |
 | `src/propsaignore.ts` | `.propsaignore`: projektspezifische Ausschlüsse laden/mergen |
 | `src/datei.ts` | Datei lesen, Binär-/Leerdateien erkennen, Zeilen zählen |
@@ -82,19 +83,31 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 |---|---|
 | `src-tauri/src/main.rs` | Start des Programms |
 | `src-tauri/src/lib.rs` | Builder, Plugins, registrierte Kommandos |
-| `src-tauri/src/scan.rs` | Kommando `scan`: Kandidaten, Limits, Fortschritt |
+| `src-tauri/src/scan.rs` | Kommando `scan`: Kandidaten, Limits, Fortschritt, Zwischenspeicher-Andock |
 | `src-tauri/src/filter.rs` | Musterabgleich und Ignorier-Katalog |
 | `src-tauri/src/paket.rs` | Kommando `paket_schreiben` |
 | `src-tauri/src/domaene.rs` | Domänen-Regel |
 | `src-tauri/src/paketbasis.rs`, `pakettexte.rs`, `paketquellen.rs` | Pakettexte |
 | `src-tauri/src/kritik_regeln.rs`, `paketkritik.rs` | `Kritik.md` (Schwellwerte, Befunde) |
 | `src-tauri/src/history.rs` | Delta/History im Backend: `~/.propsa/history/`, Identität |
+| `src-tauri/src/zwischenspeicher.rs` | Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik (Spiegel zu `src/zwischenspeicher.ts`) |
 | `src-tauri/src/filterignore.rs` | `.propsaignore` im Backend (Spiegel zu `src/propsaignore.ts`) |
 | `src-tauri/src/schema.rs` | JSON-Vertrag |
 | `src-tauri/src/sprache.rs` | Sprache und Codeblock-Kennung |
 | `src-tauri/src/fortschritt.rs` | Ereignis `scan-fortschritt` |
 | `src-tauri/src/update.rs` | Auto-Updater: Kommandos `update_check`, `update_ausfuehren` |
-| `src/App.tsx` | Ablauf der Oberfläche |
+| `src-tauri/src/live_store.rs` | Live-Speicher: SQLite-WAL `~/.propsa/live/<identitaet>.db` (Snapshots, Änderungen, Anomalien, Bestand, Kürzung) |
+| `src-tauri/src/live_zyklus.rs` | Live-Tick-Kern: Kandidaten, Baum-Signatur, Vergleich, Änderungen (pur, getestet) |
+| `src-tauri/src/live_kommandos.rs` | Live-Kommandos `live_start`/`live_stop`/`live_status`, Zyklus-Thread |
+| `src-tauri/src/live_takt.rs` | Live-Taktgeber-Loop: Ticks, Ereignisse, Tray-Alarm, Beruhigung |
+| `src-tauri/src/live_anomalie.rs` | Anomalie-Erkennung (Spiegel zu `packages/core/src/live.ts`) |
+| `src-tauri/src/live_bremse.rs` | Intervall-Bremse: effektive Pause aus der Baum-Größe (Phase 5) |
+| `src-tauri/src/live_zeitreihe.rs` | Live-Zeitreihe als Leseansicht: Snapshots → Graph-Punkte, Zeitraum-Filter (Phase 4) |
+| `src-tauri/src/tray.rs` | Tray-Icon, Menü, Widget-Vordergrund-Hub, Tooltip-Alarm (Phase 3) |
+| `src/HistoryGraph.tsx` | Verlaufs-Graph: JSONL-History + Live-Zeitreihe, zeitbasierte X-Achse, Zeitraum-Wahl (Phase 4) |
+| `src/useVerlauf.ts` | Verlaufs-Daten laden: beide Serien + Zeitraum-Wahl (Phase 4) |
+| `src/LiveOverlay.tsx` | Live-Widget (Overlay-Fenster): Ampel, Sparkline, Ticker, Badge, Intervall-Eingabe, Start/Stopp |
+| `src/main.tsx` | Fenster-Routing: `?fenster=overlay` rendert das Live-Widget |
 | `src/EinstellungenPanel.tsx`, `ErgebnisTabelle.tsx`, `ExportBereich.tsx` | Bedienung |
 | `src/StatistikKarten.tsx`, `Hotspots.tsx`, `ScanHinweise.tsx` | Auswertung |
 | `src/StatusLeiste.tsx`, `Fortschrittsbalken.tsx` | Rückmeldung |
@@ -102,7 +115,10 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 
 **Kommandos:** `scan` (Rückgabe: `ScanErgebnis`), `paket_schreiben`
 (geschriebene Dateinamen), `update_check`/`update_ausfuehren`
-(Auto-Updater, Fortschritt per Ereignis `update-fortschritt`). Der
+(Auto-Updater, Fortschritt per Ereignis `update-fortschritt`),
+`live_start`/`live_stop`/`live_status` (Live-Modus, Ereignisse `live-tick`
+und `live-anomalie`; Overlay-Widget über `?fenster=overlay` und
+Tray-Menü). Der
 Fortschritt läuft als Ereignis an der Oberfläche vorbei, damit ein langer
 Scan nicht wie ein Hänger aussieht.
 
@@ -142,6 +158,13 @@ Beide Seiten setzen dieselben Regeln um:
   „Änderungen zum letzten Lauf melden“) führen dieselbe zentrale History
   (`~/.propsa/history/<identitaet>.jsonl`) mit derselben Identitätslogik;
   der JSON-Vertrag `kontext.json` (Schema v2) bleibt delta-frei.
+- **Zwischenspeicher in CLI und App:** `--cache` (CLI) bzw. der Schalter
+  „Unveränderten Baum aus dem Cache holen“ (App) überspringen das Lesen,
+  wenn die Baum-Signatur (Pfad, Größe, Änderungszeit) unverändert ist;
+  der Vertrag lebt in `@propsa/core` (`zwischenspeicher.ts`), die
+  Umsetzungen in `src/zwischenspeicher.ts` (CLI) und
+  `src-tauri/src/zwischenspeicher.rs` (App). Version und Schema beider
+  Seiten vergleicht `npm run pruefen`.
 - **Keine Konfigurationsdatei:** Alle Optionen kommen aus Argumenten bzw. der
   Oberfläche; der Standard ist vollständig und nachvollziehbar.
 - **Kein Inkognito-Modus:** Das Paket enthält Dateiinhalte im Klartext. Wer

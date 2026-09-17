@@ -102,6 +102,23 @@ export function EinstellungenPanel({
       </div>
 
       <div className={FELD}>
+        <label className={BESCHRIFTUNG}>Zwischenspeicher</label>
+        <label className="flex cursor-pointer items-center gap-2.5 py-1.5">
+          <input
+            type="checkbox"
+            checked={einstellungen.cache}
+            onChange={(e) => onAendern({ cache: e.target.checked })}
+            className="size-4 cursor-pointer accent-akzent"
+          />
+          <span>Unveränderten Baum aus dem Cache holen</span>
+        </label>
+        <div className={HINWEIS}>
+          Liegt unter ~/.propsa/cache/; die Baum-Signatur (Pfad, Größe,
+          Änderungszeit) entscheidet. Bei jeder Änderung wird neu gelesen.
+        </div>
+      </div>
+
+      <div className={FELD}>
         <label className={BESCHRIFTUNG}>Include-Muster (komma-getrennt, optional)</label>
         <input
           type="text"

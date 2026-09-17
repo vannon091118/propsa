@@ -146,6 +146,13 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Overlay-Fenster (transparent: true): Body ohne Fläche, damit der
+   * Desktop durchscheint; das Widget trägt seine eigene Glasfläche. */
+  body.overlay-hintergrund {
+    background: transparent;
+    background-attachment: scroll;
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-akzent);
     outline-offset: 2px;

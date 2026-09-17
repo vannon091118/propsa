@@ -130,7 +130,7 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
         while i + 4 < b.len() {
             if &b[i..i + 4] == b"src/" {
                 let mut j = i + 4;
-                while j < b.len() && !matches!(b[j], b' ' | b'\n' | b'\r' | b'"' | b'\'' | b')' | b']') {
+                while j < b.len() && !matches!(b[j], b' ' | b'\n' | b'\r' | b'"' | b'\'' | b'`' | b')' | b']') {
                     j += 1;
                 }
                 let p = d.inhalt[i..j].trim_end_matches(&[',', '.', ';', ':'][..]).to_string();

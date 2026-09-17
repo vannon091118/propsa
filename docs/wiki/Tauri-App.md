@@ -41,6 +41,14 @@ npm run tauri build   # Installer bauen
 Die Aufteilung der Dateien im Frontend und im Rust-Backend steht in
 [../../ARCHITECTURE.md](../../ARCHITECTURE.md).
 
+## Live-Modus
+
+Der **Agenten-Wächter**: Tray-Background, Overlay-Widget mit Ampel und
+Live-Kennzahlen, Anomalie-Erkennung für parallele Agenten-Arbeiten
+(Flattern, Regressionen, Löschstürme), Persistenz in
+`~/.propsa/live/<identitaet>.db` (SQLite, WAL). Bedienung, Zyklus,
+Bremse und Grenzen: [Live-Modus.md](Live-Modus.md).
+
 ## Vorschau ohne Rust-Build
 
 ```bash

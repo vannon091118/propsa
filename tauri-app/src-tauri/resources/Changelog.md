@@ -201,10 +201,8 @@ Nicht veröffentlicht: es gibt keine Release-Tags.
 **Ausgabe**
 
 - Neues **Kontextpaket**: eine Datei je Domäne plus Zusammenfassung,
-  Architektur, Dokumentation und `kontext.json`
-  ([Kontextpaket.md](Kontextpaket.md)).
-- **Gemeinsames JSON-Schema** mit `schemaVersion` für CLI und App
-  ([Export-Schema.md](Export-Schema.md)); `absoluter_pfad` ist entfernt.
+  Architektur, Dokumentation und `kontext.json`   (Kontextpaket.md, siehe docs/wiki im Projekt-Root).
+- **Gemeinsames JSON-Schema** mit `schemaVersion` für CLI und App   (Export-Schema.md, siehe docs/wiki im Projekt-Root); `absoluter_pfad` ist entfernt.
 - Einzeldatei-Ausgabe der CLI auf `--einzeln datei.md|json` umgestellt.
 
 **Scan**
@@ -236,4 +234,4 @@ Nicht veröffentlicht: es gibt keine Release-Tags.
 
 ## Lizenz
 
-MIT – siehe [../../LICENSE](../../LICENSE).
+MIT – siehe LICENSE im Projekt-Root.

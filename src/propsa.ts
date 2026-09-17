@@ -7,6 +7,7 @@ import { paketBauen, paketSchreiben } from './paket';
 import { kontextAlsJson, zeitstempelJetzt } from '@propsa/core';
 import { selektieren } from './slice';
 import { laufVerarbeiten } from './history';
+import { laufMitCache } from './zwischenspeicher';
 import { updateKommandoRegistrieren } from './updateKommando';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -28,6 +29,7 @@ program
   .option('--depth <n>', 'Slice: nur Dateien bis zu dieser Ordnertiefe', parseInt)
   .option('--top-files <n>', 'Slice: nur die n größten Dateien nach Zeilen', parseInt)
   .option('--delta', 'Delta zum letzten Lauf derselben Projekt-Identität melden (~/.propsa/history/)')
+  .option('--cache', 'Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (~/.propsa/cache/)')
   .action(async (pfad: string, options: {
     output: string;
     einzeln: string | undefined;
@@ -40,6 +42,7 @@ program
     depth: number | undefined;
     topFiles: number | undefined;
     delta: boolean | undefined;
+    cache: boolean | undefined;
   }) => {
     const besuchterPfad = path.resolve(pfad);
 
@@ -71,12 +74,13 @@ program
         console.log(`📜 ${PROPSAIGNORE_DATEI} eingelesen (projektspezifische Ausschlüsse)`);
       }
 
-      const ergebnis = await scanDirectory({
+      const { ergebnis, ausZwischenspeicher } = await laufMitCache({
         basisPfad: besuchterPfad,
         excludes: gemerged.excludes,
         includes: resolveIncludes(options.include),
         maxFiles,
         maxLines,
+        cache: options.cache === true,
       });
 
       if (ergebnis.dateien.length === 0) {
@@ -85,6 +89,10 @@ program
       }
 
       console.log(`📄 ${ergebnis.dateien.length} Dateien gefunden`);
+
+      if (ausZwischenspeicher) {
+        console.log('♻️  Zwischenspeicher-Treffer – Baum unverändert, Ergebnis aus ~/.propsa/cache/');
+      }
 
       if (ergebnis.uebersprungen > 0) {
         console.warn(

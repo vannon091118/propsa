@@ -1,5 +1,188 @@
 # PROPSA – Changelog
 
+## 0.0.14
+
+**Neu**
+
+- **Live-Modus (App, Phase 1–5) — der Agenten-Wächter:** `live_start`/
+  `live_stop`/`live_status` fahren einen sequenziellen Zyklus (Scan →
+  Abgleich → nächster Tick, nie überlappend), der Snapshots samt
+  Änderungsjournal in `~/.propsa/live/<identitaet>.db` (SQLite, WAL)
+  schreibt. Ein Bestand (Pfad → Zeilen, Inhalts-Hash) macht die
+  Regressions-Erkennung möglich, ohne Dateien voll zu lesen; 500 rohe
+  Snapshots werden „Kinder zuerst“ gekürzt. Je Tick werden Anomalien
+  erkannt (Flattern, Regression, Pendeln, Löschsturm, Explosion,
+  Kohorten-Differenzen), persistiert und als `live-tick`-Ereignis
+  gemeldet – auch ruhige Ticks senden als Herzschlag; ein Guardrail-Bruch
+  (`limitbruch`) wird laut gemeldet, schreibt aber nichts.
+- **Live-Oberfläche (Phase 3 + Widget-Sync):** Tray-Icon mit Menü (App
+  öffnen, Live-Widget zeigen, Zyklus beenden, Beenden), Overlay-Widget
+  als transparentes Zweitfenster (Ampel, Kennzahlen, Sparkline, Ticker,
+  Anomalie-Badge, Start/Stopp, Intervall-Eingabe Minimum 10 s). Schwere
+  Befunde (Schwere 3) holen das Widget einmalig nach vorn und setzen den
+  Tray-Tooltip-Alarm; der erste ruhige Tick beruhigt. Das Widget gleicht
+  `laeuft` alle 2 Sekunden per `live_status` mit dem Backend ab: Ein
+  Stopp im Tray-Menü wird so in der Ampel sichtbar, ohne dass das Widget
+  berührt wird.
+- **Live-Graph (Phase 4):** Der Haupt-Graph der App zeigt beide Serien
+  auf einer zeitbasierten X-Achse — die JSONL-Scan-History (unverändert)
+  und die Live-Snapshots aus SQLite. `live_zeitreihe.rs` liest die
+  Snapshots als Graph-Punkte, das Kommando `get_live_zeitreihe` filtert
+  nach Zeitraum (Alles / 7 Tage / 24 Std / 6 Std); das Laden kapselt
+  `useVerlauf.ts`. Der Graph wird damit erstmals überhaupt in der
+  Oberfläche gerendert (bislang nur importiert).
+- **Intervall-Bremse (Phase 5):** Große Bäume (2 000+ Dateien) ticken
+  seltener, je 5 000 Dateien +50 % Pause; Schwellwerte im Katalog
+  (`bremse_*`, Core ↔ Rust gespiegelt, `npm run pruefen` vergleicht),
+  Umsetzung in `live_bremse.rs`. `live_status` meldet das **effektive**
+  Intervall, das Widget zeigt es als `· 15s`.
+- **Scan-Zwischenspeicher (`--cache`, App + CLI):** Vor dem Lesen bildet
+  PROPSA eine Baum-Signatur (relativer Pfad, Größe, Änderungszeit je
+  Datei) und vergleicht sie mit dem letzten Lauf derselben Konfiguration
+  (Pfad, Muster, Limits). Bei Übereinstimmung kommt das Ergebnis aus
+  `~/.propsa/cache/`, ohne die Dateiinhalte erneut zu lesen. Geändert
+  auch eine Datei, wird vollständig neu gelesen und gespeichert; ein
+  Guardrail-Abbruch wird nie gespeichert. Vertrag in `@propsa/core`
+  (`zwischenspeicher.ts`), Umsetzungen in `src/zwischenspeicher.ts` (CLI)
+  und `tauri-app/src-tauri/src/zwischenspeicher.rs` (App; Version und
+  Schema vergleicht `npm run pruefen`). In der App steht der Schalter
+  „Unveränderten Baum aus dem Cache holen“ (Standard: an), ein Treffer
+  liefert das Ergebnis mit frischem Zeitstempel und Identität.
+- **Live-Doku (Phase 5):** [wiki/Live-Modus.md](Live-Modus.md) (Zyklus,
+  Persistenz, Anomalien, Bremse, Grenzen), README-Kapitel „Live-Modus“
+  und erweiterter Abschnitt „Was diese Version nicht kann“.
+
+**Behoben**
+
+- **Verminter Stub entfernt:** Das Modul `src/scan_metrics.ts` enthielt
+  eine Fingerabdruck-Funktion, die stets eine  leere Map lieferte – jeder
+  Vergleich hätte "unverändert" gemeldet. Es war nie angebunden (die App
+  scannt real), daher entstanden keine falschen Ergebnisse; der
+  irreführende TODO-Kommentar in `tauri-app/src/api.ts` ist entfernt und
+  der echte Cache sauber angebunden (siehe oben).
+- **Kürzung im Live-Speicher (Kinder zuerst):** `kuerzen` entfernte nur
+  alte Snapshots – Journal- und Anomalien-Zeilen blieben als Waisen ohne
+  Snapshot zurück, und das Einfügen einer Anomalie zum 500. Snapshot wäre
+  mit Fehlermeldung gestorben. Jetzt kürzt `kuerzen` selbst in einer
+  Transaktion Anomalien und Journal vor den Snapshots.
+- **HistoryGraph war toter Code:** In `App.tsx` war der Graph importiert,
+  wurde aber nie gerendert; zusätzlich lieferte `get_history_metrics`
+  Tupel, die das Frontend als Objekte erwartete – der JSONL-Graph wäre
+  auch mit neuer Exe leer geblieben. Beides behoben (Konvertierung in
+  `useVerlauf.ts`, Rendern im Ergebnis-Bereich).
+- **Dev-Server mit `@propsa/core` (Vite-Pre-Bundling):** Der Core wird als
+  CommonJS gebaut; `vite dev` scheiterte am benannten Import, weil
+  verlinkte Pakete nicht automatisch vorgebündelt werden. `optimizeDeps.
+  include: ["@propsa/core"]` in `vite.config.ts` behebt das (der
+  Produktions-Build war nicht betroffen).
+- **`tauri-app/src-tauri/tests/paketkritik_doku.rs` wieder kompilierbar:**
+  Der Integrationstest importierte mit `crate::…` aus der Lib – das kann
+  in Integrationstests nie auflösen; er scheiterte seit `35ffc91` an der
+  Kompilierung, weil AGENTS.md nur `cargo check` verlangt, das Tests
+  nicht baut. Imports auf die Lib umgestellt, fehlende Felder ergänzt.
+
+**Geändert**
+
+- **Version überall 0.0.14** in `package.json`, `tauri-app/package.json`,
+  `tauri-app/src-tauri/Cargo.toml`, `tauri-app/src-tauri/tauri.conf.json`
+  und Versions-Badge im README.
+
+## Unveröffentlicht
+
+**Neu**
+
+- **Scan-Zwischenspeicher (`--cache`, nur CLI):** Vor dem Lesen bildet
+  PROPSA eine Baum-Signatur (relativer Pfad, Größe, Änderungszeit je
+  Datei) und vergleicht sie mit dem letzten Lauf derselben Konfiguration
+  (Pfad, Muster, Limits). Bei Übereinstimmung kommt das Ergebnis aus
+  `~/.propsa/cache/`, ohne die Dateiinhalte erneut zu lesen. Geändert
+  auch eine Datei, wird vollständig neu gelesen und gespeichert; ein
+  Guardrail-Abbruch wird nie gespeichert. Vertrag in `@propsa/core`
+  (`zwischenspeicher.ts`), Umsetzungen in `src/zwischenspeicher.ts` (CLI)
+  und `tauri-app/src-tauri/src/zwischenspeicher.rs` (App; Spiegel samt
+  Tests, Version und Schema vergleicht `npm run pruefen`).
+- **Live-Modus, Phase 1–3 (App):** `live_start`/`live_stop`/
+  `live_status` fahren einen sequenziellen Zyklus (Scan → Abgleich →
+  nächster Tick, nie überlappend), der Snapshots samt Änderungsjournal in
+  `~/.propsa/live/<identitaet>.db` (SQLite, WAL) schreibt. Ein Bestand
+  (Pfad → Zeilen, Inhalts-Hash) macht die Regressions-Erkennung möglich,
+  ohne Dateien voll zu lesen. Je Tick werden Anomalien erkannt (Flattern,
+  Regression, Pendeln, Löschsturm, Explosion), persistiert und als
+  `live-tick`-Ereignis gemeldet – auch ruhige Ticks senden als Herzschlag.
+  Phase 3 liefert die Oberfläche: Tray-Icon mit Menü (App öffnen,
+  Live-Widget zeigen, Zyklus beenden, Beenden), Overlay-Widget als
+  transparentes Zweitfenster (Ampel, Kennzahlen, Sparkline, Ticker,
+  Anomalie-Badge, Start/Stopp) und Start/Stopp über die Ereignisse
+  `live-tick`/`live-anomalie`. Schwere Befunde (Schwere 3) holen das
+  Widget einmalig nach vorn und setzen den Tray-Tooltip-Alarm; der erste
+  ruhige Tick beruhigt. Schwellwert-Katalog in `@propsa/core` (`live.ts`),
+  Rust-Spiegel in `live_anomalie.rs`; `npm run pruefen` vergleicht beide
+  Seiten. Der Scan-Zwischenspeicher steht jetzt auch der App zur
+  Verfügung: Der Schalter „Unveränderten Baum aus dem Cache holen“
+  (Standard: an) nutzt den Rust-Spiegel `zwischenspeicher.rs`, ein Treffer
+  liefert das Ergebnis mit frischem Zeitstempel und Identität. Das Widget
+  gleicht `laeuft` alle 2 Sekunden per `live_status` mit dem Backend ab:
+  Ein Stopp im Tray-Menü wird so in der Ampel sichtbar, ohne dass das
+  Widget berührt wird.
+- **Live-Modus, Phase 5 (Härten & Doku):** **Intervall-Bremse** – große
+  Bäume (2 000+ Dateien) ticken seltener, je 5 000 Dateien +50 % Pause;
+  Schwellwerte im Katalog (`bremse_*`, Core ↔ Rust gespiegelt, `npm run
+  pruefen` vergleicht), Umsetzung in `live_bremse.rs`, Verdrahtung im
+  Taktgeber. `live_status` meldet das **effektive** Intervall, das Widget
+  zeigt es als `· 15s`. Das Widget bekommt eine **Intervall-Eingabe**
+  (Minimum 10 s wie `MIN_INTERVALL_SEKUNDEN`). Wiki-Doku:
+  [wiki/Live-Modus.md](Live-Modus.md) (Zyklus, Persistenz, Anomalien,
+  Bremse, Grenzen), README-Kapitel „Live-Modus“ und „Was diese Version
+  nicht kann“ aktualisiert.
+- **Live-Modus, Phase 4 (Graph):** Der Haupt-Graph der App zeigt jetzt
+  beide Serien auf einer zeitbasierten X-Achse — die JSONL-Scan-History
+  (unverändert) und die Live-Snapshots aus `~/.propsa/live/<identitaet>.db`
+  (SQLite). `live_zeitreihe.rs` liest die Snapshots als Graph-Punkte, das
+  Kommando `get_live_zeitreihe` filtert nach Zeitraum (Alles / 7 Tage /
+  24 Std / 6 Std); das Laden kapselt `useVerlauf.ts`. Der Graph wird damit
+  erstmals überhaupt in der Oberfläche gerendert (bislang nur importiert).
+
+**Behoben**
+
+- **Leeres Fenster nach dem Scan (App):** Die Achsen-Glättung des
+  HistoryGraph wertete für den ersten Punkt `liste[index - 1]` aus —
+  `undefined` — und warf mitten im Render einen TypeError; React warf
+  den ganzen Baum weg und das Fenster blieb leer. Der Vorgänger bei
+  Index 0 wird jetzt übersprungen. Daneben erlaubte die CSP unter
+  `connect-src` nur `http://ipc.local`, Tauri 2 ruft aber
+  `http://ipc.localhost` auf — jeder IPC-Aufruf scheiterte erst und
+  fiel auf den postMessage-Weg zurück. Beides in der echten App per
+  CDP verifiziert: Scan und Live-Lauf gefahren, beide Graph-Serien
+  gerendert (Türkis 7 Live-Punkte, Violett 2 Scan-Punkte).
+- **Undurchsichtiges Live-Widget (App):** Der Body-Hintergrund (Radial-
+  verläufe auf `--color-grund`) galt auch im Overlay-Fenster und
+  überdeckte die Fenster-Transparenz — das Widget erschien als dunkles
+  Vollflächen-Rechteck statt als Glasfläche über dem Desktop. Auf der
+  Overlay-Route setzt `main.tsx` jetzt die Klasse `overlay-hintergrund`,
+  stile.css hält den Body dort transparent; das Widget trägt seine
+  eigene Fläche.
+- **Verminter Stub entfernt:** Das Modul `src/scan_metrics.ts` enthielt
+  eine Fingerabdruck-Funktion, die stets eine  leere Map lieferte – jeder
+  Vergleich hätte "unverändert" gemeldet. Es war nie angebunden (die App
+  scannt real), daher entstanden keine falschen Ergebnisse; der
+  irreführende TODO-Kommentar in `tauri-app/src/api.ts` ist entfernt und
+  der echte Cache sauber angebunden (siehe oben).
+- **Kürzung im Live-Speicher (Kinder zuerst):** `kuerzen` entfernte nur
+  alte Snapshots – Journal- und Anomalien-Zeilen blieben als Waisen ohne
+  Snapshot zurück, und das Einfügen einer Anomalie zum 500. Snapshot wäre
+  mit Fehlermeldung gestorben. Jetzt kürzt `kuerzen` selbst in einer
+  Transaktion Anomalien und Journal vor den Snapshots.
+- **Dev-Server mit `@propsa/core` (Vite-Pre-Bundling):** Der Core wird als
+  CommonJS gebaut; `vite dev` scheiterte am benannten Import, weil
+  verlinkte Pakete nicht automatisch vorgebündelt werden. `optimizeDeps.
+  include: ["@propsa/core"]` in `vite.config.ts` behebt das (der
+  Produktions-Build war nicht betroffen).
+- **`tauri-app/src-tauri/tests/paketkritik_doku.rs` wieder kompilierbar:**
+  Der Integrationstest importierte mit `crate::…` aus der Lib – das kann
+  in Integrationstests nie auflösen; er scheiterte seit `35ffc91` an der
+  Kompilierung, weil AGENTS.md nur `cargo check` verlangt, das Tests
+  nicht baut. Imports auf die Lib umgestellt, fehlende Felder ergänzt.
+
 ## 0.1.2
 
 **Neu**

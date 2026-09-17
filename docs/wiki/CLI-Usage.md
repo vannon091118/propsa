@@ -44,7 +44,8 @@ npx ts-node src/propsa.ts <pfad> [optionen]
 | `--entrypoint <datei>` | Slice: Einstiegsdatei plus lokale Import-Kette |
 | `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe (≥ 1) |
 | `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
-| `--delta` | Delta zum letzten Lauf melden (`.propsa/history.json`) |
+| `--delta` | Delta zum letzten Lauf melden (`~/.propsa/history/`) |
+| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propsa/cache/`) |
 
 ## Slice-Selektoren statt Kompaktmodus
 
@@ -93,6 +94,28 @@ Die History wird auf 50 Einträge gekürzt und gehört nie in ein Paket:
 `.propsa` steht im Ignorier-Katalog von CLI, Rust und Frontend.
 Ein abweichender Scan (andere Includes/Limits/Slices) erzeugt ein Delta
 genau so, wie die Dateien dann eben stehen.
+
+## Zwischenspeicher: `--cache`
+
+```bash
+npm start ~/Code/mein-projekt --cache
+```
+
+Vor dem Lesen der Dateien bildet PROPSA eine **Baum-Signatur** (relativer
+Pfad, Größe, Änderungszeit je Datei) und vergleicht sie mit dem letzten
+Lauf derselben Konfiguration (Pfad, Muster, Limits). Bei Übereinstimmung
+kommt das Ergebnis aus `~/.propsa/cache/`, ohne die Inhalte erneut zu
+lesen; die Meldung `♻️  Zwischenspeicher-Treffer` zeigt es an.
+
+- Geändert auch nur eine Datei, ist die Signatur vorbei – der Lauf liest
+  vollständig neu und speichert das Ergebnis erneut.
+- Ein Guardrail-Abbruch wird nie gespeichert; ein Limit bricht auch aus
+  dem Cache-Lauf mit Exit-Code 2 ab.
+- Der Vertrag (Signatur, Treffer-Entscheidung) lebt in `@propsa/core`
+  (`zwischenspeicher.ts`), die Umsetzungen in `src/zwischenspeicher.ts`
+  (CLI) und `tauri-app/src-tauri/src/zwischenspeicher.rs` (App). Die App
+  bietet den Cache als Schalter „Unveränderten Baum aus dem Cache holen“
+  (Standard: an).
 
 ## Projektspezifische Ausschlüsse: `.propsaignore`
 

@@ -34,15 +34,17 @@ Optionen ergeben dieselben Dateien. Verbindlich sind
 - [Kontextpaket](Kontextpaket.md) – der Vertrag für die Ausgabedateien
 - [Export-Schema](Export-Schema.md) – der Vertrag für `kontext.json`
 - [Tauri-App](Tauri-App.md) – Voraussetzungen, Bauen, Bedienung
+- [Live-Modus](Live-Modus.md) – Agenten-Wächter: Widget, Zyklus, Anomalien
 - [Entwicklung](Entwicklung.md) – Bauen, Prüfen, Stolperfallen
 - [Changelog](Changelog.md) – Versionshistorie
 - [Architektur](../../ARCHITECTURE.md) – technischer Aufbau (liegt in der Wurzel)
 
 ## Version
 
-**0.1.0** – dieselbe Version in `package.json`, `tauri-app/package.json`,
+Eine Version – dieselbe in `package.json`, `tauri-app/package.json`,
 `tauri-app/src-tauri/Cargo.toml` und `tauri-app/src-tauri/tauri.conf.json`.
-`npm run pruefen` prüft das.
+`npm run pruefen` prüft das; die Titelzeile der App zeigt sie über
+`fetch_version` direkt aus dem Cargo-Manifest.
 
 ## Lizenz
 

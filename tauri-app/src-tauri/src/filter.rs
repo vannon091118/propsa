@@ -43,6 +43,7 @@ const AUSGESCHLOSSENE_DATEIEN: &[&str] = &[
 ];
 
 /// Ein Scan-Kandidat: Pfad und Name, noch ohne Inhalt.
+#[derive(Clone)]
 pub struct Kandidat {
     pub absoluter_pfad: PathBuf,
     pub relativer_pfad: String,

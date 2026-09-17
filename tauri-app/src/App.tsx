@@ -8,8 +8,9 @@ import { Hotspots } from "./Hotspots";
 import { ScanHinweise } from "./ScanHinweise";
 import { StatistikKarten } from "./StatistikKarten";
 import { MarkdownRenderer } from "./MarkdownRenderer";
-import { HistoryGraph, type HistoryPoint } from "./HistoryGraph";
+import { HistoryGraph } from "./HistoryGraph";
 import { ordnerWaehlen, paketSchreiben, scanStarten, invoke } from "./api";
+import { useVerlauf } from "./useVerlauf";
 import { DeltaAnzeige } from "./DeltaAnzeige";
 import { istVorschauMock } from "./devMock";
 import { KopfBereich } from "./KopfBereich";
@@ -35,7 +36,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<'scan' | 'changelog'>('scan');
   const [changelogContent, setChangelogContent] = useState<string | null>(null);
   const [changelogLoading, setChangelogLoading] = useState<boolean>(false);
-  const [historyDaten, setHistoryDaten] = useState<HistoryPoint[]>([]);
+  // Verlauf (Phase 4): JSONL-History + Live-Zeitreihe + Zeitraum-Wahl.
+  const verlauf = useVerlauf();
 
   // Erfolgsmeldungen verschwinden von selbst.
   useEffect(() => {
@@ -61,16 +63,6 @@ function App() {
       setChangelogContent("???");
     } finally {
       setChangelogLoading(false);
-    }
-  }, []);
-
-  const loadHistory = useCallback(async (identitaet: string) => {
-    try {
-      const result = await invoke<HistoryPoint[]>("get_history_metrics", { identitaet });
-      setHistoryDaten(result);
-    } catch (e) {
-      console.error("Failed to load history:", e);
-      setHistoryDaten([]);
     }
   }, []);
 
@@ -108,8 +100,8 @@ function App() {
           `${zahl(neu.gesamt_zeilen)} Zeilen · ` +
           dauerText((performance.now() - start) / 1000),
       );
-      // History-Daten für den Graph laden
-      loadHistory(neu.identitaet);
+      // Verlauf für den Graphen laden (JSONL + Live-Zeitreihe)
+      verlauf.laden(neu.identitaet);
     } catch (e) {
       setFehler(String(e));
       setZustand("fehler");
@@ -117,7 +109,7 @@ function App() {
     } finally {
       setFortschritt(null);
     }
-  }, [aendern, einstellungen]);
+  }, [aendern, einstellungen, verlauf]);
 
   /** Export: Zielordner wählen, danach schreibt das Backend das Kontextpaket. */
   const paketAusloesen = useCallback(async () => {
@@ -251,6 +243,17 @@ function App() {
                       <ScanHinweise ergebnis={ergebnis} />
                       {ergebnis.delta_info && <DeltaAnzeige info={ergebnis.delta_info} />}
                       <StatistikKarten ergebnis={ergebnis} />
+
+                      {/* Verlauf (Phase 4): JSONL-History + Live-Zeitreihe. */}
+                      <div className="glas rounded-panel p-4">
+                        <HistoryGraph
+                          daten={verlauf.historyDaten}
+                          liveDaten={verlauf.liveZeitreihe}
+                          metric="zeilen"
+                          zeitraum={verlauf.zeitraum}
+                          onZeitraum={(neu) => verlauf.zeitraumWaehlen(ergebnis?.identitaet ?? null, neu)}
+                        />
+                      </div>
                       <Hotspots ergebnis={ergebnis} />
                       {/* Ein neues Ergebnis beginnt wieder mit der begrenzten Liste. */}
                       <ErgebnisTabelle key={ergebnis.zeitstempel} ergebnis={ergebnis} />

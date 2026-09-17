@@ -11,6 +11,11 @@
  * - `filters.ts`   ↔ `filter.rs` und Vorbelegung `tauri-app/src/typen.ts`
  * - `schema.ts`    ↔ `schema.rs`
  * - `domaene.ts`   ↔ `domaene.rs`
+ *
+ * `zwischenspeicher.ts` (Scan-Cache-Vertrag) wird in
+ * `tauri-app/src-tauri/src/zwischenspeicher.rs` gespiegelt; `live.ts`
+ * (Live-Kataloge) in `live_anomalie.rs`. Beide vergleicht
+ * `npm run pruefen`.
  */
 export { KontextDatei } from './datei';
 export {
@@ -39,6 +44,22 @@ export {
   hashKurz,
   updateVerfuegbar,
 } from './update';
+export {
+  AnomalieArt,
+  ANOMALIE_SCHWERE,
+  ANOMALIE_BESCHREIBUNGEN,
+  ANOMALIE_SCHWELLEN,
+} from './live';
+export {
+  BaumEintrag,
+  CacheEintrag,
+  ZWISCHENSPEICHER_VERSION,
+  ZWISCHENSPEICHER_SCHEMA,
+  baumSignatur,
+  gleicheSignatur,
+  istCacheEintrag,
+  cacheTreffer,
+} from './zwischenspeicher';
 export {
   WURZEL_DOMAENE,
   Domaene,

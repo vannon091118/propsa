@@ -66,6 +66,7 @@ npm start ~/code/my-project --einzeln context.json
 | `--depth <n>` | Slice: only files up to this folder depth |
 | `--top-files <n>` | Slice: only the n largest files by lines |
 | `--delta` | Report the delta against the last run (`~/.propsa/history/`) |
+| `--cache` | Reuse the cached result when the tree is unchanged (`~/.propsa/cache/`, German docs) |
 
 The default is a **complete scan**: no limits. Only dependencies, version
 control, build artifacts and caches are excluded. `node_modules`,

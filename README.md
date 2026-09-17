@@ -7,7 +7,7 @@ einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien sta
 eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.0.13-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.0.14-4aa3ff)](package.json)
 [![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---
@@ -67,6 +67,7 @@ npm start ~/Code/mein-projekt --einzeln kontext.json
 | `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe |
 | `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
 | `--delta` | Delta zum letzten Lauf melden (`~/.propsa/history/`) |
+| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propsa/cache/`) |
 
 Standard ist ein **vollständiger Scan**: kein Limit. Die Vorgabe schließt nur
 Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
@@ -128,6 +129,25 @@ Voraussetzungen: Node.js 18+, Rust 1.70+ und auf Windows die **C++ Build Tools**
 (Visual Studio Build Tools oder Visual Studio Community mit „Desktopentwicklung
 mit C++“). Stolperfallen beim Bauen stehen in [docs/wiki/Entwicklung.md](docs/wiki/Entwicklung.md).
 
+### Live-Modus (Agenten-Wächter)
+
+Die App kann sich als **Tray-Icon in den Hintergrund** setzen und einen
+beobachteten Projektordner im **Live-Zyklus** verfolgen: Scan → Abgleich →
+nächster Tick, sequenziell, nie überlappend. Ein transparentes
+**Overlay-Widget** zeigt Ampel, Datei-/Zeilen-Zahlen, Sparkline und das
+Änderungs-Journal; Snapshots landen persistent in
+`~/.propsa/live/<identitaet>.db` (SQLite, WAL) und erweitern den
+History-Graphen um eine zweite Zeitreihe.
+
+Erkennt der Zyklus **Anomalien** – Flattern (immer wieder geänderte Datei),
+Regression (Inhalt a→b→a), Pendeln, Löschsturm, Wachstums-Explosion,
+Kohorten-Differenzen (zwei Agenten treten sich gegenseitig die Arbeit ab) –
+blinkt das Tray-Icon dezent und das Widget holt sich bei schweren Befunden
+(Schwere 3) einmalig in den Vordergrund. Eine **Intervall-Bremse** verlängert
+die Pause bei großen Bäumen (2 000+ Dateien) stufenweise; das Widget zeigt
+das effektive Intervall. Guardrail-Brüche werden laut gemeldet, schreiben
+aber nichts. Details: [docs/wiki/Live-Modus.md](docs/wiki/Live-Modus.md).
+
 ## Beide Oberflächen liefern dasselbe
 
 CLI und App teilen den **Vertrag** – und seit `@propsa/core` auch den
@@ -164,7 +184,11 @@ npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge,
 
 Damit niemand nach Funktionen sucht, die es nicht gibt: **kein**
 GitHub-URL-Import und **keine** CI-Workflows für externe Projekte. PROPSA arbeitet ausschließlich auf
-dem lokalen Dateisystem.
+dem lokalen Dateisystem. Der Live-Modus beobachtet ein Projekt
+gleichzeitig und arbeitet mit Timer-Ticks (kein FS-Watcher): Änderungen
+sind erst mit dem nächsten Tick sichtbar. Er meldet Anomalien, greift
+aber nie ein (kein Kill, kein Revert) und läuft nur in der App, nicht in
+der CLI.
 
 ## Installation
 
