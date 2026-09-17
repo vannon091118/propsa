@@ -10,6 +10,7 @@ Dieses Dokument legt die Richtlinien für die Entwicklung in diesem Projekt fest
 - **LOC-Grenze pro Datei**: Um Backdoors zu vermeiden und die Lesbarkeit zu erhöhen, soll jede Datei eine maximale Größe von 200 Zeilen Code (LOC) nicht überschreiten.
 - **Eine Aufgabe - Ein Besitzer - Ein Modul**: Jede Aufgabe soll klar einem Besitzer zugewiesen werden und in einem eigenen Modul implementiert werden.
 - **Eine Wahrheit je Regel**: Jeder Katalog, jedes Schema und jede Version hat genau eine Quelle; Kopien werden durch `npm run pruefen` verglichen. Der Ausschlusskatalog gehört deshalb immer zusammen geändert: `packages/core/src/filters.ts` (einzige TypeScript-Quelle; das Frontend bezieht `STANDARD_AUSSCHLUESSE` von dort) und `tauri-app/src-tauri/src/filter.rs`.
+- **Changelog-Spiegel**: `docs/wiki/Changelog.md` ist die einzige gepflegte Quelle; die App liest zur Laufzeit `tauri-app/src-tauri/resources/Changelog.md`. Nach jeder Changelog-Änderung `npm run changelog:spiegeln` ausführen (die Zweitkopie `tauri-app/src-tauri/Changelog.md` läuft mit); `npm run pruefen` schlägt an, wenn die Kopien auseinanderlaufen.
 - **Dokumentation folgt dem Code**: Pfade, Optionen und Versionen in der Dokumentation müssen dem tatsächlichen Stand entsprechen – geplante Funktionen werden nicht als vorhanden beschrieben.
 - **Keine erfundenen Angaben**: Keine Zahlen, Badges, Screenshots oder Funktionen in der Präsentation, die nicht gemessen bzw. umgesetzt sind. Lieber einen Abschnitt „Was diese Version nicht kann“.
 

@@ -89,6 +89,17 @@
 
 ## Unveröffentlicht
 
+**Behoben**
+
+- **Changelog-Quellen gespiegelt:** Die App zeigte im Changelog-Tab den
+  Stand 0.1.2, obwohl 0.0.14 aktuell war — sie liest die Kopie
+  `tauri-app/src-tauri/resources/Changelog.md`, die seit der Core-
+  Extraktion nicht mehr mit der Quelle `docs/wiki/Changelog.md`
+  mitgezogen worden war. Die Kopien werden jetzt per
+  `npm run changelog:spiegeln` erzeugt (Link-Transformationen geteilt in
+  `scripts/changelog_kopie.mjs`), `npm run pruefen` vergleicht beide
+  Kopien gegen die Quelle und schlägt bei Abweichung an.
+
 **Neu**
 
 - **Scan-Zwischenspeicher (`--cache`, nur CLI):** Vor dem Lesen bildet

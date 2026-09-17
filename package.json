@@ -10,6 +10,7 @@
     "build": "npm run build --workspace @propsa/core && tsc",
     "start": "ts-node src/propsa.ts",
     "pruefen": "node scripts/pruefen.mjs",
+    "changelog:spiegeln": "node scripts/changelog_spiegeln.mjs",
     "installieren": "node scripts/install.mjs",
     "deinstallieren": "node scripts/deinstall.mjs",
     "clean": "node scripts/clean-node.js",

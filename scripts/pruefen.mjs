@@ -12,6 +12,7 @@
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
+import { changelogKopie } from "./changelog_kopie.mjs";
 
 const WURZEL = resolve(import.meta.dirname, "..");
 const LOC_GRENZE = 300;
@@ -40,6 +41,19 @@ for (const pfad of quelldateien) {
   if (zeilen > LOC_GRENZE) fehler.push(`${relativer(pfad)}: ${zeilen} Zeilen (Grenze ${LOC_GRENZE})`);
 }
 console.log(`✓ Zeilenbegrenzung: ${quelldateien.length} Dateien geprüft, größte ${groesste} Zeilen (Grenze ${LOC_GRENZE})`);
+
+// 1b. Changelog-Spiegel: Die Kopien der Desktop-App müssen der transformierten
+//     Quelle entsprechen — die App liest resources/Changelog.md zur Laufzeit,
+//     alte Kopien zeigen im Changelog-Tab also alte Versionen.
+const changelogQuelle = readFileSync(join(WURZEL, "docs", "wiki", "Changelog.md"), "utf8");
+const changelogSoll = changelogKopie(changelogQuelle);
+for (const kopie of ["tauri-app/src-tauri/resources/Changelog.md", "tauri-app/src-tauri/Changelog.md"]) {
+  const inhalt = readFileSync(join(WURZEL, kopie), "utf8");
+  if (inhalt !== changelogSoll) {
+    fehler.push(`${kopie}: weicht von docs/wiki/Changelog.md ab – npm run changelog:spiegeln ausführen`);
+  }
+}
+console.log("✓ Changelog-Spiegel: 2 Kopien deckungsgleich mit der Quelle");
 
 // 2. Version
 const versionen = {
