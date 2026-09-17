@@ -1,4 +1,4 @@
-![PROPSA – CLI und Desktop-App](assets/banner.svg)
+![PROPSA – CLI und Desktop-App](assets/banner_v0_0_13.svg)
 
 # PROPSA
 
@@ -7,7 +7,7 @@ einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien sta
 eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.1.2-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.0.13-4aa3ff)](package.json)
 [![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---
@@ -111,7 +111,9 @@ Dateien. Details: [docs/wiki/CLI-Usage.md](docs/wiki/CLI-Usage.md).
 
 Tauri v2, Rust-Backend und React-Frontend mit eigener Titelzeile
 (`decorations: false`): Ordner wählen, Guardrail-Limits setzen,
-Ergebnis-Tabelle ansehen, Zielordner wählen, Paket schreiben. Wird ein Limit
+Ergebnis-Tabelle ansehen, Zielordner wählen, Paket schreiben. Die App
+verfolgt die Entwicklung eines Projekts über die Zeit und visualisiert dies
+in einem historischen Metrik-Graph (Zeilen- und Dateianzahl). Wird ein Limit
 erreicht, zeigt die App eine Fehlermeldung – niemals ein beschnittenes
 Ergebnis.
 
@@ -161,9 +163,8 @@ npm run pruefen   # Regeln des Projekts: LOC-Grenze, Versionen, Namen, Kataloge,
 ## Was diese Version nicht kann
 
 Damit niemand nach Funktionen sucht, die es nicht gibt: **kein**
-GitHub-URL-Import, **keine** CI-Workflows und **keine** Release-Tags (das
-Repository hat noch keine Versionshistorie). PROPSA arbeitet ausschließlich auf
-dem Dateisystem.
+GitHub-URL-Import und **keine** CI-Workflows für externe Projekte. PROPSA arbeitet ausschließlich auf
+dem lokalen Dateisystem.
 
 ## Installation
 
