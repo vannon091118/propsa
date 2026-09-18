@@ -1,6 +1,6 @@
 [package]
 name = "propsa"
-version = "0.0.15"
+version = "0.0.16"
 description = "PROPSA — Projekt-Scankontext als Kontextpaket (Tauri v2 + React)"
 authors = ["Vannon"]
 edition = "2021"
@@ -34,6 +34,8 @@ chrono = { version = "0.4", features = ["serde"] }
 rusqlite = { version = "0.32", features = ["bundled"] }
 walkdir = "2"
 dirs = "5"
+# LLM-Beratungsbrücke: kleiner HTTPS-Client ohne Async-Laufzeit.
+ureq = { version = "2", features = ["json"] }
 
 [dev-dependencies]
 tempfile = "3"

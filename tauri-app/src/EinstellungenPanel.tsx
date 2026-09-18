@@ -1,6 +1,5 @@
 import { BASIS_EINSTELLUNGEN, type ScanEinstellungen } from "./typen";
-import { load } from "@tauri-apps/plugin-store";
-import { useState, useEffect } from "react";
+import { LlmBeratung } from "./LlmBeratung";
 
 type Props = {
   einstellungen: ScanEinstellungen;
@@ -23,9 +22,7 @@ const KNOPF =
 /** Zahlenfeld: `null` bedeutet „kein Limit“ und wird leer dargestellt. */
 function alsFeldwert(wert: number | null): string {
   return wert === null ? "" : String(wert);
-}
-
-/** Linkes Panel: Pfadwahl, Guardrail-Limits und Filter. */
+}/** Linkes Panel: Pfadwahl, Guardrail-Limits und Filter. */
 export function EinstellungenPanel({
   einstellungen,
   laedt,
@@ -33,24 +30,6 @@ export function EinstellungenPanel({
   onPfadWaehlen,
   onScan,
 }: Props) {
-  const [apiKey, setApiKey] = useState("");
-  const [apiKeyGespeichert, setApiKeyGespeichert] = useState(false);
-
-  useEffect(() => {
-    load("propsa-einstellungen.json", { autoSave: false }).then((store) => {
-      store.get<string>("llm_api_key").then((wert) => {
-        if (wert) setApiKey(wert);
-      });
-    });
-  }, []);
-
-  const apiKeySpeichern = async () => {
-    const store = await load("propsa-einstellungen.json", { autoSave: false });
-    await store.set("llm_api_key", apiKey);
-    await store.save();
-    setApiKeyGespeichert(true);
-    setTimeout(() => setApiKeyGespeichert(false), 2000);
-  };
 
   return (
     <section className="glas flex flex-col gap-3.5 overflow-auto rounded-panel p-4">
@@ -171,24 +150,8 @@ export function EinstellungenPanel({
         >
           Standard wiederherstellen
         </button>
-      </div>
-
-      <div className={FELD}>
-        <label className={BESCHRIFTUNG}>LLM API-Key (für Live-Analyse)</label>
-        <div className="flex gap-2">
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-ant-..."
-            className={`flex-1 px-2.5 py-2 ${EINGABE}`}
-          />
-          <button onClick={apiKeySpeichern} className={KNOPF}>
-            {apiKeyGespeichert ? "✓" : "Speichern"}
-          </button>
-        </div>
-        <div className={HINWEIS}>Wird lokal gespeichert, nie übertragen.</div>
-      </div>
+      </div>      {/* LLM-Beratung: Anbieter, URL, Modelle, maskierter Key, Prompts. */}
+      <LlmBeratung laedt={laedt} kontextHolen={() => ""} />
       <button onClick={onScan} disabled={laedt} className={`w-full ${KNOPF}`}>
         {laedt ? "Scanne…" : "Scan starten"}
       </button>

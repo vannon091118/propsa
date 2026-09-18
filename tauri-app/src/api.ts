@@ -28,6 +28,7 @@ import type {
   ScanEinstellungen,
   ScanErgebnis,
 } from "./typen";
+import type { Beratungsauftrag, BeratungsAntwort } from "./llm";
 import type { UpdateCheck } from "@propsa/core";
 
 
@@ -195,6 +196,22 @@ export async function liveZeitreiheLaden(
 /** Liest AGENTS.md + ARCHITECTURE.md des Projekts als LLM-Kontext. */
 export async function liveKontextLesen(pfad: string): Promise<string> {
   return invoke<string>("live_kontext_lesen", { pfad });
+}
+
+/**
+ * LLM-Beratung über die Backend-Brücke (Rust: `llm_bruecke.rs`).
+ * Der Key läuft nur durch diesen einen Aufruf und wird nirgends abgelegt.
+ */
+export async function beratungAusfuehren(auftrag: Beratungsauftrag): Promise<BeratungsAntwort> {
+  if (istVorschauMock()) {
+    return {
+      ok: true,
+      text: "(Vorschau) Keine echte Beratung — Backend-Bridge im Browser-Mock nicht aktiv.",
+      modell: auftrag.model,
+      fehler: null,
+    };
+  }
+  return invoke<BeratungsAntwort>("llm_beratung", { auftrag });
 }
 
 /**

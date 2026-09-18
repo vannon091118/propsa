@@ -114,6 +114,10 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 | `src/ErgebnisTabelle.tsx`, `ExportBereich.tsx` | Bedienung |
 | `src/StatistikKarten.tsx`, `Hotspots.tsx`, `ScanHinweise.tsx` | Auswertung |
 | `src/StatusLeiste.tsx`, `Fortschrittsbalken.tsx` | Rückmeldung |
+| `src/llm.ts` | LLM-Verträge: Anbieter-Katalog (NVIDIA/OpenRouter/Anthropic), URL-Erkennung, Key-Maskierung, Modell-Listen |
+| `src/LlmBeratung.tsx`, `LlmVerbindung.tsx`, `LlmFelder.tsx` | Beratungs-Panel: Anbieter-Dropdown, Modellauswahl, maskierter Key, Prompts, Auslöser |
+| `src/live_beratung.tsx` | Beratung im Live-Widget je Auslöser (je Tick, periodisch) |
+| `src-tauri/src/llm_bruecke.rs` | Kommando `llm_beratung`: HTTPS-only, Key nur im Request, keine Ablage |
 | `src/api.ts`, `typen.ts`, `devMock.ts` | Backend-Zugriff, Typen, Vorschau-Mock |
 
 **Kommandos:** `scan` (Rückgabe: `ScanErgebnis`), `paket_schreiben`

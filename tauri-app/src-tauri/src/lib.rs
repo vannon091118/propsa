@@ -27,6 +27,7 @@ pub mod live_takt;
 pub mod live_zyklus;
 pub mod live_zeitreihe;
 mod live_kontext;
+mod llm_bruecke;
 mod paket;
 mod kritik_regeln;
 mod paketbasis;
@@ -98,7 +99,8 @@ pub fn run() {
                     live_kommandos::live_start,
                     live_kommandos::live_stop,
                     live_kommandos::live_status,
-                    live_kontext::live_kontext_lesen
+                    live_kontext::live_kontext_lesen,
+                    llm_bruecke::llm_beratung
                 ])
         .run(tauri::generate_context!())
         .expect("PROPSA konnte nicht gestartet werden");

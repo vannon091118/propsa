@@ -71,7 +71,11 @@ console.log(`✓ Version: ${versionSoll} in allen ${Object.keys(versionen).lengt
 // 3. Namen – jetzt auch package-lock.json, damit keine alten Bin-/Paketnamen
 //    im Lockfile überleben.
 const ALTE_NAMEN = ["files-to-prompt", "files_to_prompt", "repomix-parser-llm", "repomix-parser"];
-const NAME_AUSNAHMEN = new Set(["scripts/pruefen.mjs", "wiki/Changelog.md"]);
+const NAME_AUSNAHMEN = new Set(["scripts/pruefen.mjs", "wiki/Changelog.md", "kontext.md"]);
+// kontext.md ist eine **generierte** Ausgabe des Scanners (Kontextpaket des
+// eigenen Repos): Quelltext-Zitate darin (alte Namen, dokumentrelative
+// Links) sind Zitate, keine Quellen – darum von Namen-/Link-Prüfung
+// ausgenommen.
 const textdateien = dateienSammeln(WURZEL, [".ts", ".tsx", ".rs", ".mjs", ".js", ".json", ".md", ".html", ".svg"])
   .filter(pfad => !pfad.endsWith("Cargo.lock") && !NAME_AUSNAHMEN.has(relativer(pfad)));
 for (const pfad of textdateien) {
@@ -100,8 +104,8 @@ else {
   console.log(`✓ Ausschlusskatalog: Core und Rust je ${coreKatalog.length} Verzeichnisse und ${coreDateien.length} Dateien; Frontend bezieht STANDARD_AUSSCHLUESSE aus @propsa/core`);
 }
 
-// 5. Links
-const dokumente = dateienSammeln(WURZEL, [".md"]);
+// 5. Links – kontext.md bleibt außen vor (generierte Zitate, siehe oben).
+const dokumente = dateienSammeln(WURZEL, [".md"]).filter(pfad => relativer(pfad) !== "kontext.md");
 let linkAnzahl = 0;
 for (const pfad of dokumente) {
   for (const treffer of readFileSync(pfad, "utf8").matchAll(/\]\(([^)]+)\)/g)) {

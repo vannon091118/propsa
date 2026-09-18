@@ -1,5 +1,39 @@
 # PROPSA – Changelog
 
+## 0.0.16
+
+**Neu**
+
+- **LLM-Beratung mit Anbieter-Wahl:** Der Einstellungen-Tab bekommt den
+  Bereich „LLM-Beratung“: Anbieter per **Dropdown** (NVIDIA NIM,
+  OpenRouter, Anthropic) — die Basis-URL erkennt den Anbieter automatisch
+  (z. B. `https://integrate.api.nvidia.com/v1`), die **Modellauswahl**
+  aktualisiert sich je Anbieter (Vorschlagsliste plus freie Modell-ID).
+  Prompts (System + Auftrag), Auslöser (manuell, periodisch, je Live-Tick),
+  Intervall und Antwort-Länge sind konfigurierbar; ein Testknopf führt die
+  Beratung direkt aus. Das Live-Widget zeigt die Beratung je Auslöser
+  kompakt an.
+- **Keys werden nur maskiert gespeichert:** API-Keys landen **nie im
+  Klartext** auf der Platte. Gespeichert wird ausschließlich die
+  unumkehrbare Maske (`sk-a…1234`) plus Konfiguration; der echte Key
+  bleibt im laufenden Prozess und wird nur für den einen HTTPS-Request an
+  die neue Backend-Brücke übergeben (dort keine Ablage, kein Log). Ohne
+  frisch eingegebenen Key läuft keine Beratung (Fail Closed). Der alte
+  Klartext-Key-Speicher (`llm_api_key`) ist entfernt.
+- **Erste Beratung läuft jetzt wirklich:** Neue Kommando-Brücke
+  `llm_beratung` (Rust, HTTPS-only — `http://` wird abgelehnt) ruft
+  OpenAI-kompatible Chat-Endpoints (NVIDIA NIM, OpenRouter) und die
+  Anthropic-Messages-API auf.
+
+**Behoben**
+
+- **Versions-Popup nicht mehr abgeschnitten:** Das Notiz-Popup an der
+  Versionsnummer öffnete am linken Fensterrand abgeschnitten; es ist jetzt
+  am oberen Rand verankert, scrollbar und passt seine Breite an.
+- **`npm run pruefen` wieder grün:** Die generierte Projekt-Datei
+  `kontext.md` (Quelltext-Zitate mit alten Namen und Links) ist von der
+  Namen- und Link-Prüfung ausgenommen — Zitate sind keine Quellen.
+
 ## 0.0.15
 
 **Neu**

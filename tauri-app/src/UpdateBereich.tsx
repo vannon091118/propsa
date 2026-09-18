@@ -158,7 +158,11 @@ export function UpdateBereich({ vorschau }: Props) {
       </button>
 
       {popupOffen && (
-        <div className="animate-einfahren absolute right-0 top-[calc(100%+8px)] z-50 w-80 rounded-panel border border-white/12 bg-[#0a1520]/95 p-3.5 shadow-neon-cyan backdrop-blur-md">
+        <div
+          className="animate-einfahren fixed left-2 top-10 z-50 max-h-[70vh] w-96 max-w-[calc(100vw-1rem)] overflow-auto rounded-panel border border-white/12 bg-[#0a1520]/97 p-3.5 shadow-neon-cyan backdrop-blur-md"
+          role="dialog"
+          aria-label="Versions-Notizen und Update-Status"
+        >
           <div className="flex items-center gap-2">
             <span className={`size-2.5 flex-none rounded-full ${KREIS[kreis]}`} />
             <strong className="text-[13px] text-tinte">

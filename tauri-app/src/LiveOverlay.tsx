@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { load } from "@tauri-apps/plugin-store";
 import { liveStarten, liveStatus, liveStoppen, liveTickAbonnieren, liveKontextLesen } from "./api";
 import type { AnomalieBefund, LiveStatus, LiveTick } from "./typen";
+import { LiveBeratung } from "./live_beratung";
 
 /** Minimum des Tick-Intervalls (Spiegel zu `MIN_INTERVALL_SEKUNDEN`). */
 const MIN_INTERVALL = 10;
@@ -199,6 +200,19 @@ export function LiveOverlay() {
         </div>
       )}
       {fehler && <div className="text-fehler">{fehler}</div>}
+
+      {/* LLM-Beratung je Auslöser (Konfiguration im Tab Einstellungen). */}
+      <LiveBeratung
+        laeuft={laeuft}
+        tickZaehler={tick?.dateien ?? 0}
+        tickKontext={() =>
+          tick
+            ? `Live-Tick ${tick.zeitstempel}: ${tick.dateien} Dateien, ${tick.zeilen} Zeilen, ` +
+              `+${tick.neu}/~${tick.geaendert}/-${tick.entfernt}. ` +
+              (befunde[0]?.beschreibung ? `Befund: ${befunde[0].beschreibung}.` : "")
+            : "Noch kein Live-Tick."
+        }
+      />
 
       <div className="flex gap-2">
         <input
