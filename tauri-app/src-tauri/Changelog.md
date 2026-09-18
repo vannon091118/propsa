@@ -1,5 +1,35 @@
 # PROPSA – Changelog
 
+## 0.0.15
+
+**Neu**
+
+- **Einstellungen in Reichweite:** Der Tray-Menü hat einen neuen Punkt
+  „Einstellungen“ (unter „Live-Widget zeigen“); er holt das Hauptfenster
+  nach vorn und schaltet direkt auf den neuen Haupt-Tab
+  „Einstellungen“. Dort liegen jetzt **alle** Optionen (Basisverzeichnis,
+  Guardrail-Limits, Delta, Zwischenspeicher, Muster, API-Key) — und
+  daneben, ebenfalls im Einstellungen-Tab, der **vollständige Changelog**
+  aller Versionen. Der bisherige Changelog-Tab ist entfallen; der
+  Scan-Tab bleibt schlank (Verzeichnis + Start links, Auswertung rechts).
+- **Update-Indikator am Kopf:** Die Versionsanzeige trägt einen
+  farbcodierten Kreis: **grau** = Scan nach Updates noch nicht angefangen
+  (oder nicht möglich), **gelb pulsierend** = Scan läuft gerade,
+  **grün** = LIVE Version (alles aktuell). Ein Klick auf die
+  Versionsnummer öffnet ein kleines Kontext-Popup mit den Notizen zur
+  laufenden Version und – falls vorhanden – dem direkten
+  „Update installieren“-Knopf.
+
+**Behoben**
+
+- **Kein Terminal-Blitz mehr im Live-Zyklus:** Das CMD-Fenster, das im
+  aktiven Zyklus kurz in den Vordergrund sprang und beim Tippen
+  unterbrach, kam von den `git`-Aufrufen des Backends (die
+  Projekt-Identität wird bei **jedem Tick** per `git rev-list`
+  ermittelt, der Update-Check per `git fetch`). Alle Kindprozesse
+  starten jetzt fensternlos (`CREATE_NO_WINDOW`, neues Modul
+  `prozesse.rs`), auch die Neuinstallation im Update-Lauf.
+
 ## 0.0.14
 
 **Neu**

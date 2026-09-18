@@ -108,7 +108,10 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 | `src/useVerlauf.ts` | Verlaufs-Daten laden: beide Serien + Zeitraum-Wahl (Phase 4) |
 | `src/LiveOverlay.tsx` | Live-Widget (Overlay-Fenster): Ampel, Sparkline, Ticker, Badge, Intervall-Eingabe, Start/Stopp |
 | `src/main.tsx` | Fenster-Routing: `?fenster=overlay` rendert das Live-Widget |
-| `src/EinstellungenPanel.tsx`, `ErgebnisTabelle.tsx`, `ExportBereich.tsx` | Bedienung |
+| `src/EinstellungenPanel.tsx` | Tab „Einstellungen“: alle Scan-Optionen + Start (vollständiger Changelog daneben) |
+| `src/ScanStart.tsx`, `ChangelogBereich.tsx` | Start-Karte des Scan-Tabs; Changelog-Bereich im Einstellungen-Tab |
+| `src/UpdateBereich.tsx` | Kopfzeile: Statuskreis (grau/gelb/grün) + Versions-Popup mit Notizen |
+| `src/ErgebnisTabelle.tsx`, `ExportBereich.tsx` | Bedienung |
 | `src/StatistikKarten.tsx`, `Hotspots.tsx`, `ScanHinweise.tsx` | Auswertung |
 | `src/StatusLeiste.tsx`, `Fortschrittsbalken.tsx` | Rückmeldung |
 | `src/api.ts`, `typen.ts`, `devMock.ts` | Backend-Zugriff, Typen, Vorschau-Mock |
@@ -118,7 +121,8 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 (Auto-Updater, Fortschritt per Ereignis `update-fortschritt`),
 `live_start`/`live_stop`/`live_status` (Live-Modus, Ereignisse `live-tick`
 und `live-anomalie`; Overlay-Widget über `?fenster=overlay` und
-Tray-Menü). Der
+Tray-Menü; der Tray-Punkt „Einstellungen“ schaltet das Hauptfenster per
+Ereignis `tray-navigieren` auf den Einstellungen-Tab). Der
 Fortschritt läuft als Ereignis an der Oberfläche vorbei, damit ein langer
 Scan nicht wie ein Hänger aussieht.
 

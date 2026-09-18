@@ -33,6 +33,7 @@ mod paketbasis;
 pub mod paketkritik;
 mod paketquellen;
 mod pakettexte;
+mod prozesse;
 pub mod scan;
 mod schema;
 pub mod sprache;

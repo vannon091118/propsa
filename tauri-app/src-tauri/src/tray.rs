@@ -2,7 +2,8 @@
 //! das Hauptfenster geschlossen wird.
 //!
 //! Aufgaben laut Plan (`docs/wiki/Live-Modus-Plan.md`):
-//! - Menü: App öffnen, Live-Widget zeigen, Live-Zyklus beenden, Beenden.
+//! - Menü: App öffnen, Live-Widget zeigen, Einstellungen, Live-Zyklus
+//!   beenden, Beenden.
 //! - `forward_to_overlay`: holt das Overlay-Fenster einmalig nach vorn –
 //!   nur für schwere Befunde (Schwere 3), nie dauerhaft always-on-top.
 //! - `alarm_melden`: dezent, aber bemerkbar – der Tray-Tooltip trägt den
@@ -14,6 +15,7 @@
 //! fehlende Empfänger).
 
 use tauri::menu::{MenuBuilder, MenuItemBuilder};
+use tauri::Emitter;
 use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Manager};
 
@@ -31,6 +33,9 @@ pub fn init_tray(app: &AppHandle) -> Result<(), String> {
     let widget = MenuItemBuilder::with_id("widget", "Live-Widget zeigen")
         .build(app)
         .map_err(|fehler| format!("Menüpunkt nicht baubar: {fehler}"))?;
+    let einstellungen = MenuItemBuilder::with_id("einstellungen", "Einstellungen")
+        .build(app)
+        .map_err(|fehler| format!("Menüpunkt nicht baubar: {fehler}"))?;
     let stopp = MenuItemBuilder::with_id("live_stop", "Live-Zyklus beenden")
         .build(app)
         .map_err(|fehler| format!("Menüpunkt nicht baubar: {fehler}"))?;
@@ -40,6 +45,7 @@ pub fn init_tray(app: &AppHandle) -> Result<(), String> {
     let menue = MenuBuilder::new(app)
         .item(&oeffnen)
         .item(&widget)
+        .item(&einstellungen)
         .separator()
         .item(&stopp)
         .separator()
@@ -60,6 +66,16 @@ pub fn init_tray(app: &AppHandle) -> Result<(), String> {
             }
             "widget" => {
                 forward_to_overlay(app);
+            }
+            "einstellungen" => {
+                // Hauptfenster nach vorn holen **und** das Frontend auf den
+                // Einstellungen-Tab schalten (App.tsx hört auf das Ereignis).
+                if let Some(fenster) = app.get_webview_window("main") {
+                    let _ = fenster.show();
+                    let _ = fenster.unminimize();
+                    let _ = fenster.set_focus();
+                }
+                let _ = app.emit("tray-navigieren", "einstellungen");
             }
             "live_stop" => {
                 let _ = crate::live_kommandos::live_stop();

@@ -22,10 +22,10 @@ eines laufenden Zyklus kehrt mit `Err` zurück (ein Taktgeber je Prozess).
   Tick-Intervall in Sekunden (Minimum 10) eintragen, Start/Stop.
   Die Ampel zeigt ruhig/auffällig/kritisch; bei „läuft“ erscheint das
   **effektive Intervall** (`· 15s`), wenn die Bremse die Pause verlängert.
-- **Tray-Icon**: App öffnen, Live-Widget zeigen, Zyklus beenden, App
-  beenden. Alarmzustand = Tooltip-Warnung, beruhigt beim ersten ruhigen
-  Tick. Ein Stopp im Tray spiegelt sich spätestens nach 2 Sekunden im
-  Widget (Status-Poll).
+- **Tray-Icon**: App öffnen, Live-Widget zeigen, Einstellungen (Hauptfenster
+  auf den Einstellungen-Tab), Zyklus beenden, App beenden. Alarmzustand =
+  Tooltip-Warnung, beruhigt beim ersten ruhigen Tick. Ein Stopp im Tray
+  spiegelt sich spätestens nach 2 Sekunden im Widget (Status-Poll).
 - **Haupt-Graph**: Live-Snapshots (Türkis) und JSONL-Scan-Historie
   (Violett) auf einer Zeitachse, Zeitraum-Wahl Alles/7 Tage/24 Std/6 Std.
 

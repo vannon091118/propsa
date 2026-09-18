@@ -59,10 +59,9 @@ fn git_hinweis(args: &[&str], text: &str) -> String {
 }
 
 fn git(wurzel: &PathBuf, args: &[&str]) -> Result<String, String> {
-    let ausgabe = Command::new("git")
-        .args(args)
-        .current_dir(wurzel)
-        .output()
+    // Fensternlos: Ohne `CREATE_NO_WINDOW` holt jedes `git fetch` im
+    // Update-Check ein Terminal in den Vordergrund (siehe `prozesse.rs`).
+    let ausgabe = crate::prozesse::output(Command::new("git").args(args).current_dir(wurzel))
         .map_err(|fehler| git_hinweis(args, &format!("ENOENT: {fehler}")))?;
     if !ausgabe.status.success() {
         return Err(git_hinweis(args, &String::from_utf8_lossy(&ausgabe.stderr)));
@@ -127,16 +126,20 @@ pub fn update_ausfuehren(app: tauri::AppHandle) -> Result<UpdateCheck, String> {
         serde_json::json!({ "schritt": "installieren", "text": "Installiere neu …" }),
     );
     // Windows: npm ist eine .cmd — ohne shell findet Command sie nicht.
+    // Beide Aufrufe fensternlos (`prozesse::status`), sonst holt die
+    // Neuinstallation mitten im Update ein Terminal nach vorn.
     #[cfg(windows)]
-    let status = Command::new("cmd")
-        .args(["/C", "npm", "run", "installieren", "--silent"])
-        .current_dir(&wurzel)
-        .status();
+    let status = crate::prozesse::status(
+        Command::new("cmd")
+            .args(["/C", "npm", "run", "installieren", "--silent"])
+            .current_dir(&wurzel),
+    );
     #[cfg(not(windows))]
-    let status = Command::new("npm")
-        .args(["run", "installieren", "--silent"])
-        .current_dir(&wurzel)
-        .status();
+    let status = crate::prozesse::status(
+        Command::new("npm")
+            .args(["run", "installieren", "--silent"])
+            .current_dir(&wurzel),
+    );
     status
         .map_err(|fehler| format!("npm nicht startbar: {fehler}"))?
         .success()

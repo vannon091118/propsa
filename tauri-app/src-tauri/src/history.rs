@@ -12,6 +12,7 @@
 //!
 //! Spiegel des CLI-Moduls `src/history.ts`; Feldnamen bleiben snake_case.
 
+use crate::prozesse;
 use crate::scan::{DateiInfo, ScanErgebnis};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -72,10 +73,12 @@ fn fingerabdruecke(dateien: &[DateiInfo]) -> HashMap<String, String> {
 
 /// Root-Commit-Hash oder `None` ohne Git-Repository/Commit.
 fn root_commit_hash(basis: &Path) -> Option<String> {
-    let ausgabe = Command::new("git")
+    // Fensternlos: Dieser Aufruf läuft bei jedem Live-Tick – ohne das
+    // Flag `CREATE_NO_WINDOW` blitzte hier unter Windows bei jedem Tick
+    // ein Terminal in den Vordergrund (siehe `prozesse.rs`).
+    let ausgabe = prozesse::output(Command::new("git")
         .args(["rev-list", "--max-parents=0", "HEAD"])
-        .current_dir(basis)
-        .output()
+        .current_dir(basis))
         .ok()
         .filter(|ausgabe| ausgabe.status.success())?;
     let text = String::from_utf8_lossy(&ausgabe.stdout).trim().to_string();
