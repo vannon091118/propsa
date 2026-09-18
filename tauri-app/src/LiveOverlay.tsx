@@ -12,7 +12,8 @@
  * geleert), wie `tray::beruhigen` im Backend.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { liveStarten, liveStatus, liveStoppen, liveTickAbonnieren } from "./api";
+import { load } from "@tauri-apps/plugin-store";
+import { liveStarten, liveStatus, liveStoppen, liveTickAbonnieren, liveKontextLesen } from "./api";
 import type { AnomalieBefund, LiveStatus, LiveTick } from "./typen";
 
 /** Minimum des Tick-Intervalls (Spiegel zu `MIN_INTERVALL_SEKUNDEN`). */
@@ -73,6 +74,8 @@ function useLiveStatusPoll(
     };
   }, [beiStatus, aktionRef]);
 }
+
+type LlmStatus = "idle" | "laden" | "konform" | "abweichung";
 
 export function LiveOverlay() {
   const [tick, setTick] = useState<LiveTick | null>(null);
@@ -159,8 +162,9 @@ export function LiveOverlay() {
   const ampel = ampelVon(tick, befunde);
 
   return (
-    <div className="flex h-screen flex-col gap-2 overflow-hidden border border-white/10 bg-[#0b1220]/85 p-3 text-[12px] text-leise">
-      <div className="flex items-center gap-2">
+    <div className="flex h-screen items-center justify-center overflow-hidden p-1 text-[12px] text-leise">
+      <div className="flex w-[352px] flex-col gap-2 rounded-knopf border border-white/10 bg-[#0b1220]/85 p-3 shadow-[0_8px_32px_rgb(0_0_0/0.45)]">
+        <div className="flex items-center gap-2">
         <span className={`h-3 w-3 rounded-full ${AMPEL_FARBE[ampel]}`} data-ampel={ampel} />
         <strong className="text-tinte">PROPSA Live</strong>
         <span className="ml-auto">
@@ -224,6 +228,7 @@ export function LiveOverlay() {
         )}
       </div>
       <p className="text-[10px]">{tick?.zeitstempel ?? "noch kein Tick"}</p>
+      </div>
     </div>
   );
 }

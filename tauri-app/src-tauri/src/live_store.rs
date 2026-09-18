@@ -74,6 +74,7 @@ pub fn oeffne_db(pfad: &Path) -> Result<Connection, String> {
         .execute_batch(
             "PRAGMA journal_mode = WAL;
              PRAGMA synchronous = NORMAL;
+             PRAGMA foreign_keys = ON;
              CREATE TABLE IF NOT EXISTS snapshots (
                id INTEGER PRIMARY KEY,
                zeitstempel TEXT NOT NULL,

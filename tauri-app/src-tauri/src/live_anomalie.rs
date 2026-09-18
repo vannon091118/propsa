@@ -238,7 +238,7 @@ impl BeobachtungsStand {
             // Kreuzmultiplikation statt Integer-Division: `vorher * 25 / 100
             // <= delta` löste durch Abdüng schon bei +1 Zeile auf 5 davor
             // (20 %) aus – `delta * 100 >= vorher * anteil` bleibt exakt.
-            if delta_usize * 100 >= vorher.max(1) * schwellwert("explosion_anteil") {
+            if vorher > 0 && delta_usize * 100 >= vorher * schwellwert("explosion_anteil") {
                 let detail = format!("+{delta} Zeilen in einem Tick");
                 befunde.push(befund("explosion", None, &detail));
             }

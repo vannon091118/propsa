@@ -192,6 +192,11 @@ export async function liveZeitreiheLaden(
   return invoke<LiveZeitreihePunkt[]>("get_live_zeitreihe", { identitaet, stunden });
 }
 
+/** Liest AGENTS.md + ARCHITECTURE.md des Projekts als LLM-Kontext. */
+export async function liveKontextLesen(pfad: string): Promise<string> {
+  return invoke<string>("live_kontext_lesen", { pfad });
+}
+
 /**
  * Abonnieren der Live-Ereignisse: je Tick die Meldung, je schwerer Anomalie
  * die Befunde. Liefert die Abmelde-Funktion.

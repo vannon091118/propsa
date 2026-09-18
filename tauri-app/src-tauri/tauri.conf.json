@@ -27,7 +27,13 @@
         "url": "index.html?fenster=overlay",
         "width": 360,
         "height": 260,
+        "minWidth": 360,
+        "minHeight": 260,
+        "maxWidth": 360,
+        "maxHeight": 260,
         "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
         "decorations": false,
         "transparent": true,
         "skipTaskbar": true,
@@ -36,7 +42,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://ipc.localhost"
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://ipc.localhost https://api.anthropic.com"
     }
   },
   "bundle": {

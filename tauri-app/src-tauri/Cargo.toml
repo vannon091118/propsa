@@ -12,10 +12,19 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[features]
+# Schaltet die Produktions-Assets frei: Ohne dieses Feature behandelt
+# generate_context! jeden Build (auch --release) als Dev-Build und bündelt
+# die devUrl (localhost:1420) statt ../dist — die Exe zeigt dann nur
+# Verbindungsfehler. Immer mit `cargo build --release --features custom-protocol`
+# bauen; `npm run tauri build` setzt das Feature selbst.
+custom-protocol = ["tauri/custom-protocol"]
+
 [dependencies]
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
+tauri-plugin-store = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"

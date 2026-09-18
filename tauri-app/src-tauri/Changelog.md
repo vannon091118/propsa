@@ -91,6 +91,19 @@
 
 **Behoben**
 
+- **Release-Exe lud das Frontend nicht:** Die mit `cargo build --release`
+  gebaute `propsa.exe` zeigte nur Verbindungsfehler — der Projekt-Scaffold
+  hatte die `[features]`-Sektion verloren, ohne deren `custom-protocol`
+  das `generate_context!`-Makro jeden Build (auch Release) als Dev-Build
+  behandelt und die devUrl (localhost:1420) statt der gebündelten Assets
+  einbrennt. Feature in der `Cargo.toml` ergänzt; Release-Builds müssen
+  fortan mit `--features custom-protocol` laufen (`npm run tauri build`
+  setzt es selbst).
+- **Overlay-Schrumpfen bei Skalierung:** Der Größen-Wächter des Overlay-
+  fensters setzte ein festes `PhysicalSize(360, 260)` — auf Displays mit
+  Skalierung 1,5 ist das logisch nur 240×174, das Widget schrumpfte sich
+  selbst weg. Der Wächter rechnet jetzt die Sollgröße mit dem Skalierungs-
+  faktor um und zieht auch bei DPI-Wechsel nach.
 - **Changelog-Quellen gespiegelt:** Die App zeigte im Changelog-Tab den
   Stand 0.1.2, obwohl 0.0.14 aktuell war — sie liest die Kopie
   `tauri-app/src-tauri/resources/Changelog.md`, die seit der Core-

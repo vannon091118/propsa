@@ -1,4 +1,4 @@
-![PROPSA – CLI und Desktop-App](assets/banner_v0_0_13.svg)
+![PROPSA – CLI und Desktop-App](assets/banner.svg)
 
 # PROPSA
 
@@ -202,4 +202,3 @@ MIT – siehe [LICENSE](LICENSE).
 ## Autor
 
 [@vannon091118](https://github.com/vannon091118)
-meine lokale notiz
