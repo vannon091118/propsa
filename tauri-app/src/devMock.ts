@@ -191,6 +191,7 @@ function liveTickSenden(): void {
     unverändert: 14 - journal.length,
     journal,
     ruhig: journal.length === 0,
+    erstaufnahme: liveTicks === 0,
   };
   liveTicks += 1;
   if (!eintrag.ruhig) {

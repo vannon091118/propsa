@@ -163,7 +163,7 @@ export function LiveOverlay() {
   const ampel = ampelVon(tick, befunde);
 
   return (
-    <div className="flex h-screen items-center justify-center overflow-hidden p-1 text-[12px] text-leise">
+    <div className="flex h-screen select-none items-center justify-center overflow-hidden p-1 text-[12px] text-leise">
       <div className="flex w-[352px] flex-col gap-2 rounded-knopf border border-white/10 bg-[#0b1220]/85 p-3 shadow-[0_8px_32px_rgb(0_0_0/0.45)]">
         <div className="flex items-center gap-2">
         <span className={`h-3 w-3 rounded-full ${AMPEL_FARBE[ampel]}`} data-ampel={ampel} />
@@ -177,7 +177,13 @@ export function LiveOverlay() {
       <div className="grid grid-cols-4 gap-1 text-center">
         <span>📄 {tick?.dateien ?? 0}</span>
         <span>∑ {tick?.zeilen ?? 0}</span>
-        <span className="text-ok">+{tick?.neu ?? 0}</span>
+        {tick?.erstaufnahme ? (
+          <span className="text-[#e0c37f]" title="Erstaufnahme: der erste Tick nimmt den ganzen Baum als Basis auf">
+            Basis
+          </span>
+        ) : (
+          <span className="text-ok">+{tick?.neu ?? 0}</span>
+        )}
         <span className="text-fehler">−{tick?.entfernt ?? 0}</span>
       </div>
 

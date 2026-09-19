@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020", "dom"],
+    "lib": ["ES2020"],
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -15,13 +15,8 @@
     "paths": {
       "@propsa/core": ["packages/core/dist"]
     },
-    "rootDir": ".",
-    "rootDirs": [
-      "./src",
-      "./tauri-app/src"
-    ],
-    "jsx": "react-jsx"
+    "rootDir": "src"
   },
-  "include": ["src/**/*", "tauri-app/src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

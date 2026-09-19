@@ -7,7 +7,7 @@ einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien sta
 eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.0.14-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.0.16-4aa3ff)](package.json)
 [![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 
 ---

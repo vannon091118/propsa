@@ -7,7 +7,7 @@ Dieses Dokument legt die Richtlinien für die Entwicklung in diesem Projekt fest
 
 - **Ausgabe und Dokumentation auf Deutsch**: Alle Ausgaben, Kommentare und Dokumentationen sollen in deutscher Sprache verfasst sein.
 - **Modularer Aufbau**: Der Code soll modular aufgebaut sein, um Wartbarkeit und Übersichtlichkeit zu gewährleisten.
-- **LOC-Grenze pro Datei**: Um Backdoors zu vermeiden und die Lesbarkeit zu erhöhen, soll jede Datei eine maximale Größe von 200 Zeilen Code (LOC) nicht überschreiten.
+- **LOC-Grenze pro Datei**: Um Backdoors zu vermeiden und die Lesbarkeit zu erhöhen, gilt eine **Zielgröße von 200 Zeilen** Code (LOC) pro Datei; erzwungen wird die **Harte Grenze 300** (`scripts/pruefen.mjs`). Dateien zwischen 200 und 300 sind tolerierte Ausnahmen und sollen bei der nächsten Berührung unter die Zielgröße geschlankt werden.
 - **Eine Aufgabe - Ein Besitzer - Ein Modul**: Jede Aufgabe soll klar einem Besitzer zugewiesen werden und in einem eigenen Modul implementiert werden.
 - **Eine Wahrheit je Regel**: Jeder Katalog, jedes Schema und jede Version hat genau eine Quelle; Kopien werden durch `npm run pruefen` verglichen. Der Ausschlusskatalog gehört deshalb immer zusammen geändert: `packages/core/src/filters.ts` (einzige TypeScript-Quelle; das Frontend bezieht `STANDARD_AUSSCHLUESSE` von dort) und `tauri-app/src-tauri/src/filter.rs`.
 - **Changelog-Spiegel**: `docs/wiki/Changelog.md` ist die einzige gepflegte Quelle; die App liest zur Laufzeit `tauri-app/src-tauri/resources/Changelog.md`. Nach jeder Changelog-Änderung `npm run changelog:spiegeln` ausführen (die Zweitkopie `tauri-app/src-tauri/Changelog.md` läuft mit); `npm run pruefen` schlägt an, wenn die Kopien auseinanderlaufen.

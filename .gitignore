@@ -17,6 +17,12 @@ shinon/
 .agents/
 .freebuff/
 
+# Generierte Scan-Ausgabe in der Wurzel (1,2 MB, produced by PROPSA itself)
+/kontext.md
+
+# MCP-Server ist ein separates Werkzeug (shinon), kein PROPSA-Bestandteil
+/mcp-server/
+
 # Seitlich abgelegte Fremd-Skripte (nicht Teil von PROPSA)
 *.code.python
 *.code.json

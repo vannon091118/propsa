@@ -50,6 +50,9 @@ pub struct TickErgebnis {
     pub journal: Vec<JournalEintrag>,
     /// true, wenn der Baum gegenüber dem Vortick unverändert war.
     pub ruhig: bool,
+    /// true beim allerersten Tick einer Identität: Das Journal trägt den
+    /// ganzen Erstbestand als „neu“ — Erstaufnahme, kein Änderungsschwall.
+    pub erstaufnahme: bool,
 }
 
 /// Ordner der Live-Datenbanken: `~/.propsa/live/`.

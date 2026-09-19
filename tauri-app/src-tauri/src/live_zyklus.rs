@@ -98,6 +98,9 @@ pub fn tick_berechnen(
     vorheriger_bestand: &HashMap<String, BestandEintrag>,
 ) -> Result<TickAntwort, String> {
     let (identitaet, _) = projekt_identitaet(basis);
+    // Erster Tick dieser Identität? Dann ist jedes „neu“ eine Erstaufnahme
+    // (Baseline), kein Änderungsschwall — die Oberfläche kennzeichnet das.
+    let erstaufnahme = vorherige_signatur.is_none();
     let kandidaten = kandidaten_sammeln(basis, include_muster, exclude_muster);
     let aktuelle_signatur = baum_eintraege(&kandidaten)
         .map_err(|fehler| format!("Baum-Signatur nicht lesbar: {fehler}"))?;
@@ -121,6 +124,7 @@ pub fn tick_berechnen(
                     unverändert: aktuelle_signatur.len(),
                     journal: Vec::new(),
                     ruhig: true,
+                    erstaufnahme,
                 },
                 signatur: aktuelle_signatur,
                 bestand: vorheriger_bestand.clone(),
@@ -243,6 +247,7 @@ pub fn tick_berechnen(
             unverändert: aktuelle_signatur.len() - neu - geaendert,
             journal,
             ruhig: false,
+            erstaufnahme,
         },
         signatur: aktuelle_signatur,
         bestand,

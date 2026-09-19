@@ -34,10 +34,25 @@ jobs:
       - name: Doku-Tests
         run: npx ts-node tests/paketKritik.test.ts
 
+  rust-tests:
+    name: Rust-Tests
+    runs-on: ubuntu-latest
+    needs: pruefen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Rust-Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: tauri-app/src-tauri
+      - name: Tests ausführen (alle Integrationstests + Unit-Tests)
+        run: cargo test
+        working-directory: tauri-app/src-tauri
+
   cli:
     name: CLI bauen
     runs-on: ubuntu-latest
-    needs: pruefen
+    needs: [pruefen, rust-tests]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -63,7 +78,7 @@ jobs:
   app:
     name: Desktop-App bauen (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    needs: pruefen
+    needs: [pruefen, rust-tests]
     strategy:
       fail-fast: false
       matrix:
@@ -128,7 +143,7 @@ jobs:
             $0 ~ "^## " ver "$" { drin=1; next }
             drin && /^## / { exit }
             drin { print }
-          ' wiki/Changelog.md > notiz.md
+          ' docs/wiki/Changelog.md > notiz.md
           {
             echo "## PROPSA $GITHUB_REF_NAME"
             echo

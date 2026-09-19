@@ -134,6 +134,8 @@ export type LiveTick = {
   unverändert: number;
   journal: LiveJournalEintrag[];
   ruhig: boolean;
+  /** true beim ersten Tick einer Identität (Baseline, kein Änderungsschwall). */
+  erstaufnahme: boolean;
 };
 
 /** Befund einer Anomalie (Rust: `AnomalieBefund`). */

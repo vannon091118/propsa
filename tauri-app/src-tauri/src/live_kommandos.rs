@@ -73,7 +73,10 @@ pub fn live_start(
 ) -> Result<LiveStatus, String> {
     let mut waechter = sperre()?;
     if waechter.is_some() {
-        return Err("Live-Modus läuft bereits; erst live_stop ausführen.".to_string());
+        return Err(
+            "Ein Live-Zyklus läuft bereits. Beende ihn zuerst: Tray-Menü → \"Live-Zyklus beenden\" oder der Stop-Knopf im Live-Widget."
+                .to_string(),
+        );
     }
     let basis = PathBuf::from(&pfad);
     if !basis.is_dir() {
