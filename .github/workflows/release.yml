@@ -1,9 +1,12 @@
 # Release-Build: Läuft bei Push eines v*-Tags (z. B. v0.1.1).
 #
 # 1. npm run pruefen (Konsistenzprüfung: LOC, Versionen, Namen, Kataloge, Links)
-# 2. CLI-Build (Core-Workspace + tsc) – Artefakt: propsa-cli-<tag>.tar.gz (dist/)
-# 3. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
-# 4. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
+#    plus die drei TypeScript-Tests unter tests/ – die brauchen das gebaute
+#    Core, weil @propsa/core über dist/ aufgelöst wird
+# 2. Rust-Tests (cargo test)
+# 3. CLI-Build (Core-Workspace + tsc) – Artefakt: propsa-cli-<tag>.tar.gz (dist/)
+# 4. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
+# 5. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
 #
 # Die Version stammt aus dem Tag; die Manifeste müssen übereinstimmen
 # (das prüft `npm run pruefen` und schlägt sonst fehl).
@@ -31,8 +34,13 @@ jobs:
         run: npm install
       - name: npm run pruefen
         run: npm run pruefen
-      - name: Doku-Tests
-        run: npx ts-node tests/paketKritik.test.ts
+      - name: Core bauen (für die ts-node-Tests)
+        run: npm run build --workspace @propsa/core
+      - name: TypeScript-Tests
+        run: |
+          npx ts-node tests/paketKritik.test.ts
+          npx ts-node tests/zwischenspeicher.test.ts
+          npx ts-node tests/updateFehler.test.ts
 
   rust-tests:
     name: Rust-Tests
