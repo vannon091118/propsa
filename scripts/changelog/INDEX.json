@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/changelog directory: Changelog-Spiegelungs-Skripte.",
+  "contents": [
+    { "type": "file", "name": "changelog_kopie.mjs", "path": "changelog_kopie.mjs", "description": "Enthält die Transformationslogik für den Changelog-Spiegel (von pruefen.mjs und changelog_spiegeln.mjs genutzt).", "size": "168 bytes" },
+    { "type": "file", "name": "changelog_spiegeln.mjs", "path": "changelog_spiegeln.mjs", "description": "Spiegelt die Changelog-Quelle auf die Kopien der Desktop-App.", "size": "512 bytes" }
+  ]
+}

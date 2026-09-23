@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "description": "Index of the assets module: media files such as banners and logos.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "banner.svg",
+      "path": "banner.svg",
+      "description": "Hauptbanner des PROPSA-Projekts.",
+      "size": "4782 bytes"
+    },
+    {
+      "type": "file",
+      "name": "logo.svg",
+      "path": "logo.svg",
+      "description": "Logo des PROPSA-Projekts.",
+      "size": "1516 bytes"
+    }
+  ]
+}

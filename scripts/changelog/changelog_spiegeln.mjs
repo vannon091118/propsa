@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { changelogKopie } from "./changelog_kopie.mjs";
 
-const WURZEL = resolve(import.meta.dirname, "..");
+const WURZEL = resolve(import.meta.dirname, "..", "..");
 const QUELLE = join(WURZEL, "docs", "wiki", "Changelog.md");
 const ZIELE = [
   join(WURZEL, "tauri-app", "src-tauri", "resources", "Changelog.md"),

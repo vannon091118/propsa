@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "description": "Index of the tauri-app/src-tauri/src/capabilities directory: Anwendungsfähigkeiten (Permissions).",
+  "contents": [
+    { "type": "file", "name": "default.json", "path": "default.json", "description": "Standard-Fähigkeitsdefinition für die Anwendung.", "size": "52 bytes" }
+  ]
+}

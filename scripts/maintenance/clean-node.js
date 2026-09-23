@@ -11,7 +11,7 @@ const dirs = [
   'logs',
   'snapshots',
   'test-output',
-  join('mcp-server', 'dist'),
+  join('agents', 'shon-mcp-server', 'dist'),
   join('packages', 'core', 'dist'),
   join('tauri-app', 'dist'),
   join('tauri-app', 'src-tauri', 'target')
@@ -40,7 +40,7 @@ function cleanNodeModules(dir) {
 }
 
 cleanNodeModules(join(root, 'node_modules'));
-cleanNodeModules(join(root, 'mcp-server', 'node_modules'));
+cleanNodeModules(join(root, 'agents', 'shon-mcp-server', 'node_modules'));
 cleanNodeModules(join(root, 'tauri-app', 'node_modules'));
 
 console.log('Artifact cleanup completed via Node.');

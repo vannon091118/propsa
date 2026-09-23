@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "description": "Index of the docs/wiki directory: Hauptdokumentation und Spezifikationen.",
+  "contents": [
+    { "type": "file", "name": "Changelog.md", "path": "Changelog.md", "description": "Projekt-Changelog, historique der Versionen." },
+    { "type": "file", "name": "CLI-Usage.md", "path": "CLI-Usage.md", "description": "Detaillierte Dokumentation der CLI-Nutzung." },
+    { "type": "file", "name": "Entwicklung.md", "path": "Entwicklung.md", "description": "Build-Stolperfallen und Entwicklungstipps." },
+    { "type": "file", "name": "Export-Schema.md", "path": "Export-Schema.md", "description": "JSON-Schema des Exportformats (kontext.json)." },
+    { "type": "file", "name": "Home.md", "path": "Home.md", "description": "Übersichtsseite des Wikis." },
+    { "type": "file", "name": "Kontextpaket.md", "path": "Kontextpaket.md", "description": "Spezifikation des Kontextpakets und seiner Struktur." },
+    { "type": "file", "name": "Live-Modus.md", "path": "Live-Modus.md", "description": "Dokumentation zum Live-Modus der Anwendung." },
+    { "type": "file", "name": "Live-Modus-Plan.md", "path": "Live-Modus-Plan.md", "description": "Planungsdokument für den Live-Modus." },
+    { "type": "file", "name": "Tauri-App.md", "path": "Tauri-App.md", "description": "Informationen zur Tauri-Desktop-Anwendung." }
+  ]
+}

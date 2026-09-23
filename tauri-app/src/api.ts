@@ -10,29 +10,25 @@ import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
   istVorschauMock,
-  mockLiveAbonnieren,
-  mockLiveStart,
-  mockLiveStatus,
-  mockLiveStoppen,
-  mockLiveZeitreihe,
   mockOrdnerWaehlen,
   mockPaketSchreiben,
   mockScan,
 } from "./devMock";
-import type {
-  AnomalieBefund,
-  Fortschritt,
-  LiveStatus,
-  LiveTick,
-  LiveZeitreihePunkt,
-  ScanEinstellungen,
-  ScanErgebnis,
-} from "./typen";
-import type { Beratungsauftrag, BeratungsAntwort } from "./llm";
+import type { Fortschritt, ScanEinstellungen, ScanErgebnis } from "./typen";
 import type { UpdateCheck } from "@propsa/core";
 
-
 export { invoke };
+export {
+  LIVE_ANOMALIE_EREIGNIS,
+  LIVE_TICK_EREIGNIS,
+  beratungAusfuehren,
+  liveKontextLesen,
+  liveStarten,
+  liveStatus,
+  liveStoppen,
+  liveTickAbonnieren,
+  liveZeitreiheLaden,
+} from "./apiLive";
 
 /** Komma-getrennte Muster in eine Liste umwandeln (analog zur CLI). */
 function musterListe(text: string): string[] {
@@ -149,88 +145,3 @@ export async function paketSchreiben(
   return invoke<string[]>("paket_schreiben", { scan: ergebnis, ordner });
 }
 
-// ── Live-Modus (Phase 3) ────────────────────────────────────────────────
-
-/** Ereignisnamen (Rust: `live_kommandos.rs`). */
-export const LIVE_TICK_EREIGNIS = "live-tick";
-export const LIVE_ANOMALIE_EREIGNIS = "live-anomalie";
-
-/** Zustand des Taktgebers ohne Nebenwirkung (Poll-Quelle des Widgets). */
-export async function liveStatus(): Promise<LiveStatus> {
-  if (istVorschauMock()) {
-    return mockLiveStatus();
-  }
-  return invoke<LiveStatus>("live_status");
-}
-
-/** Startet den Live-Zyklus für einen Projekt-Pfad. */
-export async function liveStarten(pfad: string, intervallSekunden?: number): Promise<LiveStatus> {
-  if (istVorschauMock()) {
-    return mockLiveStart(pfad, intervallSekunden);
-  }
-  return invoke<LiveStatus>("live_start", { pfad, intervallSekunden });
-}
-
-/** Beendet den Live-Zyklus; der laufende Tick wird zu Ende geführt. */
-export async function liveStoppen(): Promise<LiveStatus> {
-  if (istVorschauMock()) {
-    return mockLiveStoppen();
-  }
-  return invoke<LiveStatus>("live_stop");
-}
-
-/**
- * Live-Zeitreihe (Phase 4): Snapshots aus `~/.propsa/live/<identitaet>.db`
- * als Graph-Punkte; `stunden` begrenzt den Zeitraum (`null` = alles).
- */
-export async function liveZeitreiheLaden(
-  identitaet: string,
-  stunden: number | null,
-): Promise<LiveZeitreihePunkt[]> {
-  if (istVorschauMock()) {
-    return mockLiveZeitreihe(stunden);
-  }
-  return invoke<LiveZeitreihePunkt[]>("get_live_zeitreihe", { identitaet, stunden });
-}
-
-/** Liest AGENTS.md + ARCHITECTURE.md des Projekts als LLM-Kontext. */
-export async function liveKontextLesen(pfad: string): Promise<string> {
-  return invoke<string>("live_kontext_lesen", { pfad });
-}
-
-/**
- * LLM-Beratung über die Backend-Brücke (Rust: `llm_bruecke.rs`).
- * Der Key läuft nur durch diesen einen Aufruf und wird nirgends abgelegt.
- */
-export async function beratungAusfuehren(auftrag: Beratungsauftrag): Promise<BeratungsAntwort> {
-  if (istVorschauMock()) {
-    return {
-      ok: true,
-      text: "(Vorschau) Keine echte Beratung — Backend-Bridge im Browser-Mock nicht aktiv.",
-      modell: auftrag.model,
-      fehler: null,
-    };
-  }
-  return invoke<BeratungsAntwort>("llm_beratung", { auftrag });
-}
-
-/**
- * Abonnieren der Live-Ereignisse: je Tick die Meldung, je schwerer Anomalie
- * die Befunde. Liefert die Abmelde-Funktion.
- */
-export async function liveTickAbonnieren(
-  beiTick: (tick: LiveTick) => void,
-  beiAnomalie: (befunde: AnomalieBefund[]) => void,
-): Promise<() => void> {
-  if (istVorschauMock()) {
-    return mockLiveAbonnieren(beiTick, beiAnomalie);
-  }
-  const tickLos = await listen<LiveTick>(LIVE_TICK_EREIGNIS, (e) => beiTick(e.payload));
-  const anomalieLos = await listen<AnomalieBefund[]>(LIVE_ANOMALIE_EREIGNIS, (e) =>
-    beiAnomalie(e.payload),
-  );
-  return () => {
-    tickLos();
-    anomalieLos();
-  };
-}

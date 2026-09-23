@@ -102,7 +102,12 @@ jobs:
       - name: Frontend-Abhängigkeiten installieren
         run: npm install
         working-directory: tauri-app
-      - name: App bauen (Tauri, ohne Bundle auf Linux wegen Systempaketen)
+      - name: Installer bauen (Windows)
+        if: runner.os == 'Windows'
+        run: npm run tauri build
+        working-directory: tauri-app
+      - name: App bauen (Linux/macOS)
+        if: runner.os != 'Windows'
         run: npm run tauri:exe
         working-directory: tauri-app
       - name: Artefakte sammeln (Windows)
@@ -111,6 +116,8 @@ jobs:
         run: |
           mkdir -p out
           cp tauri-app/src-tauri/target/release/propsa.exe "out/propsa-${GITHUB_REF_NAME}-windows-x64.exe"
+          find tauri-app/src-tauri/target/release/bundle/msi -type f -name '*.msi' -exec cp {} out/ \;
+          find tauri-app/src-tauri/target/release/bundle/nsis -type f -name '*.exe' -exec cp {} out/ \;
       - name: Artefakte sammeln (Linux/macOS)
         if: runner.os != 'Windows'
         run: |

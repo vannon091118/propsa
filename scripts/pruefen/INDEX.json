@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/pruefen directory: Konsistenzprüfungs-Skript (pruefen).",
+  "contents": [
+    { "type": "file", "name": "pruefen.mjs", "path": "pruefen.mjs", "description": "Skript zur Durchführung der Konsistenzprüfung gemäß AGENTS.md (LOC, Versionen, Namen, Kataloge, Links, Spiegelungen).", "size": "418 bytes" }
+  ]
+}

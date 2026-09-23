@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "description": "Index-Matrix des PROPSA-Projekts: kompakte Übersicht der Beziehungen zwischen den Modulen.",
+  "modules": [
+    "agents",
+    "assets",
+    "docs",
+    "packages",
+    "plan",
+    "scripts",
+    "src",
+    "tauri-app"
+  ],
+  "relationships": [
+    { "from": "src", "to": "packages", "type": "dependency", "description": "CLI nutzt das gemeinsame TypeScript-Paket @propsa/core." },
+    { "type": "from", "to": "tauri-app", "description": "Desktop-Applikation nutzt das gemeinsame TypeScript-Paket und das Rust-Backend." },
+    { "from": "tauri-app", "to": "packages", "type": "dependency", "description": "Tauri-App nutzt @propsa/core für Typen." },
+    { "from": "tauri-app", "to": "assets", "type": "dependency", "description": "Tauri-App nutzt Assets wie Banner und Logo." },
+    { "from": "agents", "to": "tauri-app", "type": "dependency", "description": "Shon MCP Server interagiert mit der Tauri-App (z. B. über Ereignisse)." },
+    { "from": "scripts", "to": "packages", "type": "dependency", "description": "Wartungsskripte können auf das gemeinsame Paket zugreifen (z. B. für Versionsprüfung)." },
+    { "from": "scripts", "to": "src", "type": "dependency", "description": "Wartungsskripte können CLI-Build oder -Ausführung auslösen." },
+    { "from": "plan", "to": "src", "type": "dependency", "description": "Implementierungspläne beschreiben Änderungen am CLI-Quellcode." },
+    { "type": "from", "to": "docs", "description": "Dokumentation beschreibt alle Module und deren Beziehungen." }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "description": "Index of the tests directory: CLI-Tests ohne Test-Runner (ts-node).",
+  "contents": [
+    {
+      "type": "file",
+      "name": "paketKritik.test.ts",
+      "path": "paketKritik.test.ts",
+      "description": "Fixtures für die Doku-Wahrheit-Linse aus src/paketKritik.ts; Gegenstück zu den mod tests in paketkritik.rs."
+    },
+    {
+      "type": "file",
+      "name": "updateFehler.test.ts",
+      "path": "updateFehler.test.ts",
+      "description": "Prüft, dass der Update-Lauf bei lokalen Änderungen mit UpdateFehler und deutschem Lösungshinweis abbricht."
+    },
+    {
+      "type": "file",
+      "name": "zwischenspeicher.test.ts",
+      "path": "zwischenspeicher.test.ts",
+      "description": "Tests des Scan-Zwischenspeichers; Gegenstück zu src/zwischenspeicher.ts und dem Rust-Modul zwischenspeicher.rs."
+    }
+  ]
+}

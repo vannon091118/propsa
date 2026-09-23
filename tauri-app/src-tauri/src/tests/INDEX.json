@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "description": "Index of the tauri-app/src-tauri/src/tests directory: Unit-Tests für das Rust-Backend.",
+  "contents": [
+    { "type": "file", "name": "live_anomalien.rs", "path": "live_anomalien.rs", "description": "Tests für die Anomalie-Erkennung.", "size": "1674 bytes" },
+    { "type": "file", "name": "live_grenzen.rs", "path": "live_grenzen.rs", "description": "Tests für Grenzwerte der Live-Überwachung.", "size": "552 bytes" },
+    { "type": "file", "name": "live_modus.rs", "path": "live_modus.rs", "description": "Tests für den Live-Modus insgesamt.", "size": "1632 bytes" },
+    { "type": "file", "name": "live_zeitreihe.rs", "path": "live_zeitreihe.rs", "description": "Tests für die Live-Zeitreihe als Leseansicht.", "size": "702 bytes" },
+    { "type": "file", "name": "paketkritik_doku.rs", "path": "paketkritik_doku.rs", "description": "Tests für die Kritik-Erkennung anhand von Dokumentation.", "size": "450 bytes" },
+    { "type": "file", "name": "zwischenspeicher.rs", "path": "zwischenspeicher.rs", "description": "Tests für den Scan-Cache (Spiegel zu zwischenspeicher.ts).", "size": "348 bytes" }
+  ]
+}

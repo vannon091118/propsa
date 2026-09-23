@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "description": "Index of the Shon MCP Server utilities.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "scanner.ts",
+      "path": "scanner.ts",
+      "description": "Scanner-Modul zum Durchsuchen von Dateien und Berechnen von Metriken.",
+      "size": "4381 bytes"
+    },
+    {
+      "type": "file",
+      "name": "storage.ts",
+      "path": "storage.ts",
+      "description": "Storage-Modul zum Persistieren von Zuständen und Snapshots.",
+      "size": "1477 bytes"
+    }
+  ]
+}

@@ -17,6 +17,12 @@ shinon/
 .agents/
 .freebuff/
 
+# V8-Heapsnapshots aus Debug-Sitzungen (Server/TUI, je >60 MB)
+*.heapsnapshot
+
+# Generierter Analyse-Output (Funktionsgraph, String-Matrix)
+/final_index/
+
 # Generierte Scan-Ausgabe in der Wurzel (1,2 MB, produced by PROPSA itself)
 /kontext.md
 

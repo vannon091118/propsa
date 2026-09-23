@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "description": "Index of the packages/core/src directory: TypeScript-Quellcode des gemeinsamen Kerns.",
+  "contents": [
+    { "type": "file", "name": "datei.ts", "path": "datei.ts", "description": "Dateizugriff und Zeilen Zählen für Scanner.", "size": "549 bytes" },
+    { "type": "file", "name": "domaene.ts", "path": "domaene.ts", "description": "Domänen-Regel und Dateinamen im Paket.", "size": "2763 bytes" },
+    { "type": "file", "name": "filters.ts", "path": "filters.ts", "description": "Include/Exclude-Muster und Katalog der Ignorierten.", "size": "3068 bytes" },
+    { "type": "file", "name": "index.ts", "path": "index.ts", "description": "Exportiert die öffentlichen Funktionen des gemeinsamen Kerns.", "size": "1807 bytes" },
+    { "type": "file", "name": "live.ts", "path": "live.ts", "description": "Live-Kataloge: ANOMALIE_SCHWERE, ANOMALIE_BESCHREIBUNGEN, ANOMALIE_SCHWELLEN.", "size": "2931 bytes" },
+    { "type": "file", "name": "schema.ts", "path": "schema.ts", "description": "JSON-Vertrag (kontext.json, Schema v2).", "size": "3076 bytes" },
+    { "type": "file", "name": "sprache.ts", "path": "sprache.ts", "description": "Sprache nach Endung und Codeblock-Kennung.", "size": "2089 bytes" },
+    { "type": "file", "name": "tsconfig.json", "path": "tsconfig.json", "description": "TypeScript compiler configuration.", "size": "352 bytes" },
+    { "type": "file", "name": "update.ts", "path": "update.ts", "description": "Hilfsfunktionen für Updates.", "size": "1545 bytes" },
+    { "type": "file", "name": "zwischenspeicher.ts", "path": "zwischenspeicher.ts", "description": "Cache-Vertrag: Version, Schema, Baum-Signatur.", "size": "3076 bytes" }
+  ]
+}

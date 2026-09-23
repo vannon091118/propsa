@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "description": "Root index of the PROPSA project, listing top-level ownership modules.",
+  "modules": [
+    {
+      "name": "agents",
+      "path": "agents/",
+      "description": "Agent processes like the Shinon MCP server.",
+      "index": "agents/INDEX.json"
+    },
+    {
+      "name": "assets",
+      "path": "assets/",
+      "description": "Media assets such as banners and logos.",
+      "index": "assets/INDEX.json"
+    },
+    {
+      "name": "docs",
+      "path": "docs/",
+      "description": "Documentation files and wiki.",
+      "index": "docs/INDEX.json"
+    },
+    {
+      "name": "packages",
+      "path": "packages/",
+      "description": "Shared TypeScript packages (@propsa/core).",
+      "index": "packages/INDEX.json"
+    },
+    {
+      "name": "plan",
+      "path": "plan/",
+      "description": "Planning documents and implementation plans.",
+      "index": "plan/INDEX.json"
+    },
+    {
+      "name": "scripts",
+      "path": "scripts/",
+      "description": "Maintenance and utility scripts, grouped by ownership.",
+      "index": "scripts/INDEX.json"
+    },
+    {
+      "name": "src",
+      "path": "src/",
+      "description": "Command-line interface (CLI) source code.",
+      "index": "src/INDEX.json"
+    },
+    {
+      "name": "tauri-app",
+      "path": "tauri-app/",
+      "description": "Desktop application (Tauri v2, Rust + React).",
+      "index": "tauri-app/INDEX.json"
+    },
+    {
+      "name": "tests",
+      "path": "tests/",
+      "description": "CLI-Doku- und Fehlerpfad-Tests, ausgeführt über ts-node.",
+      "index": "tests/INDEX.json"
+    }
+  ]
+}

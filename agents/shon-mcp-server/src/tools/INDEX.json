@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "description": "Index of the Shon MCP Server tools.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "getLatestSnapshot.ts",
+      "path": "getLatestSnapshot.ts",
+      "description": "Ruft den neuesten Snapshot aus dem Shinon-System ab.",
+      "size": "2438 bytes"
+    },
+    {
+      "type": "file",
+      "name": "getRecentExplanations.ts",
+      "path": "getRecentExplanations.ts",
+      "description": "Ruft jüngste Erklärungen aus dem Shinon-System ab.",
+      "size": "2554 bytes"
+    },
+    {
+      "type": "file",
+      "name": "getStatus.ts",
+      "path": "getStatus.ts",
+      "description": "Ruft den aktuellen Status des Shinon-Systems ab.",
+      "size": "3083 bytes"
+    },
+    {
+      "type": "file",
+      "name": "snapshot.ts",
+      "path": "snapshot.ts",
+      "description": "Erstellt einen neuen Snapshot des Projektzustands.",
+      "size": "7146 bytes"
+    }
+  ]
+}

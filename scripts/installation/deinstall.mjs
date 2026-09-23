@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout, exit } from 'node:process';
 
-const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const HEIM = join(homedir(), '.propsa');
 
 /** Zeigt, was entfernt werden wird, und holt im TTY eine Bestätigung ein. */

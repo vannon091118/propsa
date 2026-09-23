@@ -1,6 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "src",
+    "lib": ["ES2020", "DOM"],
+    "jsx": "react-jsx",
     "noEmit": true,
     "types": ["node", "vite/client"],
     "ignoreDeprecations": "6.0"

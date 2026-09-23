@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/version directory: Versionsverwaltungs-Skripte.",
+  "contents": [
+    { "type": "file", "name": "bump-version.ts", "path": "bump-version.ts", "description": "Skript zum Hochheben der Versionsnummer in allen relevanten Dateien.", "size": "80 bytes" },
+    { "type": "file", "name": "check-versions.sh", "path": "check-versions.sh", "description": "Skript zur Überprüfung der Versionskonsistenz über alle Komponenten hinweg.", "size": "37 bytes" }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "description": "Index of the docs module: documentation and auxiliary information.",
+  "contents": [
+    {
+      "type": "directory",
+      "name": "wiki",
+      "path": "wiki/",
+      "description": "Haupt-Wiki mit Leitfäden, Spezifikationen und Entwicklungsinformationen.",
+      "index": "docs/wiki/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "snapshots",
+      "path": "snapshots/",
+      "description": "Verzeichnis für Shinon-Snapshots und Diffs.",
+      "index": "docs/snapshots/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "test-output",
+      "path": "test-output/",
+      "description": "Ausgabe von Testläufen (kanont wird während der Entwicklung erzeugt).",
+      "index": "docs/test-output/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "shinon",
+      "path": "shinon/",
+      "description": "Informationen zum Shinon Agent (Monitoring-Tool).",
+      "index": "docs/shonon/INDEX.json"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "description": "Index of the tauri-app/src-tauri directory: Rust-Backend der Desktop-Anwendung.",
+  "contents": [
+    { "type": "file", "name": "Cargo.toml", "path": "Cargo.toml", "description": "Rust-Projektmanifest, definiert Abhängigkeiten und Metadaten.", "size": "1478 bytes" },
+    { "type": "file", "name": "src/", "path": "src/", "description": "Rust-Quellcode des Backends.", "index": "tauri-app/src-tauri/src/INDEX.json" }
+  ]
+}

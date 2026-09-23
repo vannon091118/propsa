@@ -1,0 +1,7 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/doc directory: Skripte zur Dokumentationspflege.",
+  "contents": [
+    { "type": "file", "name": "update-doc-links.js", "path": "update-doc-links.js", "description": "Skript zum Aktualisieren von Links in der Dokumentation (z. B. nach Umstrukturierungen).", "size": "112 bytes" }
+  ]
+}

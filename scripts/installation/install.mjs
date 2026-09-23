@@ -19,7 +19,7 @@ import { execFileSync } from 'node:child_process';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const HEIM = join(homedir(), '.propsa');
 
 function bauen() {

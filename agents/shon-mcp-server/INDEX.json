@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "description": "Index of the Shon MCP Server module.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "package.json",
+      "path": "package.json",
+      "description": "Node.js package manifest, defines dependencies and scripts.",
+      "size": "3620 bytes"
+    },
+    {
+      "type": "file",
+      "name": "tsconfig.json",
+      "path": "tsconfig.json",
+      "description": "TypeScript compiler configuration.",
+      "size": "373 bytes"
+    },
+    {
+      "type": "directory",
+      "name": "src",
+      "path": "src/",
+      "description": "TypeScript source code of the MCP server.",
+      "index": "agents/shon-mcp-server/src/INDEX.json"
+    },
+    {
+      "type": "file",
+      "name": "README.md",
+      "path": "README.md",
+      "description": "Overview of the Shinon MCP Server.",
+      "size": "2842 bytes"
+    },
+    {
+      "type": "file",
+      "name": "LICENSE.txt",
+      "path": "LICENSE.txt",
+      "description": "License text (MIT).",
+      "size": "9197 bytes"
+    }
+  ]
+}

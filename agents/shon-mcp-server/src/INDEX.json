@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "description": "Index of the Shon MCP Server source code.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "index.ts",
+      "path": "index.ts",
+      "description": "Einstiegspunkt des MCP Servers, exportiert die öffentlichen Funktionen.",
+      "size": "1701 bytes"
+    },
+    {
+      "type": "directory",
+      "name": "tools",
+      "path": "tools/",
+      "description": "Tools für den MCP Server: Funktionen zum Abrufen von Snapshots, Erklärungen, Status usw.",
+      "index": "agents/shon-mcp-server/src/tools/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "utils",
+      "path": "utils/",
+      "description": "Utility-Module wie Scanner und Storage.",
+      "index": "agents/shon-mcp-server/src/utils/INDEX.json"
+    }
+  ]
+}

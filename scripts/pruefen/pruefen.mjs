@@ -12,9 +12,9 @@
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
-import { changelogKopie } from "./changelog_kopie.mjs";
+import { changelogKopie } from "../changelog/changelog_kopie.mjs";
 
-const WURZEL = resolve(import.meta.dirname, "..");
+const WURZEL = resolve(import.meta.dirname, "..", "..");
 const LOC_GRENZE = 300;
 const UEBERSPRUNGEN = new Set(["node_modules", "dist", "target", "gen", ".freebuff", ".agents", "test-output", "snapshots"]);
 
@@ -71,7 +71,7 @@ console.log(`✓ Version: ${versionSoll} in allen ${Object.keys(versionen).lengt
 // 3. Namen – jetzt auch package-lock.json, damit keine alten Bin-/Paketnamen
 //    im Lockfile überleben.
 const ALTE_NAMEN = ["files-to-prompt", "files_to_prompt", "repomix-parser-llm", "repomix-parser"];
-const NAME_AUSNAHMEN = new Set(["scripts/pruefen.mjs", "wiki/Changelog.md", "kontext.md"]);
+const NAME_AUSNAHMEN = new Set(["scripts/pruefen/pruefen.mjs", "wiki/Changelog.md", "kontext.md"]);
 // kontext.md ist eine **generierte** Ausgabe des Scanners (Kontextpaket des
 // eigenen Repos): Quelltext-Zitate darin (alte Namen, dokumentrelative
 // Links) sind Zitate, keine Quellen – darum von Namen-/Link-Prüfung

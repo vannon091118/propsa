@@ -1,5 +1,21 @@
 # PROPSA – Changelog
 
+## 0.0.17
+
+**Neu**
+
+- **Eigentümer- und Datei-Index:** Jedes Top-Level-Modul (agents, assets, docs, packages, plan, scripts, src, tauri-app, tests) besitzt eine `INDEX.json` mit den Dateien, die es verantwortet; das Root-`INDEX.json` führt die Module. `npm run architecture:check` prüft, dass jeder Modul-Index existiert, dass jede Datei im Repository einem Modul zugeordnet ist und dass die indizierten Dateien tatsächlich liegen.
+
+**Geändert**
+
+- **Release-Automation:** Der GitHub-Workflow baut unter Windows jetzt MSI- und NSIS-Installer sowie die eigenständige Exe und lädt alle Dateien in den Release hoch. Der Linux-/macOS-Pfad bleibt beim Bundle-losen Exe-Build.
+- **Update-Kette stabilisiert:** Die verschobenen Installations-, Changelog- und Versionsskripte ermitteln wieder die Projektwurzel; damit funktionieren der Git-basierte Fast-Forward-Updater und die Release-Spiegelung aus dem Repository-Root.
+- **Frontend-Build korrigiert:** Die Tauri-TypeScript-Konfiguration setft ihren eigenen Source-Root, DOM-Lib und JSX-Modus; die Live-/Beratungs-API liegt wieder in einem gültigen, exportierten Modul.
+
+**Behoben**
+
+- **Architektur-Check läuft unter Windows:** Die Wurzelsuche über `new URL(import.meta.url).pathname` erzeugte unter Windows den Pfad `C:\C:\Users\…`; der Check brach sofort ab und hat auf dieser Plattform noch nie erfolgreich gelaufen.
+
 ## 0.0.16
 
 **Neu**

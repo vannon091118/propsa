@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "description": "Index of the packages/core package: gemeinsamer TypeScript-Kern (@propsa/core).",
+  "contents": [
+    {
+      "type": "directory",
+      "name": "src",
+      "path": "src/",
+      "description": "TypeScript-Quellcode des gemeinsamen Kerns.",
+      "index": "packages/core/src/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "dist",
+      "path": "dist/",
+      "description": "Kompilierte JavaScript-Ausgabe (für die Nutzung durch die CLI).",
+      "index": "packages/core/dist/INDEX.json"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ REM Calls the Node.js deinstall script with --ja flag
 
 echo Uninstalling PROPSA...
 REM Ensure we are in the repository root
-cd /d "%~dp0.."
-node scripts\deinstall.mjs --ja
+cd /d "%~dp0..\.."
+node scripts\installation\deinstall.mjs --ja
 
 echo Uninstallation completed.

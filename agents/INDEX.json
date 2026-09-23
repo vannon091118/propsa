@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "description": "Index of the agents module: agent processes.",
+  "contents": [
+    {
+      "type": "directory",
+      "name": "shon-mcp-server",
+      "path": "shon-mcp-server/",
+      "description": "Shon MCP server process.",
+      "index": "agents/shon-mcp-server/INDEX.json"
+    }
+  ]
+}

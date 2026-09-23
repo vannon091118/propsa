@@ -1,6 +1,6 @@
 {
   "name": "propsa",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "PROPSA — Projekt-Scankontext als Kontextpaket für LLMs",
   "main": "dist/propsa.js",
   "bin": {
@@ -9,12 +9,13 @@
   "scripts": {
     "build": "npm run build --workspace @propsa/core && tsc",
     "start": "ts-node src/propsa.ts",
-    "pruefen": "node scripts/pruefen.mjs",
-    "changelog:spiegeln": "node scripts/changelog_spiegeln.mjs",
-    "installieren": "node scripts/install.mjs",
-    "deinstallieren": "node scripts/deinstall.mjs",
-    "clean": "node scripts/clean-node.js",
-    "validate": "npm run pruefen && bash scripts/check-versions.sh"
+    "pruefen": "node scripts/pruefen/pruefen.mjs",
+    "changelog:spiegeln": "node scripts/changelog/changelog_spiegeln.mjs",
+    "installieren": "node scripts/installation/install.mjs",
+    "deinstallieren": "node scripts/installation/deinstall.mjs",
+    "clean": "node scripts/maintenance/clean-node.js",
+    "validate": "npm run pruefen && bash scripts/version/check-versions.sh",
+    "architecture:check": "node scripts/architecture-check.mjs"
   },
   "workspaces": [
     "packages/*"

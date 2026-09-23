@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/installation directory: Installations- und Deinstallationsskripte.",
+  "contents": [
+    { "type": "file", "name": "install.mjs", "path": "install.mjs", "description": "Skript zum Bauen von PROPSA und Einrichten der zentralen Ablage ~/.propsa.", "size": "162 bytes" },
+    { "type": "file", "name": "deinstall.mjs", "path": "deinstall.mjs", "description": "Skript zum Entfernen der zentralen Ablage ~/.propsa (mit Bestätigung).", "size": "138 bytes" },
+    { "type": "file", "name": "setup.bat", "path": "setup.bat", "description": "Windows-Batch-Datei zur Einrichtung von PROPSA (entspricht install.mjs).", "size": "82 bytes" },
+    { "type": "file", "name": "setup.sh", "path": "setup.sh", "description": "Unix-Shell-Skript zur Einrichtung von PROPSA (entspricht install.mjs).", "size": "112 bytes" },
+    { "type": "file", "name": "uninstall.bat", "path": "uninstall.bat", "description": "Windows-Batch-Datei zur Entfernung von PROPSA (entspricht deinstall.mjs).", "size": "81 bytes" },
+    { "type": "file", "name": "uninstall.sh", "path": "uninstall.sh", "description": "Unix-Shell-Skript zur Entfernung von PROPSA (entspricht deinstall.mjs).", "size": "112 bytes" }
+  ]
+}

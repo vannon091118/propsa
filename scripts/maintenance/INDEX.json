@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/maintenance directory: Wartungs- und Bereinigungsskripte.",
+  "contents": [
+    { "type": "file", "name": "clean-node.js", "path": "clean-node.js", "description": "Skript zum Löschen des Node.js-Module-Caches.", "size": "142 bytes" },
+    { "type": "file", "name": "clean-artifacts.sh", "path": "clean-artifacts.sh", "description": "Skript zum Löschen von Build-Artefakten (dist/, target/, etc.).", "size": "101 bytes" },
+    { "type": "file", "name": "repo_cleanup.ps1", "path": "repo_cleanup.ps1", "description": "PowerShell-Skript zur Ausführung verschiedener Prüf- und Aufräumtasks.", "size": "228 bytes" }
+  ]
+}

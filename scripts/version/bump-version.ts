@@ -22,7 +22,7 @@ if (!/^\d+\.\d+\.\d+$/.test(newVersion)) {
   process.exit(1);
 }
 
-const WURZEL = resolve(__dirname, "..");
+const WURZEL = resolve(__dirname, "..", "..");
 const files = [
   {
     path: join(WURZEL, "package.json"),

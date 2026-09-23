@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts directory: Wartungs- und Dienstprogramme, gruppiert nach Eigentümerschaft.",
+  "contents": [
+    {
+      "type": "directory",
+      "name": "version",
+      "path": "version/",
+      "description": "Skripte zur Versionsverwaltung.",
+      "index": "scripts/version/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "changelog",
+      "path": "changelog/",
+      "description": "Skripte zur Changelog-Spiegelung.",
+      "index": "scripts/changelog/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "installation",
+      "path": "installation/",
+      "description": "Skripte zur Installation und Deinstallation.",
+      "index": "scripts/installation/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "maintenance",
+      "path": "maintenance/",
+      "description": "Skripte zur Wartung und Bereinigung.",
+      "index": "scripts/maintenance/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "pruefen",
+      "path": "pruefen/",
+      "description": "Skript zur Konsistenzprüfung (pruefen).",
+      "index": "scripts/pruefen/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "doc",
+      "path": "doc/",
+      "description": "Skripte zur Dokumentationspflege (z. B. Link-Updates).",
+      "index": "scripts/doc/INDEX.json"
+    }
+  ]
+}

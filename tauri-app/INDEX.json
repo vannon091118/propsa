@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "description": "Index of the tauri-app directory: Desktop application (Tauri v2, Rust + React).",
+  "contents": [
+    { "type": "file", "name": "package.json", "path": "package.json", "description": "Node.js package manifest für das Tauri-Frontend.", "size": "427 bytes" },
+    { "type": "file", "name": "tsconfig.json", "path": "tsconfig.json", "description": "TypeScript compiler configuration für das Frontend.", "size": "320 bytes" },
+    { "type": "file", "name": "tsconfig.node.json", "path": "tsconfig.node.json", "description": "TypeScript configuration für Node.js-Teile (z. B. Skripte).", "size": "200 bytes" },
+    { "type": "directory", "name": "src", "path": "src/", "description": "Quellcode des React-Frontends (TypeScript + TSX).", "index": "tauri-app/src/INDEX.json" },
+    { "type": "directory", "name": "src-tauri", "path": "src-tauri/", "description": "Quellcode des Rust-Backends.", "index": "tauri-app/src-tauri/INDEX.json" },
+    { "type": "file", "name": "public/", "path": "public/", "description": "Statische assets wie Logos.", "index": "tauri-app/public/INDEX.json" }
+  ]
+}
