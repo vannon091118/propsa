@@ -51,6 +51,17 @@ jobs:
     needs: pruefen
     steps:
       - uses: actions/checkout@v4
+      - name: Linux-Systempakete (Tauri)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libssl-dev \
+            patchelf
       - uses: dtolnay/rust-toolchain@stable
       - name: Rust-Cache
         uses: swatinem/rust-cache@v2
@@ -105,6 +116,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Linux-Systempakete (Tauri)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libssl-dev \
+            patchelf
       - uses: dtolnay/rust-toolchain@stable
       - name: Rust-Cache
         uses: swatinem/rust-cache@v2
