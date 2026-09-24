@@ -57,6 +57,11 @@ export const IGNORIERTE_VERZEICHNISSE = [
   '.propsa',
   // Wegwerf-Verzeichnisse (Artefakte, kein Quelltext)
   '.tmp',
+  // Standard-Ausgabeverzeichnis von PROPSA selbst. Ohne diesen Eintrag
+  // scannt ein Lauf sein eigenes Paket mit: der nächste Lauf zählt die
+  // gerade geschriebenen Dateien als neu und geändert, und `--delta`
+  // konvergiert nie. Siehe CLAUDE.md, Smoke-Tests.
+  'propsa-kontext',
 ];
 
 /** Einzelne Dateien, die zusätzlich ausgeschlossen werden. */

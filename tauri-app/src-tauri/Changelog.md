@@ -1,5 +1,23 @@
 # PROPSA – Changelog
 
+## 0.0.18
+
+**Neu**
+
+- **Bausteine als Verträge statt als Code:** Sieben Bausteine — Vermittlung, Prüfung, Beobachtung, Prompts, Laufzeit, Übersicht, Integration — sind als Muster neu beschrieben, in sieben JSON-Verträgen festgeschrieben und als leeres Gerüst abgesteckt. Der Vertrag trägt je Regel sieben Punkte (POSITIVE, FORBIDDEN, FALLBACK, ERROR, TRACE, REPLAY, INVARIANT) und einen von vier Zuständen: IMPLEMENTED, STUB (bewusst nicht gebaut), NOT_IMPLEMENTED, NOT_VERIFIED (gebaut, aber unbelegt). Der Unterschied zwischen STUB und NOT_VERIFIED ist der wichtige: ein STUB ist eine Aufgabe, ein NOT_VERIFIED ein offener Prüfposten. `packages/core/src/vertrag.ts` und `tauri-app/src-tauri/src/vertrag.rs` spiegeln die drei Kataloge (Gate-Punkte, Status-Werte, Ereignistypen), `npm run pruefen` vergleicht sie als Regel 9. Der Stand ist ohne Beschönigung ausgewiesen: von sieben Bausteinen ist einer umgesetzt, zwei haben echte Teilbestände, vier sind leer. `docs/wiki/Bausteine.md` ist der Einstieg.
+- **Commit-Gate:** Fünf Regeln aus `AGENTS.md` sind maschinell prüfbar: PROPSA-Bildsprache ohne englische Flusswörter und ohne ASCII-Umschreibungen der Umlaute, eine Erklärung im Body, die Nennung jeder gestagten Datei, der LOC-Zähler im Wortlaut und das Verbot von Aufzählungszeichen. Der Haken `.githooks/commit-msg` verdrahtet den Aufruf, `core.hooksPath` zeigt darauf. Die LOC-Zählung liegt jetzt in `scripts/pruefen/loc.mjs`, weil `pruefen.mjs` und das Gate dieselbe Zahl brauchen und PROPSA keine zweite Wahrheit je Regel duldet.
+
+**Behoben**
+
+- **`--delta` konvergiert nicht mehr:** Das Standard-Ausgabeverzeichnis `propsa-kontext/` stand in `.gitignore`, aber nicht im Ignorier-Katalog, den der Scanner tatsächlich liest. Ein Lauf gegen ein Projekt, das in sich selbst schreibt, zählte deshalb sein eigenes Paket: jeder weitere Lauf meldete „1 neu · 18 geändert", ohne dass sich etwas geändert hatte. Der in `CLAUDE.md` dokumentierte Smoke-Test „zweimal mit `--delta` — der zweite meldet 0 neu · 0 geändert" war unerreichbar. Der Katalog führt `propsa-kontext` jetzt in beiden Sprachen (`packages/core/src/filters.ts` ↔ `tauri-app/src-tauri/src/filter.rs`); zwei Läufe hintereinander melden 0 neu, 0 geändert, 0 entfernt.
+- **Tote Changelog-Kopie entfernt:** `tauri-app/src-tauri/resources/Changelog.md` wurde zur Laufzeit von niemandem gelesen — `tauri.conf.json` bündelt die Kopie aus dem `src-tauri`-Wurzelverzeichnis, und `fetch_changelog` löst genau diesen Namen auf. Drei Dateien behaupteten das Gegenteil, darunter der Kommentar im Spiegel-Skript. Es bleibt eine Kopie, und die Erfolgsmeldung von `npm run pruefen` zählt sie aus der Liste statt aus eines Literals.
+- **`gitignore` verankert:** `snapshots/`, `test-output/` und `logs/` standen ohne Anker und matchten damit jede gleichnamige Unterverzeichnis. `docs/snapshots/` mit seinen Modulindizes fiel darunter; `git add -A` lehnte die Dateien mit einer Warnung ab, der Commit lief trotzdem durch. `snapshots/` ist jetzt auf die Wurzel verankert, die generierten Berichte unter `docs/snapshots/` sind ausgenommen, deren `INDEX.json` sind versioniert.
+
+**Geändert**
+
+- **Namensbereinigung:** Die Herkunftsbezeichnung des Agentenprozesses ist aus dem Repository verschwunden — Ordner, Paketname, Servername, Logdateiname, Konfigurationsschlüssel, vier Werkzeugnamen, fünf Indexbeschreibungen und zwei Pfadverweise. `agents/shon-mcp-server/` heißt jetzt `agents/mcp-server`, die Werkzeuge heißen `propsa_*`. **Für die Konfiguration außerhalb des Repos:** Die MCP-Server-Einträge in den Claude-Code-Einstellungen zeigen noch auf die alten Namen und den alten Pfad, laufende Server müssen neu gestartet werden.
+- **`docs/shinon/` entfernt:** Der Ordner enthielt nur seine eigene `INDEX.json` und versprach drei Dateien, die nie existiert haben. Ein Index mit drei toten Verweisen ist schlechter als keiner, weil der Architektur-Check ihn als Beleg für gepflegten Bestand liest.
+
 ## 0.0.17
 
 **Neu**
