@@ -20,15 +20,8 @@
       "type": "directory",
       "name": "test-output",
       "path": "test-output/",
-      "description": "Ausgabe von Testläufen (kanont wird während der Entwicklung erzeugt).",
+      "description": "Ausgabe von Testläufen (wird während der Entwicklung erzeugt).",
       "index": "docs/test-output/INDEX.json"
-    },
-    {
-      "type": "directory",
-      "name": "shinon",
-      "path": "shinon/",
-      "description": "Informationen zum Shinon Agent (Monitoring-Tool).",
-      "index": "docs/shonon/INDEX.json"
     }
   ]
 }

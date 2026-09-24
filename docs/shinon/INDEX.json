@@ -1,9 +1,0 @@
-{
-  "version": "1.0",
-  "description": "Index of the docs/shinon directory: Informationen zum Shinon Agent (Monitoring-Tool).",
-  "contents": [
-    { "type": "file", "name": "README.md", "path": "README.md", "description": "Übersicht über den Shinon Agent." },
-    { "type": "file", "name": "hermes.md - Skill-Definition.md", "path": "hermes.md - Skill-Definition.md", "description": "Skill-Definition für den Shinon Agent im DSH-System." },
-    { "type": "file", "name": "shinon.md", "path": "shinon.md", "description": "Hauptdokumentation zum Shinon Agent." }
-  ]
-}
