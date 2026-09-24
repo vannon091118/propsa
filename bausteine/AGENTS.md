@@ -46,9 +46,12 @@ nicht darin, eine Funktion zu liefern.
   SVG und CSS, nach dem Muster von `tauri-app/src/HistoryGraph.tsx` und
   `tauri-app/src/StatistikKarten.tsx`. Kein Chart-Bibliothek-Eintrag.
 - **Kein Mermaid.** Die Doku nutzt ASCII in ```text-Fences, nach
-  `ARCHITECTURE.md`. Grund ist konkret: `scripts/pruefen/pruefen.mjs` erkennt
-  `](…)` per Regex **auch innerhalb von Code-Fences** — eine
-  Mermaid-Knotenverweisung bricht den Link-Check.
+  `ARCHITECTURE.md`. Grund ist konkret: Der Link-Check in
+  `scripts/pruefen/pruefen.mjs` erkennt Markdown-Verweise per Regex und
+  greift dabei **auch innerhalb von Code-Fences**. Eine Mermaid-Knotenverweisung
+  in der Form `Label(Ziel)` bricht den Check. Dasselbe gilt für dieses
+  Dokument: eine wörtliche Nennung des Verweismusters würde als toter Link
+  gemeldet.
 
 ## Das Gate-Schema
 

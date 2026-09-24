@@ -110,6 +110,7 @@ Pfad + Optionen
 | `live_anomalie.rs` | Anomalie-Erkennung (Spiegel zu `packages/core/src/live.ts`) |
 | `live_bremse.rs` | Intervall-Bremse: effektive Pause aus Baum-Größe |
 | `live_zeitreihe.rs` | Live-Zeitreihe als Leseansicht für Graph |
+| `vertrag.rs` | Baustein-Kataloge (Spiegel zu `packages/core/src/vertrag.ts`) |
 | `tray.rs` | Tray-Icon, Menü, Widget-Vordergrund-Hub |
 
 ### Geteilter Kern (`packages/core/src/`)
@@ -121,6 +122,7 @@ Pfad + Optionen
 | `schema.ts` | JSON-Vertrag (`kontext.json`, Schema v2) |
 | `live.ts` | Live-Kataloge: `ANOMALIE_SCHWERE`, `ANOMALIE_BESCHREIBUNGEN`, `ANOMALIE_SCHWELLEN` |
 | `zwischenspeicher.ts` | Cache-Vertrag: Version, Schema, Baum-Signatur |
+| `vertrag.ts` | Baustein-Vertrag: Typen und Kataloge (Gate-Punkte, Status-Werte, Ereignistypen) |
 | `datei.ts`, `update.ts` | Kleinere geteilte Typen/Hilfen |
 
 ## Wichtige Regeln (aus AGENTS.md)
@@ -148,6 +150,7 @@ Immer gemeinsam ändern und dann `npm run pruefen` ausführen:
 - `packages/core/src/history.ts` ↔ `tauri-app/src-tauri/src/history.rs`
 - `packages/core/src/live.ts` ↔ `tauri-app/src-tauri/src/live_anomalie.rs`
 - `packages/core/src/zwischenspeicher.ts` ↔ `tauri-app/src-tauri/src/zwischenspeicher.rs`
+- `packages/core/src/vertrag.ts` ↔ `tauri-app/src-tauri/src/vertrag.rs`
 
 Das Frontend (`tauri-app/src/typen.ts`) muss `STANDARD_AUSSCHLUESSE` aus `@propsa/core` importieren.
 

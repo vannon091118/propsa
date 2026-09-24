@@ -7,8 +7,6 @@ const root = process.cwd();
 const replacements = [
   // wiki
   { from: /(?!docs\/wiki\/)(wiki\/)/g, to: 'docs/wiki/' },
-  // shinon
-  { from: /(?!docs\/shinon\/)(shinon\/)/g, to: 'docs/shinon/' },
   // test-output
   { from: /(?!docs\/test-output\/)(test-output\/)/g, to: 'docs/test-output/' },
   // snapshots diffs

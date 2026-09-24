@@ -9,11 +9,8 @@ propsa-kontext/
 test-output/
 logs/
 snapshots/
-mcp-server/dist/
-mcp-server/node_modules/
 
-# Shinon-Monitor (separates Anliegen, eigenes Repo)
-shinon/
+# Werkzeug-Caches, die während der Arbeit entstehen
 .agents/
 .freebuff/
 
@@ -26,8 +23,8 @@ shinon/
 # Generierte Scan-Ausgabe in der Wurzel (1,2 MB, produced by PROPSA itself)
 /kontext.md
 
-# MCP-Server ist ein separates Werkzeug (shinon), kein PROPSA-Bestandteil
-/mcp-server/
+# Der Agentenprozess unter agents/ ist ein eigenständiges Paket mit eigener
+# Lockdatei und gehört nicht zum Root-Workspace.
 
 # Seitlich abgelegte Fremd-Skripte (nicht Teil von PROPSA)
 *.code.python

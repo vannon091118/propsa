@@ -6,7 +6,7 @@
       "type": "directory",
       "name": "shon-mcp-server",
       "path": "shon-mcp-server/",
-      "description": "Shon MCP server process.",
+      "description": "MCP-Server-Prozess: liest und schreibt Repository-Snapshots, Diffs und Logs.",
       "index": "agents/shon-mcp-server/INDEX.json"
     }
   ]
