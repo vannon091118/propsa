@@ -1,0 +1,11 @@
+#!/bin/sh
+# Commit-Haken – prüft den Commit-Text gegen das Regelwerk in AGENTS.md.
+#
+# Wird über core.hooksPath = .githooks aufgerufen. Aus Umgehung mit
+# `git commit --no-verify` möglich; die CI-Pipeline (.github/workflows/
+# release.yml) prüft den Text deshalb nicht erneut, sondern der
+# durchsetzbare Teil bleibt hier lokal.
+#
+# Der Haken bricht bei Exit-Code 1 ab. Die Meldungen kommen aus
+# scripts/pruefen/commit_gate.mjs, nicht aus diesem Skript.
+exec node "$(git rev-parse --show-toplevel)/scripts/pruefen/commit_gate.mjs" "$1"

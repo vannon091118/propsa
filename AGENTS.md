@@ -9,6 +9,18 @@
 - `npm run pruefen` ist vor jeder Abgabe Pflicht. Die harte Grenze sind 300 Quellzeilen; 200 ist die Zielgröße. Beim Berühren größerer Dateien nach Möglichkeit modularisieren.
 - Keine geplanten Funktionen, unbelegten Zahlen oder alten Produktnamen als vorhanden dokumentieren.
 
+## Commit-Gate
+
+Jeder Commit-Text wird von `scripts/pruefen/commit_gate.mjs` geprüft, aufgerufen über den Haken `.githooks/commit-msg` (`core.hooksPath` zeigt auf `.githooks/`). Fünf Regeln, alle maschinell:
+
+1. **PROPSA-Bildsprache.** Keine englischen Flusswörter, keine ASCII-Umschreibungen deutscher Umlaute. Wörtliches Werkzeugzitat in Anführungszeichen ist erlaubt — es ist eine Tatsache, keine Sprachwahl. Die Liste der Umschreibungen steht im Skript und ist bewusst ein Stammverzeichnis, keine Sprachprüfung: „pruefen" ist der Name des Prüfskripts und bleibt deshalb erlaubt.
+2. **Erklärung im Body.** Der Betreff allein zählt nicht als Begründung. Der Body nennt, warum geändert wurde, mindestens 120 Zeichen.
+3. **Jede gestagte Datei namentlich.** Das Gate liest die Dateien selbst aus dem Index (`git diff --cached --name-status -M`), bei Umbenennungen zählen alte und neue Pfade. Der Pfad muss wörtlich im Text stehen.
+4. **LOC-Zähler im Wortlaut.** Die Zeile `LOC: <Zahl> Dateien, größte <Zahl> Zeilen (Grenze 300)` muss stehen. Erzeugt wird sie aus `scripts/pruefen/loc.mjs` — dieselbe Quelle, die `npm run pruefen` zählt. Bei Abweichung nennt das Gate die erwartete Zeile.
+5. **Keine Aufzählungszeichen.** Weder `-`, `*`, `•` noch `1.` am Zeilenanfang. Ausgenommen sind die Trailer-Zeilen (`Co-Authored-By:`, `Reviewed-by:`, `Signed-off-by:`) und die `LOC:`-Zeile. Fließtext statt Liste.
+
+Umgehen lässt sich der Haken mit `git commit --no-verify`. Das ist Absicht: ein Gate, das sich nicht abschalten lässt, wird umgangen, indem man es löscht. Die CI (`release.yml`) läuft erst beim Tag-Push und ersetzt die lokale Prüfung nicht.
+
 ## Paketgrenzen und Einstiegspunkte
 
 - `package.json` ist die npm-Workspace-Wurzel und enthält nur `packages/*`; einziges Workspace-Mitglied ist `@propsa/core` unter `packages/core/`.

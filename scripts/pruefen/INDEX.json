@@ -1,7 +1,9 @@
 {
   "version": "1.0",
-  "description": "Index of the scripts/pruefen directory: Konsistenzprüfungs-Skript (pruefen).",
+  "description": "Index of the scripts/pruefen directory: Konsistenz- und Commit-Gates.",
   "contents": [
-    { "type": "file", "name": "pruefen.mjs", "path": "pruefen.mjs", "description": "Skript zur Durchführung der Konsistenzprüfung gemäß AGENTS.md (LOC, Versionen, Namen, Kataloge, Links, Spiegelungen).", "size": "418 bytes" }
+    { "type": "file", "name": "pruefen.mjs", "path": "pruefen.mjs", "description": "Konsistenzprüfung gemäß AGENTS.md (LOC, Versionen, Namen, Kataloge, Links, Spiegelungen)." },
+    { "type": "file", "name": "commit_gate.mjs", "path": "commit_gate.mjs", "description": "Commit-Gate: prüft Bildsprache, Body-Umfang, Nennung jeder gestagten Datei, LOC-Zähler und das Verbot von Aufzählungszeichen." },
+    { "type": "file", "name": "loc.mjs", "path": "loc.mjs", "description": "Gemeinsame LOC-Quelle für pruefen.mjs und commit_gate.mjs, damit die Zahl nur an einer Stelle entsteht." }
   ]
 }

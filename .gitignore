@@ -5,14 +5,22 @@ target/
 tauri-app/src-tauri/gen/
 
 # eigene Kontextpakete und Laufzeit-Ausgaben
-# Anker "/" am Anfang: die Ausgaben landen im Wurzelverzeichnis bzw. direkt
-# im aufrufenden Projekt. Ohne Anker matcht das Muster auch jede Unter-
-# verzeichnis gleichen Namens — und hat docs/snapshots/ mit erfasst, wo
-# versionierte Berichte liegen.
+# Anker "/" am Anfang: propsa-kontext/ und snapshots/ landen im Wurzel-
+# verzeichnis des aufrufenden Projekts. Ohne Anker matcht das Muster auch
+# jede gleichnamige Unterverzeichnis — und hat docs/snapshots/ mit
+# erfasst, wo die Modulindizes liegen.
 propsa-kontext/
-/test-output/
-/logs/
 /snapshots/
+
+# Generierte Ausgaben, wo immer sie entstehen: der Scan schreibt
+# test-output/, der Agentenprozess logs/. Beide bleiben unverankert, weil
+# die Ausgabe auch in einem Unterprojekt landen kann.
+test-output/
+logs/
+
+# Berichte unter docs/snapshots/ erzeugt der Agentenprozess bei jedem Lauf.
+# Die INDEX.json desselben Ordners sind Handpflege und versioniert.
+docs/snapshots/**/*.md
 
 # Werkzeug-Caches, die während der Arbeit entstehen
 .agents/

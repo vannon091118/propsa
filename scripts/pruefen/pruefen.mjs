@@ -3,7 +3,8 @@
  *
  *  1. Zeilenbegrenzung (300 LOC) für alle Quelldateien
  *  2. eine Version in package.json, Cargo.toml und tauri.conf.json
- *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles * 4. Ignorier-Katalog in Core, Rust und Frontend inhaltsgleich
+ *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles
+ *  4. Ignorier-Katalog in Core, Rust und Frontend inhaltsgleich
  * 5. alle relativen Links in den Dokumenten zeigen auf vorhandene Dateien
  * 6. Sprachkataloge (Endungen und Fences) in Core und Rust deckungsgleich
  *  7. Live-Kataloge (Schwere, Beschreibungen, Schwellen) Core ↔ Rust deckungsgleich
@@ -12,37 +13,20 @@
  *
  * Aufruf: `npm run pruefen`
  */
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join, relative, resolve, sep } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { changelogKopie } from "../changelog/changelog_kopie.mjs";
-
-const WURZEL = resolve(import.meta.dirname, "..", "..");
-const LOC_GRENZE = 300;
-const UEBERSPRUNGEN = new Set(["node_modules", "dist", "target", "gen", ".freebuff", ".agents", "test-output", "snapshots"]);
+import { WURZEL, dateienSammeln, locMessen, relativ } from "./loc.mjs";
 
 const fehler = [];
 
-function dateienSammeln(ordner, endungen, treffer = []) {
-  for (const eintrag of readdirSync(ordner, { withFileTypes: true })) {
-    if (UEBERSPRUNGEN.has(eintrag.name)) continue;
-    const pfad = join(ordner, eintrag.name);
-    if (eintrag.isDirectory()) dateienSammeln(pfad, endungen, treffer);
-    else if (endungen.some(endung => eintrag.name.endsWith(endung))) treffer.push(pfad);
-  }
-  return treffer;
+// 1. LOC – Zählung und Grenze kommen aus loc.mjs, dieselbe Quelle wie im
+//     Commit-Gate. Sonst hätte das Gate eine eigene Wahrheit über die Zahl.
+const mess = locMessen();
+for (const eintrag of mess.ueber) {
+  fehler.push(`${eintrag.pfad}: ${eintrag.zeilen} Zeilen (Grenze ${mess.grenze})`);
 }
-
-const relativer = pfad => relative(WURZEL, pfad).split(sep).join("/");
-
-// 1. LOC
-let groesste = 0;
-const quelldateien = dateienSammeln(WURZEL, [".ts", ".tsx", ".rs", ".mjs", ".js", ".css"]);
-for (const pfad of quelldateien) {
-  const zeilen = readFileSync(pfad, "utf8").split("\n").length;
-  groesste = Math.max(groesste, zeilen);
-  if (zeilen > LOC_GRENZE) fehler.push(`${relativer(pfad)}: ${zeilen} Zeilen (Grenze ${LOC_GRENZE})`);
-}
-console.log(`✓ Zeilenbegrenzung: ${quelldateien.length} Dateien geprüft, größte ${groesste} Zeilen (Grenze ${LOC_GRENZE})`);
+console.log(`✓ Zeilenbegrenzung: ${mess.dateien} Dateien geprüft, größte ${mess.groesste} Zeilen (Grenze ${mess.grenze})`);
 
 // 1b. Changelog-Spiegel: Die Kopie der Desktop-App muss der transformierten
 //     Quelle entsprechen. Gelesen wird genau eine Datei: tauri.conf.json
@@ -82,10 +66,10 @@ const NAME_AUSNAHMEN = new Set(["scripts/pruefen/pruefen.mjs", "wiki/Changelog.m
 // Links) sind Zitate, keine Quellen – darum von Namen-/Link-Prüfung
 // ausgenommen.
 const textdateien = dateienSammeln(WURZEL, [".ts", ".tsx", ".rs", ".mjs", ".js", ".json", ".md", ".html", ".svg"])
-  .filter(pfad => !pfad.endsWith("Cargo.lock") && !NAME_AUSNAHMEN.has(relativer(pfad)));
+  .filter(pfad => !pfad.endsWith("Cargo.lock") && !NAME_AUSNAHMEN.has(relativ(pfad)));
 for (const pfad of textdateien) {
   const inhalt = readFileSync(pfad, "utf8");
-  for (const name of ALTE_NAMEN) if (inhalt.includes(name)) fehler.push(`${relativer(pfad)}: alter Name "${name}"`);
+  for (const name of ALTE_NAMEN) if (inhalt.includes(name)) fehler.push(`${relativ(pfad)}: alter Name "${name}"`);
 }
 console.log(`✓ Namen: ${textdateien.length} Dateien (inklusive package-lock.json) auf alte Namen geprüft`);
 
@@ -110,14 +94,14 @@ else {
 }
 
 // 5. Links – kontext.md bleibt außen vor (generierte Zitate, siehe oben).
-const dokumente = dateienSammeln(WURZEL, [".md"]).filter(pfad => relativer(pfad) !== "kontext.md");
+const dokumente = dateienSammeln(WURZEL, [".md"]).filter(pfad => relativ(pfad) !== "kontext.md");
 let linkAnzahl = 0;
 for (const pfad of dokumente) {
   for (const treffer of readFileSync(pfad, "utf8").matchAll(/\]\(([^)]+)\)/g)) {
     const ziel = treffer[1].split("#")[0].trim();
     if (ziel === "" || /^(https?:|mailto:)/.test(ziel)) continue;
     linkAnzahl++;
-    if (!existsSync(resolve(dirname(pfad), ziel))) fehler.push(`${relativer(pfad)}: Link ins Leere → ${ziel}`);
+    if (!existsSync(resolve(dirname(pfad), ziel))) fehler.push(`${relativ(pfad)}: Link ins Leere → ${ziel}`);
   }
 }
 console.log(`✓ Links: ${linkAnzahl} relative Verweise in ${dokumente.length} Dokumenten geprüft`);
