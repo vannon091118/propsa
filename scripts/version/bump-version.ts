@@ -3,6 +3,7 @@
  * Usage: ts-node scripts/bump-version.ts <newVersion>
  * Updates:
  *   - package.json (root)
+ *   - packages/core/package.json (geteilter Kern, eigener Workspace)
  *   - tauri-app/package.json
  *   - tauri-app/src-tauri/Cargo.toml
  *   - tauri-app/src-tauri/tauri.conf.json
@@ -26,6 +27,14 @@ const WURZEL = resolve(__dirname, "..", "..");
 const files = [
   {
     path: join(WURZEL, "package.json"),
+    updater: (content: string): string => {
+      const obj = JSON.parse(content);
+      obj.version = newVersion;
+      return JSON.stringify(obj, null, 2) + "\n";
+    },
+  },
+  {
+    path: join(WURZEL, "packages/core/package.json"),
     updater: (content: string): string => {
       const obj = JSON.parse(content);
       obj.version = newVersion;
