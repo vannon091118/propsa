@@ -1,6 +1,6 @@
-# PROPSA – Desktop-App
+# PROPAKT – Desktop-App
 
-Dieser Ordner enthält die Oberfläche von PROPSA: Tauri v2 mit einem
+Dieser Ordner enthält die Oberfläche von PROPAKT: Tauri v2 mit einem
 Rust-Backend (`src-tauri/`) und einem React-Frontend (`src/`).
 
 ```bash

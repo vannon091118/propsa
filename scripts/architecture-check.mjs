@@ -1,5 +1,5 @@
 /**
- * Architecture-Check für das PROPSA-Repository.
+ * Architecture-Check für das PROPAKT-Repository.
  * Prüft, ob die Ownership- und Index-Struktur konsistent ist:
  * - Jede Datei gehört zu einem Modul (außer einer Whitelist von Dateien in der Wurzel).
  * - Jedes Modul besitzt eine INDEX.json-Datei.

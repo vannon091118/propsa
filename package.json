@@ -1,14 +1,14 @@
 {
-  "name": "propsa",
-  "version": "0.0.18",
-  "description": "PROPSA — Projekt-Scankontext als Kontextpaket für LLMs",
-  "main": "dist/propsa.js",
+  "name": "propakt",
+  "version": "0.0.19",
+  "description": "PROPAKT — Projekt-Scankontext als Kontextpaket für LLMs",
+  "main": "dist/propakt.js",
   "bin": {
-    "propsa": "./dist/propsa.js"
+    "propakt": "./dist/propakt.js"
   },
   "scripts": {
-    "build": "npm run build --workspace @propsa/core && tsc && tsc -p bausteine/tsconfig.json",
-    "start": "ts-node src/propsa.ts",
+    "build": "npm run build --workspace @propakt/core && tsc && tsc -p bausteine/tsconfig.json",
+    "start": "ts-node src/propakt.ts",
     "pruefen": "node scripts/pruefen/pruefen.mjs",
     "changelog:spiegeln": "node scripts/changelog/changelog_spiegeln.mjs",
     "installieren": "node scripts/installation/install.mjs",
@@ -21,7 +21,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@propsa/core": "*",
+    "@propakt/core": "*",
     "commander": "^15.0.0",
     "minimatch": "^10.2.6"
   },

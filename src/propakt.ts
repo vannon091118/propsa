@@ -1,10 +1,10 @@
 import { Command } from 'commander';
 import { scanDirectory, LimitFehler } from './scanner';
 import { formatContext } from './formatter';
-import { resolveExcludes, resolveIncludes } from '@propsa/core';
-import { ausschluesseMergen, PROPSAIGNORE_DATEI } from './propsaignore';
+import { resolveExcludes, resolveIncludes } from '@propakt/core';
+import { ausschluesseMergen, PROPAKTIGNORE_DATEI } from './propaktignore';
 import { paketBauen, paketSchreiben } from './paket';
-import { kontextAlsJson, zeitstempelJetzt } from '@propsa/core';
+import { kontextAlsJson, zeitstempelJetzt } from '@propakt/core';
 import { selektieren } from './slice';
 import { laufVerarbeiten } from './history';
 import { laufMitCache } from './zwischenspeicher';
@@ -15,10 +15,10 @@ import * as path from 'path';
 const program = new Command();
 
 program
-  .name('propsa')
+  .name('propakt')
   .description('Erzeugt aus einem Projektverzeichnis ein Kontextpaket für LLMs')
   .argument('<pfad>', 'Projektverzeichnis zum Scannen')
-  .option('-o, --output <ordner>', 'Zielordner des Kontextpakets', 'propsa-kontext')
+  .option('-o, --output <ordner>', 'Zielordner des Kontextpakets', 'propakt-kontext')
   .option('--einzeln <datei>', 'statt eines Pakets eine einzelne Datei schreiben (.md oder .json)')
   .option('-e, --exclude <muster>', 'Ausschluss-Pattern (komma-getrennt, z.B. node_modules,*.test.ts)')
   .option('-i, --include <muster>', 'Nur diese Pattern einbeziehen (komma-getrennt)')
@@ -28,8 +28,8 @@ program
   .option('--entrypoint <datei>', 'Slice: Einstiegsdatei plus lokale Import-Kette')
   .option('--depth <n>', 'Slice: nur Dateien bis zu dieser Ordnertiefe', parseInt)
   .option('--top-files <n>', 'Slice: nur die n größten Dateien nach Zeilen', parseInt)
-  .option('--delta', 'Delta zum letzten Lauf derselben Projekt-Identität melden (~/.propsa/history/)')
-  .option('--cache', 'Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (~/.propsa/cache/)')
+  .option('--delta', 'Delta zum letzten Lauf derselben Projekt-Identität melden (~/.propakt/history/)')
+  .option('--cache', 'Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (~/.propakt/cache/)')
   .action(async (pfad: string, options: {
     output: string;
     einzeln: string | undefined;
@@ -70,8 +70,8 @@ program
         resolveExcludes(options.exclude),
         []
       );
-      if (gemerged.propsaignoreAktiv) {
-        console.log(`📜 ${PROPSAIGNORE_DATEI} eingelesen (projektspezifische Ausschlüsse)`);
+      if (gemerged.propaktignoreAktiv) {
+        console.log(`📜 ${PROPAKTIGNORE_DATEI} eingelesen (projektspezifische Ausschlüsse)`);
       }
 
       const { ergebnis, ausZwischenspeicher } = await laufMitCache({
@@ -91,7 +91,7 @@ program
       console.log(`📄 ${ergebnis.dateien.length} Dateien gefunden`);
 
       if (ausZwischenspeicher) {
-        console.log('♻️  Zwischenspeicher-Treffer – Baum unverändert, Ergebnis aus ~/.propsa/cache/');
+        console.log('♻️  Zwischenspeicher-Treffer – Baum unverändert, Ergebnis aus ~/.propakt/cache/');
       }
 
       if (ergebnis.uebersprungen > 0) {

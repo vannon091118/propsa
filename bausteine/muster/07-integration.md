@@ -145,21 +145,21 @@ Formen ein, keine Wahrheiten.
 getrennt beantworten. Wer das braucht, hat entweder die Frage falsch geschnitten
 oder zwei Bausteine gebaut, wo einer hingehört.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-**PROPSA hat die Schichtenliste nicht – es hat zwei Oberflächen und einen
+**PROPAKT hat die Schichtenliste nicht – es hat zwei Oberflächen und einen
 Kern.**
 
 ```text
   CLI  (src/)                    Desktop-App  (tauri-app/)
        │                                  │
-       │            @propsa/core          │
+       │            @propakt/core          │
        └──────────────┬───────────────────┘
                       │
               Rust-Backend  (src-tauri/)
 ```
 
-Was PROPSA bereits macht und was dieses Muster bestätigt:
+Was PROPAKT bereits macht und was dieses Muster bestätigt:
 
 - **Katalog in beiden Sprachen.** `filters.ts` und `filter.rs` führen denselben
   Katalog. `npm run pruefen` vergleicht sie. Das ist Position 3, sauber
@@ -171,15 +171,15 @@ Was PROPSA bereits macht und was dieses Muster bestätigt:
   Kontextpakets. `Export-Schema.md` ist der Vertrag, beide Erzeuger halten
   sich daran.
 
-**Was PROPSA fehlt und dieses Muster liefert:** einen Vertrag *für den
-Austausch zwischen Bausteinen*. Heute ist `@propsa/core` die Wahrheit für
+**Was PROPAKT fehlt und dieses Muster liefert:** einen Vertrag *für den
+Austausch zwischen Bausteinen*. Heute ist `@propakt/core` die Wahrheit für
 Kataloge, aber es gibt keine Verträge für das, was ein Prüfer zurückgibt oder
 was eine Beobachtung beobachtet. Genau dafür sind die sieben Verträge in
 `bausteine/vertrage/` gedacht.
 
-**Was nicht daraus folgt:** PROPSA muss diese Schichten nicht übernehmen. Es
+**Was nicht daraus folgt:** PROPAKT muss diese Schichten nicht übernehmen. Es
 hat keine Orchestrierungsschicht und braucht keine. Die Positionen beschreiben,
-wo ein Baustein einzuordnen ist – nicht, dass PROPSA eine Positionsnummer
+wo ein Baustein einzuordnen ist – nicht, dass PROPAKT eine Positionsnummer
 bekommt.
 
 ## Siehe auch

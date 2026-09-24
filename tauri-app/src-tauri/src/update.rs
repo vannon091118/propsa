@@ -3,7 +3,7 @@
 //! Der Check holt den Stand der Fernquelle (`git fetch origin`) und vergleicht
 //! den lokalen HEAD mit `origin/main`; der Update-Lauf übernimmt per
 //! Fast-Forward und erneuert die Installation (`npm run installieren`).
-//! Vertrag (Typen) lebt in `@propsa/core` (`update.ts`).
+//! Vertrag (Typen) lebt in `@propakt/core` (`update.ts`).
 
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -12,11 +12,11 @@ use tauri::Emitter;
 
 /// Wo liegt die Projekt-Wurzel relativ zur laufenden Exe?
 ///
-/// In der Entwicklung: `tauri-app/src-tauri/target/(debug|release)/propsa.exe`
+/// In der Entwicklung: `tauri-app/src-tauri/target/(debug|release)/propakt.exe`
 /// → drei Ebenen hoch. Als Fallback das Arbeitsverzeichnis.
 fn projekt_wurzel() -> PathBuf {
     if let Ok(exe) = std::env::current_exe() {
-        // target/<profil>/propsa.exe → drei Eltern hoch.
+        // target/<profil>/propakt.exe → drei Eltern hoch.
         if let Some(wurzel) = exe
             .parent()
             .and_then(|p| p.parent())

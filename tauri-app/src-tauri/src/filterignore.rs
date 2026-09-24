@@ -1,7 +1,7 @@
-//! `.propsaignore`: projektspezifische Ausschlüsse im Projekt-Root.
+//! `.propaktignore`: projektspezifische Ausschlüsse im Projekt-Root.
 //!
 //! Die Datei ist versionierbar und ergänzt die eingebauten Ausschlüsse.
-//! Semantik (Spiegel zu `src/propsaignore.ts`):
+//! Semantik (Spiegel zu `src/propaktignore.ts`):
 //!
 //! - eine Zeile = ein Glob-Muster, `#`-Kommentare und Leerzeilen erlaubt,
 //! - `!muster` negiert: ein eingebautes Muster mit demselben Pfad-Präfix
@@ -12,17 +12,23 @@
 
 use std::path::Path;
 
-/// Liest `.propsaignore` (Spiegel zu `propsaignoreLesen` in der CLI);
+/// Liest `.propaktignore` (Spiegel zu `propaktignoreLesen` in der CLI);
 /// Kommentar- und Leerzeilen fallen weg.
-pub fn propsaignore_muster(basis: &Path) -> Vec<String> {
-    match std::fs::read_to_string(basis.join(".propsaignore")) {
-        Ok(inhalt) => inhalt
-            .lines()
-            .map(|zeile| zeile.trim().to_string())
-            .filter(|zeile| !zeile.is_empty() && !zeile.starts_with('#'))
-            .collect(),
-        Err(_) => Vec::new(),
+///
+/// Fehlt die neue Datei, wird auf den Altnamen `.propsaignore` zurückgefallen,
+/// damit bestehende Projektausschlüsse durch die Umbenennung nicht
+/// wirkungslos werden. Liegen beide vor, gewinnt der neue Name.
+pub fn propaktignore_muster(basis: &Path) -> Vec<String> {
+    for datei in [".propaktignore", ".propsaignore"] {
+        if let Ok(inhalt) = std::fs::read_to_string(basis.join(datei)) {
+            return inhalt
+                .lines()
+                .map(|zeile| zeile.trim().to_string())
+                .filter(|zeile| !zeile.is_empty() && !zeile.starts_with('#'))
+                .collect();
+        }
     }
+    Vec::new()
 }
 
 /// Normalisiert ein Muster auf seinen Pfad-Präfix (`vendor/**` → `vendor`).
@@ -33,11 +39,11 @@ fn praefix(muster: &str) -> String {
         .to_string()
 }
 
-/// Merged eingebaute Muster mit `.propsaignore` (Spiegel zu
+/// Merged eingebaute Muster mit `.propaktignore` (Spiegel zu
 /// `ausschluesseMergen` in der CLI).
-pub fn ausschluesse_mergen(eingebaute: &[String], propsaignore: &[String]) -> Vec<String> {
-    let negationen: Vec<&String> = propsaignore.iter().filter(|m| m.starts_with('!')).collect();
-    let positive: Vec<&String> = propsaignore.iter().filter(|m| !m.starts_with('!')).collect();
+pub fn ausschluesse_mergen(eingebaute: &[String], propaktignore: &[String]) -> Vec<String> {
+    let negationen: Vec<&String> = propaktignore.iter().filter(|m| m.starts_with('!')).collect();
+    let positive: Vec<&String> = propaktignore.iter().filter(|m| !m.starts_with('!')).collect();
 
     if negationen.is_empty() {
         let mut alle = eingebaute.to_vec();

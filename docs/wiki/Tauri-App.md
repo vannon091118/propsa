@@ -1,8 +1,8 @@
-# PROPSA – Tauri-App
+# PROPAKT – Tauri-App
 
 ## Was ist die Tauri-App?
 
-Die Desktop-Oberfläche von PROPSA: Tauri v2 mit Rust-Backend und React-Frontend,
+Die Desktop-Oberfläche von PROPAKT: Tauri v2 mit Rust-Backend und React-Frontend,
 rahmenlos (`decorations: false`) mit eigener Titelzeile in HTML/CSS
 (`src/TitleLeiste.tsx`; Fenster-Kniffe über `core:window`-Permissions in
 capabilities/default.json). Sie scannt Ordner, filtert Dateien, zeigt Umfang,
@@ -34,7 +34,7 @@ npm run tauri build   # Installer bauen
    Mit aktiver Delta-Checkbox zeigt ein zusätzlicher Block die Änderungen zum
    letzten Lauf (neu/geändert/entfernt/unverändert) und die Identität
    (Root-Commit-Hash, sonst Pfad). Die History
-   (`~/.propsa/history/<identitaet>.jsonl`) führt das Rust-Backend
+   (`~/.propakt/history/<identitaet>.jsonl`) führt das Rust-Backend
    (`src-tauri/src/history.rs`), Spiegel des CLI-Moduls `src/history.ts`.
 5. Zielordner wählen und Paket schreiben.
 
@@ -46,7 +46,7 @@ Die Aufteilung der Dateien im Frontend und im Rust-Backend steht in
 Der **Agenten-Wächter**: Tray-Background, Overlay-Widget mit Ampel und
 Live-Kennzahlen, Anomalie-Erkennung für parallele Agenten-Arbeiten
 (Flattern, Regressionen, Löschstürme), Persistenz in
-`~/.propsa/live/<identitaet>.db` (SQLite, WAL). Bedienung, Zyklus,
+`~/.propakt/live/<identitaet>.db` (SQLite, WAL). Bedienung, Zyklus,
 Bremse und Grenzen: [Live-Modus.md](Live-Modus.md).
 
 ## Vorschau ohne Rust-Build

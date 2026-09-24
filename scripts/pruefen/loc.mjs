@@ -1,7 +1,7 @@
 /**
  * Zeilenzählung – einzige Quelle für `npm run pruefen` und das Commit-Gate.
  *
- * Ausgelagert, weil zwei Skripte dieselbe Zahl brauchen und PROPSA keine
+ * Ausgelagert, weil zwei Skripte dieselbe Zahl brauchen und PROPAKT keine
  * zweite Wahrheit je Regel duldet: pruefen.mjs meldet die Grenzverletzung,
  * commit_gate.mjs verlangt genau diese Zahl im Commit-Body.
  *

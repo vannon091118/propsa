@@ -25,7 +25,7 @@ Der Neuaufbau folgt einer Regel: **Muster statt Zeilen.** Der Code der
 Bausteine wurde nicht übernommen, weil er die Regeln dieses Repos verletzt, an
 denen er gemessen wurde:
 
-| Kennzahl | PROPSA | Bausteine (schlechtester Wert) |
+| Kennzahl | PROPAKT | Bausteine (schlechtester Wert) |
 |---|---|---|
 | LOC-Grenze | 299 (Grenze 300, maschinell geprüft) | 1301, 1245, 1284 Zeilen in je einer Datei |
 | Datei-Zuordnung | 242 Dateien, alle in `INDEX.json` | 0 `INDEX.json` in allen sieben Bausteinen |
@@ -104,13 +104,13 @@ prüfbar.
 **Kein einziger Baustein läuft.** `bausteine/geraest/` enthält sieben leere
 Module, die das ausdrücklich sind.
 
-Was in PROPSA wirklich existiert, ist gemessen:
+Was in PROPAKT wirklich existiert, ist gemessen:
 
 | Baustein | Was echt ist | Status |
 |---|---|---|
 | Vermittlung | drei fest verdrahtete Anbieter in `tauri-app/src/llm.ts` | kein Routing, nur Direktzugriff |
 | Prüfung | `kritik_regeln.rs`, `paketKritik.ts` — das sind **Erzeuger**, keine Prüfer | keine Prüfschicht |
-| Beobachtung | `live_zyklus.rs` — aber ein geschlossener: Quelle und Speicher sind PROPSA selbst | kein Fremdzugriff |
+| Beobachtung | `live_zyklus.rs` — aber ein geschlossener: Quelle und Speicher sind PROPAKT selbst | kein Fremdzugriff |
 | Prompts | nichts Vergleichbares | — |
 | Laufzeit | `live_store.rs` (SQLite-WAL, append-only), `get_history_metrics` | Protokoll und Wiedergabe echt, **eine** Regel, kein Lernen |
 | Übersicht | `ErgebnisTabelle.tsx`, `StatistikKarten.tsx` — **eine** Quelle: das angegebene Verzeichnis | kein Leser-Register |
@@ -155,7 +155,7 @@ wäre die Spiegelung eine zweite Wahrheit statt einer.
 - **Handgeschriebenes SVG und CSS** für die Oberfläche, nach dem Muster von
   `tauri-app/src/HistoryGraph.tsx` und `tauri-app/src/StatistikKarten.tsx`.
   Keine Chart-Bibliothek: die Laufzeitabhängigkeiten der App sind
-  ausschliesslich `@propsa/core`, `@tauri-apps/api`, drei Tauri-Plugins, `react`
+  ausschliesslich `@propakt/core`, `@tauri-apps/api`, drei Tauri-Plugins, `react`
   und `react-dom`.
 
 ## Verwandte Dokumente

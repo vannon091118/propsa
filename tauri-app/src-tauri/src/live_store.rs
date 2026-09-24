@@ -1,5 +1,5 @@
 //! Persistenz des Live-Modus: SQLite im WAL-Modus unter
-//! `~/.propsa/live/<identitaet>.db` – eine Datenbank je Projekt-Identität
+//! `~/.propakt/live/<identitaet>.db` – eine Datenbank je Projekt-Identität
 //! (gleiche Identitätslogik wie die History in `history.rs`).
 //!
 //! Vertrag (Schwellwerte, Anomalie-Arten): `packages/core/src/live.ts`;
@@ -55,9 +55,9 @@ pub struct TickErgebnis {
     pub erstaufnahme: bool,
 }
 
-/// Ordner der Live-Datenbanken: `~/.propsa/live/`.
+/// Ordner der Live-Datenbanken: `~/.propakt/live/`.
 pub fn live_ordner() -> PathBuf {
-    crate::history::propsa_heim().join("live")
+    crate::history::propakt_heim().join("live")
 }
 
 /// Datenbank-Pfad einer Identität.

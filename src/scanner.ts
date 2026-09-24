@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { minimatch } from 'minimatch';
 import { dateiLesen, zeilenZaehlen } from './datei';
-import { IGNORIERTE_VERZEICHNISSE } from '@propsa/core';
-import { negierteVerzeichnisse } from './propsaignore';
-import { spracheErkennen } from '@propsa/core';
+import { IGNORIERTE_VERZEICHNISSE } from '@propakt/core';
+import { negierteVerzeichnisse } from './propaktignore';
+import { spracheErkennen } from '@propakt/core';
 
 export interface ScannerOptionen {
   basisPfad: string;
@@ -59,9 +59,9 @@ function passtMuster(muster: string, relativerPfad: string, name: string): boole
 
 /**
  * Excludes evaluated before Includes; empty Include means "all"
- * Negations (!muster from .propsaignore) are processed in order:
+ * Negations (!muster from .propaktignore) are processed in order:
  * A matching !… entry saves a file even if other Exclude matched
- * Order in excludes: built-in patterns, then positive .propsaignore,
+ * Order in excludes: built-in patterns, then positive .propaktignore,
  * then !… negations (mirrors ist_ausgeschlossen in filter.rs)
  */
 function istAusgeschlossen(
@@ -101,7 +101,7 @@ export function kanonischeReihenfolge(pfade: string[]): string[] {
 
 /**
  * Phase 1: collect all candidates and sort deterministically
- * !verzeichnis/-negations from .propsaignore lift the ban
+ * !verzeichnis/-negations from .propaktignore lift the ban
  */
 export async function kandidatenSammeln(
   basisPfad: string,

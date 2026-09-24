@@ -1,4 +1,11 @@
-# PROPSA – Changelog
+# PROPAKT – Changelog
+
+## 0.0.19
+
+**Geändert**
+
+- **Produkt umbenannt:** Aus PROPSA wird **PROPAKT** – **PRO**jekt-**PAKT**-kontext für Sprachmodelle. Der alte Name behauptete eine Herkunft („Parser für Repomix"), die es nicht (mehr) gab, und benannte den Inhaltskern nicht: das Produkt erzeugt vollständige, geordnete, ehrliche Kontextpakete. Der neue Name nennt, was es tut. Umbenannt sind Paketname, Befehl (`propakt`), geteilter Kern (`@propakt/core`), zentrale Ablage (`~/.propakt`), Ignore-Datei (`.propaktignore`), Standardausgabe (`propakt-kontext/`), Katalog, Banner und Werkzeugnamen. Die Desktop-App behält ihre Tauri-Kennung `com.vannon.propsa`, weil ein Wechsel die Update-Kette der installierten App brechen würde.
+- **Daten bleiben erhalten:** Eine vorhandene Ablage `~/.propsa` (History, Zwischenspeicher, Live-Datenbank) wird beim ersten Zugriff einmalig nach `~/.propakt` übernommen – in der CLI (`src/history.ts`), in der Desktop-App (`tauri-app/src-tauri/src/history.rs`) und beim Einrichten (`scripts/installation/install.mjs`). Bestehende Pakete unter `propsa-kontext/` und Ignore-Dateien `.propsaignore` werden weiterhin ausgeschlossen bzw. gelesen, damit die Umbenennung keine Datei außerhalb der Ablage verschluckt oder unwirksam macht.
 
 ## 0.0.18
 

@@ -13,7 +13,7 @@
     "declaration": true,
     "baseUrl": ".",
     "paths": {
-      "@propsa/core": ["packages/core/dist"]
+      "@propakt/core": ["packages/core/dist"]
     },
     "rootDir": "src"
   },

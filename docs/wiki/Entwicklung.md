@@ -1,4 +1,4 @@
-# PROPSA – Entwicklung
+# PROPAKT – Entwicklung
 
 ## Bauen
 
@@ -21,9 +21,9 @@ npm run tauri build    # Anwendung und Installer
 
 Ergebnis eines erfolgreichen Builds:
 
-- `tauri-app/src-tauri/target/release/propsa.exe`
-- `tauri-app/src-tauri/target/release/bundle/msi/PROPSA_0.1.0_x64_en-US.msi`
-- `tauri-app/src-tauri/target/release/bundle/nsis/PROPSA_0.1.0_x64-setup.exe`
+- `tauri-app/src-tauri/target/release/propakt.exe`
+- `tauri-app/src-tauri/target/release/bundle/msi/PROPAKT_0.1.0_x64_en-US.msi`
+- `tauri-app/src-tauri/target/release/bundle/nsis/PROPAKT_0.1.0_x64-setup.exe`
 
 ## Prüfen
 
@@ -40,9 +40,9 @@ Frontend sowie alle relativen Links in den Dokumenten.
 
 ## Stolperfallen (jede kostet sonst einen Build-Zyklus)
 
-1. **Laufende App blockiert den Build.** `propsa.exe` muss vor
+1. **Laufende App blockiert den Build.** `propakt.exe` muss vor
    `npm run tauri build` beendet sein, sonst scheitert das Überschreiben mit
-   `failed to remove propsa.exe`.
+   `failed to remove propakt.exe`.
 2. **Icons niemals mit `sharp` erzeugen.** `sharp` kann kein ICO und legt
    PNG-Daten unter `icon.ico` ab; der Build bricht dann mit
    `RC2175: resource file icon.ico is not in 3.00 format` ab. Stattdessen
@@ -74,7 +74,7 @@ Frontend sowie alle relativen Links in den Dokumenten.
 
 ## Deploy
 
-- **CLI:** über npm (`bin: propsa`) oder direkt über `ts-node`.
+- **CLI:** über npm (`bin: propakt`) oder direkt über `ts-node`.
 - **App:** Tauri-Bundle; aktiviert sind MSI und NSIS-Setup. Weitere Ziele lassen
   sich in `tauri.conf.json` unter `bundle.targets` ergänzen.
 

@@ -1,7 +1,7 @@
 {
-  "name": "propsa",
+  "name": "propakt",
   "private": true,
-  "version": "0.0.18",
+  "version": "0.0.19",
   "type": "module",
   "scripts": {
     "dev": "npm run build --prefix ../packages/core && vite",
@@ -11,7 +11,7 @@
     "tauri:exe": "tauri build --no-bundle"
   },
   "dependencies": {
-    "@propsa/core": "file:../packages/core",
+    "@propakt/core": "file:../packages/core",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.7.3",
     "@tauri-apps/plugin-fs": "^2.5.2",

@@ -6,15 +6,15 @@
       "type": "file",
       "name": "banner.svg",
       "path": "banner.svg",
-      "description": "Hauptbanner des PROPSA-Projekts.",
-      "size": "4857 bytes"
+      "description": "Hauptbanner des PROPAKT-Projekts.",
+      "size": "4858 bytes"
     },
     {
       "type": "file",
       "name": "logo.svg",
       "path": "logo.svg",
-      "description": "Logo des PROPSA-Projekts.",
-      "size": "1516 bytes"
+      "description": "Logo des PROPAKT-Projekts.",
+      "size": "1517 bytes"
     }
   ]
 }

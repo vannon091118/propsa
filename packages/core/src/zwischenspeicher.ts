@@ -26,7 +26,7 @@ export interface BaumEintrag {
 export const ZWISCHENSPEICHER_VERSION = 1;
 
 /** Kennzeichnet gültige Cache-Dateien im JSON. */
-export const ZWISCHENSPEICHER_SCHEMA = 'propsa-zwischenspeicher';
+export const ZWISCHENSPEICHER_SCHEMA = 'propakt-zwischenspeicher';
 
 /** Gespeicherter Lauf: Signatur plus Ergebnis. */
 export interface CacheEintrag<T> {

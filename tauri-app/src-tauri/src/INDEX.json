@@ -6,9 +6,9 @@
     { "type": "file", "name": "build.rs", "path": "build.rs", "description": "Build-Skript für zusätzliche Schritte.", "size": "106 bytes" },
     { "type": "directory", "name": "capabilities", "path": "capabilities/", "description": "Definiert die Fähigkeiten (Permissions) der Anwendung.", "index": "tauri-app/src-tauri/src/capabilities/INDEX.json" },
     { "type": "file", "name": "filter.rs", "path": "filter.rs", "description": "Musterabgleich und Ignorier-Katalog (Spiegel zu filters.ts).", "size": "1080 bytes" },
-    { "type": "file", "name": "filterignore.rs", "path": "filterignore.rs", "description": "Verarbeitung von `.propsaignore` im Backend (Spiegel zu propsaignore.ts).", "size": "426 bytes" },
+    { "type": "file", "name": "filterignore.rs", "path": "filterignore.rs", "description": "Verarbeitung von `.propaktignore` im Backend (Spiegel zu propaktignore.ts).", "size": "426 bytes" },
     { "type": "file", "name": "fortschritt.rs", "path": "fortschritt.rs", "description": "Ereignis `scan-fortschritt` für Fortschrittsanzeige.", "size": "162 bytes" },
-    { "type": "file", "name": "history.rs", "path": "history.rs", "description": "Delta/History im Backend: `~/.propsa/history/` und Identität.", "size": "1152 bytes" },
+    { "type": "file", "name": "history.rs", "path": "history.rs", "description": "Delta/History im Backend: `~/.propakt/history/` und Identität.", "size": "1152 bytes" },
     { "type": "file", "name": "kritik_regeln.rs", "path": "kritik_regeln.rs", "description": "Regeln für die Kritik-Erkennung (Schwellwerte, Befunde).", "size": "378 bytes" },
     { "type": "file", "name": "lib.rs", "path": "lib.rs", "description": "Builder, Plugins, registrierte Kommandos (Hauptbackend-Logik).", "size": "630 bytes" },
     { "type": "file", "name": "live_anomalie.rs", "path": "live_anomalie.rs", "description": "Anomalie-Erkennung (Spiegel zu live.ts).", "size": "1764 bytes" },
@@ -30,6 +30,6 @@
     { "type": "file", "name": "sprache.rs", "path": "sprache.rs", "description": "Sprache nach Endung und Codeblock-Kennung (Spiegel zu sprache.ts).", "size": "366 bytes" },
     { "type": "file", "name": "tray.rs", "path": "tray.rs", "description": "Tray-Icon, Menü, Widget-Vordergrund-Hub.", "size": "702 bytes" },
     { "type": "file", "name": "update.rs", "path": "update.rs", "description": "Auto-Updater: Kommandos `update_check` und `update_ausfuehren`.", "size": "912 bytes" },
-    { "type": "file", "name": "zwischenspeicher.rs", "path": "zwischenspeicher.rs", "description": "Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik (Spiegel zu zwischenspeicher.ts).", "size": "1062 bytes" }
+    { "type": "file", "name": "zwischenspeicher.rs", "path": "zwischenspeicher.rs", "description": "Scan-Cache: Baum-Signatur, `~/.propakt/cache/`, Treffer-Logik (Spiegel zu zwischenspeicher.ts).", "size": "1062 bytes" }
   ]
 }

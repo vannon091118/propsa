@@ -29,7 +29,7 @@ export function updateKommandoRegistrieren(program: Command): void {
       }
       console.log('⬆️  Update verfügbar.');
       if (options.nurPruefen) {
-        console.log('   (nur geprüft – zum Übernehmen: propsa update)');
+        console.log('   (nur geprüft – zum Übernehmen: propakt update)');
         return;
       }
       console.log('▸ Übernehme Commits (fast-forward) und installiere neu …');

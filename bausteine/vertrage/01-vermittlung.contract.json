@@ -21,7 +21,7 @@
   "output": {
     "description": "Antwort des gewaehlten Anbieters, mit Herkunftsangabe.",
     "fields": {
-      "quelle": { "enum": ["direkt", "vermittelt"], "description": "Wohin die Anfrage ging. PROPSA faellt auf 'direkt' zurueck, wenn kein Vermittler laeuft." },
+      "quelle": { "enum": ["direkt", "vermittelt"], "description": "Wohin die Anfrage ging. PROPAKT faellt auf 'direkt' zurueck, wenn kein Vermittler laeuft." },
       "deployment": { "type": "string", "description": "Gewaehltes Deployment, fuer die Diagnose." },
       "schluessel_zustand": { "enum": ["bereit", "abkuehlung", "tot"], "description": "Zustand nach der Anfrage." },
       "antwort": { "type": "string", "description": "Inhalt der Antwort." }
@@ -87,7 +87,7 @@
     },
     "last_verified_against_code": null,
     "known_gaps": [
-      "Kein laufender Baustein. PROPSA nutzt weiterhin drei fest verdrahtete Anbieter in tauri-app/src/llm.ts.",
+      "Kein laufender Baustein. PROPAKT nutzt weiterhin drei fest verdrahtete Anbieter in tauri-app/src/llm.ts.",
       "Die automatische Routing-Politik ist eine bewusste Entscheidung, keine offene Aufgabe."
     ]
   }

@@ -16,7 +16,7 @@
 //! gelesen und gespeichert. Ein Guardrail-Abbruch schreibt nie in den Cache.
 
 use crate::filter::{datei_lesen, kandidaten_sammeln, Kandidat};
-use crate::filterignore::{ausschluesse_mergen, propsaignore_muster};
+use crate::filterignore::{ausschluesse_mergen, propaktignore_muster};
 use crate::fortschritt::{ScanFortschritt, INTERVALL};
 use crate::history::{lauf_verarbeiten, DeltaInfo};
 use crate::sprache::sprache_fuer_endung;
@@ -198,10 +198,10 @@ pub fn scan(
     };
 
     // Projektspezifische Ausschlüsse: eingebaute Muster + `-e` +
-    // `.propsaignore` (positiv und `!…`-Negation, Spiegel zu
-    // `src/propsaignore.ts`).
-    let propsaignore = propsaignore_muster(basis);
-    let mut alle_excludes = ausschluesse_mergen(&exclude_muster, &propsaignore);
+    // `.propaktignore` (positiv und `!…`-Negation, Spiegel zu
+    // `src/propaktignore.ts`).
+    let propaktignore = propaktignore_muster(basis);
+    let mut alle_excludes = ausschluesse_mergen(&exclude_muster, &propaktignore);
     alle_excludes.extend(exclude_muster.iter().cloned());
 
     // Ein einziger Kandidaten-Gang für Signatur und Scan – die Signatur
@@ -219,7 +219,7 @@ pub fn scan(
             &optionen,
         ) {
             // Frische Hülle: Zeitstempel und Identität gehören zur Anfrage,
-            // nicht zum gespeicherten Lauf (Spiegel zu `propsa.ts`).
+            // nicht zum gespeicherten Lauf (Spiegel zu `propakt.ts`).
             ergebnis.zeitstempel = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
             ergebnis.identitaet = identitaet;
             if delta {

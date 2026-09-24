@@ -47,12 +47,12 @@ in verschiedenen Daten, wäre der Vergleich wertlos.
 
 Dies ist der einzige Baustein mit echtem teilweisem Bestand:
 
-| Abschnitt | Status | In PROPSA |
+| Abschnitt | Status | In PROPAKT |
 |---|---|---|
 | `protokoll` | `IMPLEMENTED` | SQLite-WAL, append-only (`live_store.rs`) |
 | `wiedergabe` | `IMPLEMENTED` | `get_history_metrics`, Vergleich in `HistoryGraph.tsx` |
 | `lernen` | `STUB` | nichts |
-| `genau_ein_gate` | `STUB` | PROPSA hat kein solches Gate |
+| `genau_ein_gate` | `STUB` | PROPAKT hat kein solches Gate |
 
 Die Einschränkung bei `wiedergabe` ist wichtig: **es gibt nur eine Regel.** Die
 zweite Sicht ist ungebaut. Dass die erste funktioniert, ist kein Beweis, dass

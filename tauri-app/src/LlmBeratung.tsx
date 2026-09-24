@@ -26,7 +26,7 @@ type Props = {
 };
 
 /** Store-Ablage (nur Maske + Konfiguration — nie der Klartext!). */
-const SPEICHER = "propsa-einstellungen.json";
+const SPEICHER = "propakt-einstellungen.json";
 const SCHLUESSEL = "llm_konfig";
 
 /** Gespeicherte Konfiguration (Maske statt Key). */

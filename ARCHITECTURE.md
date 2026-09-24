@@ -2,14 +2,14 @@
 
 ## Überblick
 
-**PROPSA** verwandelt ein Projektverzeichnis in ein Kontextpaket für
+**PROPAKT** verwandelt ein Projektverzeichnis in ein Kontextpaket für
 Sprachmodelle. Es gibt zwei Oberflächen:
 
 - **CLI** (TypeScript, `src/`) – Skripting und Automatisierung.
 - **Desktop-App** (Tauri v2, Rust + React, `tauri-app/`) – klickbasierte Bedienung.
 
 Beide teilen den **Vertrag**; die TypeScript-Seite des Vertrags lebt im
-eigenen Paket **`@propsa/core`** (`packages/core/`). Verbindlich sind
+eigenen Paket **`@propakt/core`** (`packages/core/`). Verbindlich sind
 [docs/wiki/Export-Schema.md](docs/wiki/Export-Schema.md) (JSON) und
 [docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md) (Dateien des Pakets).
 
@@ -52,15 +52,15 @@ Fortschritt sind eigene Ausgabe, keine Fremdbibliothek.
 
 | Modul | Aufgabe |
 |---|---|
-| `packages/core/src/` | **@propsa/core**: geteilter Kern (Sprache, Filter, Domänen, Schema) |
-| `src/propsa.ts` | Einstieg: Argumente, Ablauf, Ausgabe |
+| `packages/core/src/` | **@propakt/core**: geteilter Kern (Sprache, Filter, Domänen, Schema) |
+| `src/propakt.ts` | Einstieg: Argumente, Ablauf, Ausgabe |
 | `src/update.ts` | Git-basierter Auto-Updater: Check + Update-Lauf |
 | `src/scanner.ts` | Kandidaten sammeln, sortieren, Guardrails und Zähler |
 | `src/slice.ts` | Slice-Selektoren: `--entrypoint`, `--depth`, `--top-files` |
-| `src/history.ts` | Delta/History: `~/.propsa/history/`, Root-Commit-Identität |
-| `src/zwischenspeicher.ts` | Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik |
+| `src/history.ts` | Delta/History: `~/.propakt/history/`, Root-Commit-Identität |
+| `src/zwischenspeicher.ts` | Scan-Cache: Baum-Signatur, `~/.propakt/cache/`, Treffer-Logik |
 | `packages/core/src/filters.ts` | Include/Exclude-Muster und Katalog der Ignorierten |
-| `src/propsaignore.ts` | `.propsaignore`: projektspezifische Ausschlüsse laden/mergen |
+| `src/propaktignore.ts` | `.propaktignore`: projektspezifische Ausschlüsse laden/mergen |
 | `src/datei.ts` | Datei lesen, Binär-/Leerdateien erkennen, Zeilen zählen |
 | `packages/core/src/sprache.ts` | Sprache nach Endung, Codeblock-Kennung |
 | `packages/core/src/domaene.ts` | Domänen-Regel und Dateinamen im Paket |
@@ -89,14 +89,14 @@ schreibt das Backend, Capabilities und Plugins bleiben dadurch deckungsgleich
 | `src-tauri/src/domaene.rs` | Domänen-Regel |
 | `src-tauri/src/paketbasis.rs`, `pakettexte.rs`, `paketquellen.rs` | Pakettexte |
 | `src-tauri/src/kritik_regeln.rs`, `paketkritik.rs` | `Kritik.md` (Schwellwerte, Befunde) |
-| `src-tauri/src/history.rs` | Delta/History im Backend: `~/.propsa/history/`, Identität |
-| `src-tauri/src/zwischenspeicher.rs` | Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik (Spiegel zu `src/zwischenspeicher.ts`) |
-| `src-tauri/src/filterignore.rs` | `.propsaignore` im Backend (Spiegel zu `src/propsaignore.ts`) |
+| `src-tauri/src/history.rs` | Delta/History im Backend: `~/.propakt/history/`, Identität |
+| `src-tauri/src/zwischenspeicher.rs` | Scan-Cache: Baum-Signatur, `~/.propakt/cache/`, Treffer-Logik (Spiegel zu `src/zwischenspeicher.ts`) |
+| `src-tauri/src/filterignore.rs` | `.propaktignore` im Backend (Spiegel zu `src/propaktignore.ts`) |
 | `src-tauri/src/schema.rs` | JSON-Vertrag |
 | `src-tauri/src/sprache.rs` | Sprache und Codeblock-Kennung |
 | `src-tauri/src/fortschritt.rs` | Ereignis `scan-fortschritt` |
 | `src-tauri/src/update.rs` | Auto-Updater: Kommandos `update_check`, `update_ausfuehren` |
-| `src-tauri/src/live_store.rs` | Live-Speicher: SQLite-WAL `~/.propsa/live/<identitaet>.db` (Snapshots, Änderungen, Anomalien, Bestand, Kürzung) |
+| `src-tauri/src/live_store.rs` | Live-Speicher: SQLite-WAL `~/.propakt/live/<identitaet>.db` (Snapshots, Änderungen, Anomalien, Bestand, Kürzung) |
 | `src-tauri/src/live_zyklus.rs` | Live-Tick-Kern: Kandidaten, Baum-Signatur, Vergleich, Änderungen (pur, getestet) |
 | `src-tauri/src/live_kommandos.rs` | Live-Kommandos `live_start`/`live_stop`/`live_status`, Zyklus-Thread |
 | `src-tauri/src/live_takt.rs` | Live-Taktgeber-Loop: Ticks, Ereignisse, Tray-Alarm, Beruhigung |
@@ -137,7 +137,7 @@ Beide Seiten setzen dieselben Regeln um:
 
 - **Ignorier-Katalog:** Verzeichnisse wie `node_modules`, `.venv`, `target` oder
   `__pycache__` werden nie betreten. Die Liste lebt in
-  `packages/core/src/filters.ts` (@propsa/core); das Frontend bezieht die
+  `packages/core/src/filters.ts` (@propakt/core); das Frontend bezieht die
   Vorbelegung seines Ausschlussfelds von dort, das Rust-Backend spiegelt sie
   (`src-tauri/src/filter.rs`); `npm run pruefen` vergleicht die Kataloge.
 - **Muster:** `*` überspannt keinen Verzeichnistrenner, Punktdateien sind
@@ -154,22 +154,22 @@ Beide Seiten setzen dieselben Regeln um:
 ## Bewusste Grenzen
 
 - **Geteilter Kern statt geteilter Baustelle:** TypeScript-Regeln (Sprache,
-  Filterkatalog, Domänen, Schema) leben einmal in `@propsa/core`
+  Filterkatalog, Domänen, Schema) leben einmal in `@propakt/core`
   (`packages/core/src/`) und werden von der CLI importiert. Das Rust-Backend
   spiegelt sie; der Abgleich bleibt als Prüfung organisiert (`npm run pruefen`).
-- **Kein Git-Zugriff im Scan:** PROPSA liest das Dateisystem. Einzige
+- **Kein Git-Zugriff im Scan:** PROPAKT liest das Dateisystem. Einzige
   Ausnahme: die Delta-Module (`src/history.ts`, `src-tauri/src/history.rs`)
   fragen für die Identität den Root-Commit-Hash ab (`git rev-list
   --max-parents=0 HEAD`); Version, Branch oder Änderungen im Paket selbst
   bleiben außen vor.
 - **Zwei Delta-Umsetzungen, ein Format:** CLI (`--delta`) und App (Checkbox
   „Änderungen zum letzten Lauf melden“) führen dieselbe zentrale History
-  (`~/.propsa/history/<identitaet>.jsonl`) mit derselben Identitätslogik;
+  (`~/.propakt/history/<identitaet>.jsonl`) mit derselben Identitätslogik;
   der JSON-Vertrag `kontext.json` (Schema v2) bleibt delta-frei.
 - **Zwischenspeicher in CLI und App:** `--cache` (CLI) bzw. der Schalter
   „Unveränderten Baum aus dem Cache holen“ (App) überspringen das Lesen,
   wenn die Baum-Signatur (Pfad, Größe, Änderungszeit) unverändert ist;
-  der Vertrag lebt in `@propsa/core` (`zwischenspeicher.ts`), die
+  der Vertrag lebt in `@propakt/core` (`zwischenspeicher.ts`), die
   Umsetzungen in `src/zwischenspeicher.ts` (CLI) und
   `src-tauri/src/zwischenspeicher.rs` (App). Version und Schema beider
   Seiten vergleicht `npm run pruefen`.

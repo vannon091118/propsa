@@ -2,6 +2,6 @@
   "version": "1.0",
   "description": "Index of the plan directory: Implementierungspläne und Dokumente zur Projektentwicklung.",
   "contents": [
-    { "type": "file", "name": "repo-cleanup-and-restructuring-1.md", "path": "repo-cleanup-and-restructuring-1.md", "description": "Konkreter Umsetzungsplan zur Bereinigung und Restrukturierung des PROPSA-Repositories." }
+    { "type": "file", "name": "repo-cleanup-and-restructuring-1.md", "path": "repo-cleanup-and-restructuring-1.md", "description": "Konkreter Umsetzungsplan zur Bereinigung und Restrukturierung des PROPAKT-Repositories." }
   ]
 }

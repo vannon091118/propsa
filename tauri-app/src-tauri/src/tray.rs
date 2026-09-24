@@ -20,14 +20,14 @@ use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Manager};
 
 /// Kennung des Tray-Icons (für spätere Zustands-Änderungen).
-const TRAY_ID: &str = "propsa-tray";
+const TRAY_ID: &str = "propakt-tray";
 
 /// Kennung des Overlay-Fensters (wie in `tauri.conf.json`).
 const OVERLAY_LABEL: &str = "overlay";
 
 /// Tray-Icon und Menü einrichten. Genau einmal beim Start aufrufen.
 pub fn init_tray(app: &AppHandle) -> Result<(), String> {
-    let oeffnen = MenuItemBuilder::with_id("oeffnen", "PROPSA öffnen")
+    let oeffnen = MenuItemBuilder::with_id("oeffnen", "PROPAKT öffnen")
         .build(app)
         .map_err(|fehler| format!("Menüpunkt nicht baubar: {fehler}"))?;
     let widget = MenuItemBuilder::with_id("widget", "Live-Widget zeigen")
@@ -54,7 +54,7 @@ pub fn init_tray(app: &AppHandle) -> Result<(), String> {
         .map_err(|fehler| format!("Tray-Menü nicht baubar: {fehler}"))?;
 
     let mut bauer = TrayIconBuilder::with_id(TRAY_ID)
-        .tooltip("PROPSA – Live-Wächter bereit")
+        .tooltip("PROPAKT – Live-Wächter bereit")
         .menu(&menue)
         .on_menu_event(|app, ereignis| match ereignis.id().as_ref() {
             "oeffnen" => {
@@ -114,13 +114,13 @@ pub fn forward_to_overlay(app: &AppHandle) -> bool {
 /// ruhige Tick räumt ihn mit `beruhigen` wieder weg.
 pub fn alarm_melden(app: &AppHandle, text: &str) {
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
-        let _ = tray.set_tooltip(Some(format!("⚠ PROPSA Live: {text}")));
+        let _ = tray.set_tooltip(Some(format!("⚠ PROPAKT Live: {text}")));
     }
 }
 
 /// Tooltip nach einer Beruhigung zurücksetzen.
 pub fn beruhigen(app: &AppHandle) {
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
-        let _ = tray.set_tooltip(Some("PROPSA – Live-Wächter bereit"));
+        let _ = tray.set_tooltip(Some("PROPAKT – Live-Wächter bereit"));
     }
 }

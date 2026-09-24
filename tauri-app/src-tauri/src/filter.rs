@@ -5,7 +5,7 @@
 //! Build-Artefakten“. Die TypeScript-Wahrheit steht im Core
 //! (`packages/core/src/filters.ts`); das Frontend bezieht die Vorbelegung
 //! von dort, dieser Spiegel wird per `npm run pruefen` verglichen.
-//! `.propsaignore`-Logik liegt in `filterignore.rs`.
+//! `.propaktignore`-Logik liegt in `filterignore.rs`.
 
 use glob::Pattern;
 use std::fs;
@@ -28,14 +28,18 @@ const IGNORIERTE_VERZEICHNISSE: &[&str] = &[
     ".npm", ".pnpm-store", ".yarn", ".gradle", ".m2",
     // Editor-Metadaten
     ".idea", ".vscode",
-    // PROPSA-History (gehört nie in ein Paket)
+    // PROPAKT-History (gehört nie in ein Paket)
+    ".propakt",
     ".propsa",
     // Wegwerf-Verzeichnisse (Artefakte, kein Quelltext)
     ".tmp",
-    // Standard-Ausgabeverzeichnis von PROPSA selbst. Ohne diesen Eintrag
+    // Standard-Ausgabeverzeichnis von PROPAKT selbst. Ohne diesen Eintrag
     // scannt ein Lauf sein eigenes Paket mit: der nächste Lauf zählt die
     // gerade geschriebenen Dateien als neu und geändert, und `--delta`
     // konvergiert nie. Siehe CLAUDE.md, Smoke-Tests.
+    "propakt-kontext",
+    // Altname vor der Umbenennung: vorhandene Pakete bleiben ausgeschlossen,
+    // sonst wandern sie in das nächste Paket mit.
     "propsa-kontext",
 ];
 
@@ -82,10 +86,10 @@ pub fn passt_muster(muster: &str, pfad: &str, datei_name: &str) -> bool {
 
 /// Excludes greifen vor Includes; leere Include-Liste bedeutet „alles“.
 ///
-/// Negationen (`!muster`) aus `.propsaignore` werden hier ausgewertet: Ein
+/// Negationen (`!muster`) aus `.propaktignore` werden hier ausgewertet: Ein
 /// getroffener `!…`-Eintrag rettet eine Datei, selbst wenn ein anderes
 /// Exclude-Muster sie traf. Reihenfolge in `exclude`: eingebaute Muster,
-/// dann positive `.propsaignore`-Muster, dann `!…`-Negationen.
+/// dann positive `.propaktignore`-Muster, dann `!…`-Negationen.
 fn ist_ausgeschlossen(datei: &str, pfad: &str, include: &[String], exclude: &[String]) -> bool {
     let mut getroffen = false;
     for m in exclude {
@@ -139,7 +143,7 @@ pub fn kandidaten_sammeln(
     exclude_muster: &[String],
 ) -> Vec<Kandidat> {
     // `!verzeichnis/`-Negationen heben den Katalog für diese Namen auf
-    // (Spiegel zu `negierteVerzeichnisse` in `src/propsaignore.ts`).
+    // (Spiegel zu `negierteVerzeichnisse` in `src/propaktignore.ts`).
     let freigegebene =
         crate::filterignore::freigegebene_verzeichnisse(exclude_muster);
 

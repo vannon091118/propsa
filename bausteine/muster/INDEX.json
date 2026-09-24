@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "description": "Die sieben Muster, aufgeteilt nach ihrer Rolle. Jedes Muster steht auf drei Ebenen: Entscheidung (was wird getroffen), Mechanik (wie), Grenze (wann es nicht gilt).",
-  "konvention": "ASCII in ```text-Fences, nach dem Muster von ARCHITECTURE.md. Kein Mermaid: der Link-Check in pruefen.mjs erkennt ](…) auch innerhalb von Code-Fences, eine Mermaid-Knotenverweisung würde ihn brechen. Keine Chart-Bibliothek – die Laufzeitabhängigkeiten der App sind ausschliesslich @propsa/core, @tauri-apps/api, drei Tauri-Plugins, react und react-dom.",
+  "konvention": "ASCII in ```text-Fences, nach dem Muster von ARCHITECTURE.md. Kein Mermaid: der Link-Check in pruefen.mjs erkennt ](…) auch innerhalb von Code-Fences, eine Mermaid-Knotenverweisung würde ihn brechen. Keine Chart-Bibliothek – die Laufzeitabhängigkeiten der App sind ausschliesslich @propakt/core, @tauri-apps/api, drei Tauri-Plugins, react und react-dom.",
   "muster": [
     {
       "pfad": "01-vermittlung.md",

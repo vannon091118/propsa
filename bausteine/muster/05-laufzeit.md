@@ -102,14 +102,14 @@ Falsifikations-Gate-Implementierungen nebeneinander, 619 und 533 Zeilen, beide
 mit derselben Beschreibung. Welche gilt, war aus dem Code nicht zu
 beantworten. Ein Muster, das eine solche Frage offen lässt, ist kein Muster.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA hat keine Laufzeit im Sinne dieses Musters. Es hat einen Live-Modus mit
+PROPAKT hat keine Laufzeit im Sinne dieses Musters. Es hat einen Live-Modus mit
 Journal, Takt und Anomalie-Schwellen.
 
 Der Anschluss ist begrenzt und sollte begrenzt bleiben: Die Live-Zeitreihe ist
 ein Ereignisstrom, aber ohne Ableitung. Ein Betrieb, der „wir wollen
-selbstlernend besser werden" erwartet, baut etwas ein, das PROPSA nicht ist.
+selbstlernend besser werden" erwartet, baut etwas ein, das PROPAKT nicht ist.
 
 Was sich anbietet, ist bescheidener: die Live-Zeitreihe ist ein Rohprotokoll
 nach dem Muster – unveränderlich, mit Zeitstempel, wieder ablesbar. Der

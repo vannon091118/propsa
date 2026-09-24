@@ -124,9 +124,9 @@ unterscheiden zwischen „die Probe prüft die richtige Sache" und „die Probe 
 die richtige Form". Diese Grenze ist nicht überwindbar und wird hier
 ausdrücklich benannt, damit sie niemand versehentlich überschreitet.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA erzeugt heute `Kritik.md` über Schwellwerte – Dateigrösse, Logikmischung.
+PROPAKT erzeugt heute `Kritik.md` über Schwellwerte – Dateigrösse, Logikmischung.
 Das ist eine Mustererkennung nach festen Grenzwerten. Sie sagt: *diese Datei
 ist auffällig*. Sie sagt nicht: *diese Aussage über den Code ist falsch*.
 
@@ -134,7 +134,7 @@ Das Muster ersetzt die Schwellwerte nicht, es legt eine zweite Ebene darüber.
 `kritik_regeln.rs` bleibt, weil es ohne Modell läuft und sofort antwortet. Die
 Prüfung kommt als zusätzliche Instanz.
 
-**Die Bedingung:** PROPSA hat zwei Implementierungen. Die Auswertung eines
+**Die Bedingung:** PROPAKT hat zwei Implementierungen. Die Auswertung eines
 Urteils muss in `packages/core/src/` **und** in
 `tauri-app/src-tauri/src/` stehen, sonst antworten CLI und App
 verschieden. `npm run pruefen` vergleicht die Kataloge – dieser Mechanismus wird

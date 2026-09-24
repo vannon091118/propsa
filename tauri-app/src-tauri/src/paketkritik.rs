@@ -5,7 +5,7 @@ use crate::scan::{DateiInfo, ScanErgebnis};
 use std::collections::{BTreeSet, HashSet};
 
 fn kopf(titel: &str, scan: &ScanErgebnis, zusatz: &[String]) -> String {
-    let mut t = format!("# PROPSA – {}\n\n", titel);
+    let mut t = format!("# PROPAKT – {}\n\n", titel);
     t.push_str(&format!("**Projekt:** {}\n", scan.titel));
     t.push_str(&format!("**Erzeugt:** {}\n", scan.zeitstempel));
     for z in zusatz {

@@ -13,7 +13,7 @@
  * Was bereits existiert: `tauri-app/src/llm.ts` verdrahtet drei Anbieter
  * fest. Dieser Baustein würde sie ersetzen, nicht ergänzen.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

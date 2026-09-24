@@ -3,7 +3,7 @@
  *
  * Fünf Regeln, jede für sich maschinell prüfbar:
  *
- *  1. PROPSA-Bildsprache: keine englischen Flusswörter, keine ASCII-
+ *  1. PROPAKT-Bildsprache: keine englischen Flusswörter, keine ASCII-
  *     Umschreibungen deutscher Umlaute
  *  2. Erklärung im Body: der Betreff allein zählt nicht als Begründung
  *  3. jede gestagte Datei namentlich genannt

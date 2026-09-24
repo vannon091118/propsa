@@ -9,7 +9,7 @@
 //! `live_kommandos.rs`. Umsetzungsplan: `docs/wiki/Live-Modus-Plan.md`.
 
 use super::live_kommandos::{EREIGNIS_ANOMALIE, EREIGNIS_TICK};
-use crate::filterignore::{ausschluesse_mergen, propsaignore_muster};
+use crate::filterignore::{ausschluesse_mergen, propaktignore_muster};
 use crate::live_anomalie::{anomalien_schreiben, BeobachtungsStand};
 use crate::live_store::{
     bestand_entfernen, bestand_laden, bestand_setzen, kuerzen, oeffne_db_fuer_identitaet,
@@ -133,8 +133,8 @@ fn tick_ausfuehren(
 ) -> Result<TickAusgang, String> {
     let vorherige = letzte_signatur(verbindung)?;
     let vorheriger_bestand = bestand_laden(verbindung)?;
-    let propsaignore = propsaignore_muster(pfad);
-    let excludes = ausschluesse_mergen(&[], &propsaignore);
+    let propaktignore = propaktignore_muster(pfad);
+    let excludes = ausschluesse_mergen(&[], &propaktignore);
     let antwort = tick_berechnen(
         pfad,
         &[],

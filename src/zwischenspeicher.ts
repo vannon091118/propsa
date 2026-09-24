@@ -1,9 +1,9 @@
 /**
  * Scan-Zwischenspeicher (Node-Seite): baumSignatur aus dem Dateisystem,
- * Cache-Dateien unter `~/.propsa/cache/` und die Ablauf-Logik.
+ * Cache-Dateien unter `~/.propakt/cache/` und die Ablauf-Logik.
  *
  * Vertrag (Signatur, Treffer-Entscheidung, Format-Prüfung) lebt in
- * `@propsa/core` (`zwischenspeicher.ts`); dieses Modul enthält nur die
+ * `@propakt/core` (`zwischenspeicher.ts`); dieses Modul enthält nur die
  * Dateisystem-Arbeit. Der Schlüssel ist die Scan-Konfiguration (Pfad,
  * Muster, Limits) – nicht der Projektinhalt; der Inhalt steckt in der
  * Signatur.
@@ -20,16 +20,17 @@ import {
   ZWISCHENSPEICHER_VERSION,
   baumSignatur,
   cacheTreffer,
-} from '@propsa/core';
-import { PROPSA_HEIM } from './history';
+} from '@propakt/core';
+import { PROPAKT_HEIM, heimMigrieren } from './history';
 import { ScanErgebnis, ScannerOptionen, scanDirectory, kandidatenSammeln } from './scanner';
 
 const CACHE_ORDNER = 'cache';
 
-/** Cache-Datei einer Konfiguration: `~/.propsa/cache/<hash>.json`. */
+/** Cache-Datei einer Konfiguration: `~/.propakt/cache/<hash>.json`. */
 export function cachePfad(schluessel: string): string {
+  heimMigrieren();
   const hash = crypto.createHash('sha256').update(schluessel).digest('hex');
-  return path.join(PROPSA_HEIM, CACHE_ORDNER, `${hash}.json`);
+  return path.join(PROPAKT_HEIM, CACHE_ORDNER, `${hash}.json`);
 }
 
 /** Stabiler Schlüssel aus der Scan-Konfiguration (Pfad, Muster, Limits). */
@@ -102,7 +103,7 @@ export function speichereCache(
     schema: ZWISCHENSPEICHER_SCHEMA,
     version: ZWISCHENSPEICHER_VERSION,
     // Zeitpunkt des Speicherns; der Lauf-zeitstempel gehört zur Ausgabe,
-    // nicht zum Cache – ein Treffer erhält in propsa.ts einen frischen.
+    // nicht zum Cache – ein Treffer erhält in propakt.ts einen frischen.
     zeitstempel: new Date().toISOString(),
     signatur: baumSignatur(signatur),
     ergebnis,

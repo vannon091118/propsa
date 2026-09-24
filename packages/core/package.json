@@ -1,7 +1,7 @@
 {
-  "name": "@propsa/core",
-  "version": "0.0.18",
-  "description": "Geteilter Kern von PROPSA: Typen, Sprach-Erkennung, Filterkatalog, Domänen-Regel und Export-Schema",
+  "name": "@propakt/core",
+  "version": "0.0.19",
+  "description": "Geteilter Kern von PROPAKT: Typen, Sprach-Erkennung, Filterkatalog, Domänen-Regel und Export-Schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

@@ -13,7 +13,7 @@
 
 Jeder Commit-Text wird von `scripts/pruefen/commit_gate.mjs` geprüft, aufgerufen über den Haken `.githooks/commit-msg` (`core.hooksPath` zeigt auf `.githooks/`). Fünf Regeln, alle maschinell:
 
-1. **PROPSA-Bildsprache.** Keine englischen Flusswörter, keine ASCII-Umschreibungen deutscher Umlaute. Wörtliches Werkzeugzitat in Anführungszeichen ist erlaubt — es ist eine Tatsache, keine Sprachwahl. Die Liste der Umschreibungen steht im Skript und ist bewusst ein Stammverzeichnis, keine Sprachprüfung: „pruefen" ist der Name des Prüfskripts und bleibt deshalb erlaubt.
+1. **PROPAKT-Bildsprache.** Keine englischen Flusswörter, keine ASCII-Umschreibungen deutscher Umlaute. Wörtliches Werkzeugzitat in Anführungszeichen ist erlaubt — es ist eine Tatsache, keine Sprachwahl. Die Liste der Umschreibungen steht im Skript und ist bewusst ein Stammverzeichnis, keine Sprachprüfung: „pruefen" ist der Name des Prüfskripts und bleibt deshalb erlaubt.
 2. **Erklärung im Body.** Der Betreff allein zählt nicht als Begründung. Der Body nennt, warum geändert wurde, mindestens 120 Zeichen.
 3. **Jede gestagte Datei namentlich.** Das Gate liest die Dateien selbst aus dem Index (`git diff --cached --name-status -M`), bei Umbenennungen zählen alte und neue Pfade. Der Pfad muss wörtlich im Text stehen.
 4. **LOC-Zähler im Wortlaut.** Die Zeile `LOC: <Zahl> Dateien, größte <Zahl> Zeilen (Grenze 300)` muss stehen. Erzeugt wird sie aus `scripts/pruefen/loc.mjs` — dieselbe Quelle, die `npm run pruefen` zählt. Bei Abweichung nennt das Gate die erwartete Zeile.
@@ -23,23 +23,23 @@ Umgehen lässt sich der Haken mit `git commit --no-verify`. Das ist Absicht: ein
 
 ## Paketgrenzen und Einstiegspunkte
 
-- `package.json` ist die npm-Workspace-Wurzel und enthält nur `packages/*`; einziges Workspace-Mitglied ist `@propsa/core` unter `packages/core/`.
-- `tauri-app/` ist ein eigenständiges privates npm-Paket mit eigener Lockdatei und **kein** Root-Workspace-Mitglied. Es bindet `@propsa/core` per `file:../packages/core` und baut den Core in `dev` und `build` vorab.
+- `package.json` ist die npm-Workspace-Wurzel und enthält nur `packages/*`; einziges Workspace-Mitglied ist `@propakt/core` unter `packages/core/`.
+- `tauri-app/` ist ein eigenständiges privates npm-Paket mit eigener Lockdatei und **kein** Root-Workspace-Mitglied. Es bindet `@propakt/core` per `file:../packages/core` und baut den Core in `dev` und `build` vorab.
 - Das MCP-Paket unter `agents/` ist optional, eigenständig, hat eine eigene Lockdatei und gehört nicht zum Root-Workspace. Seinen genauen Pfad führt `agents/INDEX.json`.
-- CLI-Einstieg: `src/propsa.ts`; Core-Einstieg: `packages/core/src/index.ts`; Frontend-Einstieg: `tauri-app/src/main.tsx`; Rust-Start: `tauri-app/src-tauri/src/main.rs` → `lib.rs`.
+- CLI-Einstieg: `src/propakt.ts`; Core-Einstieg: `packages/core/src/index.ts`; Frontend-Einstieg: `tauri-app/src/main.tsx`; Rust-Start: `tauri-app/src-tauri/src/main.rs` → `lib.rs`.
 - Die aktuellen Eigentümer- und Dateiindizes stehen in `INDEX.json` und den jeweiligen Unterordner-`INDEX.json`; bei neuen oder verschobenen Dateien zuerst dort nachsehen. Der Datenfluss ist in `ARCHITECTURE.md` beschrieben.
-- Root und Core kompilieren nach CommonJS, das Tauri-Frontend als ESM. Deshalb ist `optimizeDeps.include: ["@propsa/core"]` in `tauri-app/vite.config.ts` nötig.
-- Laufzeitdaten liegen zentral unter `~/.propsa/` (`history/`, `cache/`, `live/`); der Output bleibt im angeforderten Ziel. History ist JSONL mit höchstens 50 Einträgen; Identität bevorzugt über den Root-Commit-Hash, sonst über den Pfad.
+- Root und Core kompilieren nach CommonJS, das Tauri-Frontend als ESM. Deshalb ist `optimizeDeps.include: ["@propakt/core"]` in `tauri-app/vite.config.ts` nötig.
+- Laufzeitdaten liegen zentral unter `~/.propakt/` (`history/`, `cache/`, `live/`); der Output bleibt im angeforderten Ziel. History ist JSONL mit höchstens 50 Einträgen; Identität bevorzugt über den Root-Commit-Hash, sonst über den Pfad.
 
 ## Verträge und Spiegel
 
-- `packages/core/src/` ist die einzige TypeScript-Quelle für Sprach-, Filter-, Domänen- und Schema-Regeln. Das Frontend bezieht `STANDARD_AUSSCHLUESSE` in `tauri-app/src/typen.ts` aus `@propsa/core`.
+- `packages/core/src/` ist die einzige TypeScript-Quelle für Sprach-, Filter-, Domänen- und Schema-Regeln. Das Frontend bezieht `STANDARD_AUSSCHLUESSE` in `tauri-app/src/typen.ts` aus `@propakt/core`.
 - Diese Core-/Rust-Paare synchron halten: `filters.ts` ↔ `filter.rs`, `sprache.ts` ↔ `sprache.rs`, `schema.ts` ↔ `schema.rs`, `domaene.ts` ↔ `domaene.rs`, `live.ts` ↔ `live_anomalie.rs`.
 - Cache: `packages/core/src/zwischenspeicher.ts` ↔ `src/zwischenspeicher.ts` ↔ `tauri-app/src-tauri/src/zwischenspeicher.rs`. History ist **nicht** im Core, sondern `src/history.ts` ↔ `tauri-app/src-tauri/src/history.rs`.
 - `npm run pruefen` vergleicht tatsächlich Filterkataloge, Sprach-/Fence-Kataloge, Live-Kataloge, Cache-Version und -Schema sowie die Baustein-Kataloge in `vertrag.ts` ↔ `vertrag.rs` (Gate-Punkte, Status-Werte, Ereignistypen); Schema, Domäne und History werden dort nicht automatisch verglichen.
 - Der Prüfer liest die betreffenden TypeScript-Objekte und Rust-`match`-Arme per Regex. Die Form der geprüften Deklarationen und Match-Arme nicht durch Umformatieren oder Umbenennen verändern.
 - Changelog-Quelle ist ausschließlich `docs/wiki/Changelog.md`. `npm run changelog:spiegeln` erzeugt daraus die eine Kopie `tauri-app/src-tauri/Changelog.md`; `npm run pruefen` vergleicht sie. Genau diese Datei bündelt `tauri-app/src-tauri/tauri.conf.json` unter `bundle.resources`, und genau sie löst `fetch_changelog` zur Laufzeit auf.
-- Produktname ausschließlich `PROPSA`. Die Versionsprüfung umfasst nur `package.json`, `tauri-app/package.json`, `tauri-app/src-tauri/Cargo.toml` und `tauri-app/src-tauri/tauri.conf.json`; Core-Paket und Lockfiles werden derzeit nicht mitgeprüft.
+- Produktname ausschließlich `PROPAKT`. Die Versionsprüfung umfasst nur `package.json`, `tauri-app/package.json`, `tauri-app/src-tauri/Cargo.toml` und `tauri-app/src-tauri/tauri.conf.json`; Core-Paket und Lockfiles werden derzeit nicht mitgeprüft.
 
 ## Befehle
 
@@ -81,7 +81,7 @@ cargo test
 cargo build --release --features custom-protocol
 ```
 
-- `npm run build` im Root baut zuerst `@propsa/core` und danach die CLI. `npm run build` in `tauri-app/` baut den Core, `tsc` und Vite. Es gibt kein separates Root-Lint-, Typecheck- oder Test-Skript; `npm run pruefen` führt keine Tests aus.
+- `npm run build` im Root baut zuerst `@propakt/core` und danach die CLI. `npm run build` in `tauri-app/` baut den Core, `tsc` und Vite. Es gibt kein separates Root-Lint-, Typecheck- oder Test-Skript; `npm run pruefen` führt keine Tests aus.
 - `npm run dev` im Tauri-Ordner ist nur Browser-/Layout-Vorschau über `src/devMock.ts`, kein Backend-Test. Für echte App-Funktionen `npm run tauri dev` verwenden.
 - `npm run tauri:exe` baut ohne Bundle; `npm run tauri build` erzeugt das konfigurierte Bundle. Für einen manuellen Rust-Release-Build ist `--features custom-protocol` zwingend.
 - Icon-Änderungen aus `tauri-app/` mit `node scripts/generate-icons.mjs` erzeugen; `sharp` nicht direkt für `.ico` verwenden.

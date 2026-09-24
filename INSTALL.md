@@ -1,4 +1,4 @@
-# PROPSA – Installation (kanonisch)
+# PROPAKT – Installation (kanonisch)
 
 Diese Datei ist die **einzige** verbindliche Installationsanleitung. Andere
 Dokumente verweisen auf sie, statt Schritte zu kopieren – so kann nur hier
@@ -19,10 +19,10 @@ Visual Studio Community mit „Desktopentwicklung mit C++“).
 ## CLI installieren
 
 ```bash
-git clone <repository-url> propsa    # oder Ordner herunterladen
-cd propsa
+git clone <repository-url> propakt    # oder Ordner herunterladen
+cd propakt
 npm install                          # Abhängigkeiten (commander, minimatch)
-npm run installieren                 # Build + zentrale Ablage ~/.propsa
+npm run installieren                 # Build + zentrale Ablage ~/.propakt
 ```
 
 Danach steht der Befehl auf zwei Wegen bereit:
@@ -30,7 +30,7 @@ Danach steht der Befehl auf zwei Wegen bereit:
 ```bash
 npm start -- <pfad> [optionen]       # aus dem Projektordner
 # oder global verlinken:
-npm link                             # danach: propsa <pfad> [optionen]
+npm link                             # danach: propakt <pfad> [optionen]
 ```
 
 Prüfen der Installation:
@@ -53,29 +53,29 @@ Für die Entwicklung genügt `npm run tauri dev`; für eine reine Layout-Vorscha
 ohne Rust-Build `npm run dev` (läuft über `src/devMock.ts` und beweist nur
 Layout und Bedienung, nie Backend-Verhalten).
 
-## Zentrale Ablage `~/.propsa`
+## Zentrale Ablage `~/.propakt`
 
 `npm run installieren` baut CLI und Core und richtet die zentrale Ablage im
 Benutzerverzeichnis ein:
 
 ```text
-~/.propsa/
+~/.propakt/
 ├── history/        Delta-History je Projekt-Identität (<hash>.jsonl)
 └── version.json    Installations-Metadaten (Version, Zeitstempel)
 ```
 
-Dort liegt alles, was PROPSA zwischen den Läufen behält – **außer dem
+Dort liegt alles, was PROPAKT zwischen den Läufen behält – **außer dem
 Output**: Kontextpakete und `--einzeln`-Dateien landen, wo sie angefordert
 werden. Im gescannten Projekt bleibt nichts zurück.
 
-**Entfernen:** `npm run deinstallieren` löscht `~/.propsa` nach Bestätigung
+**Entfernen:** `npm run deinstallieren` löscht `~/.propakt` nach Bestätigung
 und löst ein vorhandenes `npm link`. Ausgaben (Output) und der Projektordner
 selbst werden nicht angerührt.
 
 ## History/Delta einschalten (optional)
 
-Nichts zu konfigurieren: Ab dem ersten Lauf mit `--delta` legt PROPSA
-`~/.propsa/history/<identitaet>.jsonl` an – eine Datei je Projekt-Identität.
+Nichts zu konfigurieren: Ab dem ersten Lauf mit `--delta` legt PROPAKT
+`~/.propakt/history/<identitaet>.jsonl` an – eine Datei je Projekt-Identität.
 Ohne Git-Repository arbeitet die Identität über den normierten Pfad
 (Fallback), mit Git über den stabilen Root-Commit-Hash.
 

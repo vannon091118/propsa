@@ -9,17 +9,17 @@
 //! Wegwerf-Projekt: Grenze im Kleinen testen (Datei- und Zeilenseite),
 //! Fehlermeldungen verifizieren, Nicht-Auslösung unterhalb der Grenzen.
 
-use propsa_lib::live_zyklus::{limit_pruefen, tick_berechnen};
+use propakt_lib::live_zyklus::{limit_pruefen, tick_berechnen};
 use std::collections::HashMap;
 use std::fs;
 
 /// Der Katalog-Wert (Spiegel, damit die Tests bei Katalog-Änderung melden).
 fn max_dateien() -> usize {
-    propsa_lib::live_anomalie::schwellwert("live_max_dateien")
+    propakt_lib::live_anomalie::schwellwert("live_max_dateien")
 }
 
 fn max_zeilen() -> usize {
-    propsa_lib::live_anomalie::schwellwert("live_max_zeilen")
+    propakt_lib::live_anomalie::schwellwert("live_max_zeilen")
 }
 
 #[test]

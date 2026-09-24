@@ -1,9 +1,9 @@
-![PROPSA – Kontextpakete für Sprachmodelle](assets/banner.svg)
+![PROPAKT – Kontextpakete für Sprachmodelle](assets/banner.svg)
 
-# PROPSA
+# PROPAKT
 
-**PROPSA** (Parser für Repomix Organisiert Prompt-Systeme für Analysen) macht aus
-einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien statt
+**PROPAKT** (**PRO**jekt-**PAKT**kontext für Sprachmodelle) macht aus einem
+Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien statt
 eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 [English version](README.en.md)
@@ -22,7 +22,7 @@ Automatisierung, eine **Desktop-App** (Tauri v2, `tauri-app/`) zum Klicken.
 
 Weil ein Modell bei einem einzigen 12-MB-Dump den Zusammenhang verliert. Und
 weil eine still gekürzte Ausgabe gar nicht merken lässt, dass etwas fehlt.
-PROPSA folgt deshalb einem Prinzip: **Fail loud, never truncate silent.**
+PROPAKT folgt deshalb einem Prinzip: **Fail loud, never truncate silent.**
 
 - **vollständig** – jede Datei mit ganzem Inhalt, nie abgeschnitten,
 - **geordnet** – eine Datei je Domäne, damit ein Modell gezielt lesen kann,
@@ -48,7 +48,7 @@ Details: [docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md).
 
 ```bash
 npm install
-npm start /pfad/zu/meinem-projekt     # Paket nach ./propsa-kontext/
+npm start /pfad/zu/meinem-projekt     # Paket nach ./propakt-kontext/
 ```
 
 Die vollständige Installationsanleitung steht in [INSTALL.md](INSTALL.md) – sie ist
@@ -67,7 +67,7 @@ npm start ~/Code/mein-projekt --einzeln kontext.json
 
 | Flag | Bedeutung |
 |------|-----------|
-| `-o, --output <ordner>` | Zielordner des Pakets (Standard: `propsa-kontext`) |
+| `-o, --output <ordner>` | Zielordner des Pakets (Standard: `propakt-kontext`) |
 | `--einzeln <datei>` | Statt des Pakets eine einzelne Datei (`.md` oder `.json`) |
 | `-e, --exclude <muster>` | Weitere Glob-Muster zum Ausschließen (Komma-getrennt) |
 | `-i, --include <muster>` | Nur diese Muster einbeziehen (leer = alles) |
@@ -77,8 +77,8 @@ npm start ~/Code/mein-projekt --einzeln kontext.json
 | `--entrypoint <datei>` | Slice: Einstiegsdatei plus lokale Import-Kette |
 | `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe |
 | `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
-| `--delta` | Delta zum letzten Lauf melden (`~/.propsa/history/`) |
-| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propsa/cache/`) |
+| `--delta` | Delta zum letzten Lauf melden (`~/.propakt/history/`) |
+| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propakt/cache/`) |
 
 Standard ist ein **vollständiger Scan**: kein Limit. Die Vorgabe schließt nur
 Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
@@ -86,14 +86,14 @@ Abhängigkeiten, Versionsverwaltung, Build-Artefakte und Caches aus.
 – auch dann nicht, wenn das Ausschlussfeld leer ist.
 
 Projektspezifische, versionierbare Ausschlüsse gehören in eine
-**`.propsaignore`** im Projekt-Root (Glob-Muster je Zeile, `!muster` hebt
+**`.propaktignore`** im Projekt-Root (Glob-Muster je Zeile, `!muster` hebt
 einen Standard-Ausschluss auf). Details: [docs/wiki/CLI-Usage.md](docs/wiki/CLI-Usage.md).
 
 ### Delta und Zwischenspeicher
 
 Mit `--delta` (CLI) bzw. der Checkbox „Änderungen zum letzten Lauf melden“
-(App) meldet PROPSA die Änderungen zum letzten Lauf. Die History wohnt
-zentral im Benutzerverzeichnis (`~/.propsa/history/<identitaet>.jsonl`),
+(App) meldet PROPAKT die Änderungen zum letzten Lauf. Die History wohnt
+zentral im Benutzerverzeichnis (`~/.propakt/history/<identitaet>.jsonl`),
 im gescannten Projekt bleibt nichts zurück. Identifiziert wird das Projekt
 über den Root-Commit-Hash (`git rev-list --max-parents=0 HEAD`) – stabil
 über Branches, Pfade und Remote-URLs; ohne Git fällt die Identität auf den
@@ -104,11 +104,11 @@ liefert das gespeicherte Ergebnis, wenn der Baum unverändert ist. Installieren
 und entfernen:
 
 ```bash
-npm run installieren    # Build + zentrale Ablage ~/.propsa einrichten
-npm run deinstallieren  # ~/.propsa entfernen (mit Bestätigung)
+npm run installieren    # Build + zentrale Ablage ~/.propakt einrichten
+npm run deinstallieren  # ~/.propakt entfernen (mit Bestätigung)
 ```
 
-`~/.propsa` nimmt alles auf, was PROPSA zwischen den Läufen behält – außer
+`~/.propakt` nimmt alles auf, was PROPAKT zwischen den Läufen behält – außer
 dem Output: Kontextpakete und `--einzeln`-Dateien landen dort, wo sie
 angefordert werden.
 
@@ -145,7 +145,7 @@ beobachteten Projektordner im **Live-Zyklus** verfolgen: Scan → Abgleich →
 nächster Tick, sequenziell, nie überlappend. Ein transparentes
 **Overlay-Widget** zeigt Ampel, Datei-/Zeilen-Zahlen, Sparkline und das
 Änderungs-Journal; Snapshots landen persistent in
-`~/.propsa/live/<identitaet>.db` (SQLite, WAL) und erweitern den
+`~/.propakt/live/<identitaet>.db` (SQLite, WAL) und erweitern den
 History-Graphen um eine zweite Zeitreihe.
 
 Erkennt der Zyklus **Anomalien** – Flattern, Regression, Pendeln, Löschsturm,
@@ -171,7 +171,7 @@ Backend-Brücke, die ihn nur an den Provider schickt.
 
 CLI und App teilen nicht nur den **Vertrag**, sondern seit 0.0.17 auch den
 **Code**: Sprach-Erkennung, Filterkatalog, Domänen-Regel und Export-Schema
-liegen einmal in `packages/core/src/` (`@propsa/core`), die CLI importiert sie
+liegen einmal in `packages/core/src/` (`@propakt/core`), die CLI importiert sie
 direkt, die Rust-Brücke bildet dieselben Regeln nach. `npm run pruefen`
 vergleicht beide Seiten Katalog für Katalog.
 
@@ -206,8 +206,8 @@ Check und einen Update-Button.
 
 ```text
 .
-├── src/                CLI (TypeScript), Einstieg: src/propsa.ts
-├── packages/core/      Geteilter Kern @propsa/core (Typen, Regeln, Schema)
+├── src/                CLI (TypeScript), Einstieg: src/propakt.ts
+├── packages/core/      Geteilter Kern @propakt/core (Typen, Regeln, Schema)
 ├── tauri-app/          Desktop-App (React-Frontend, Rust-Backend)
 ├── bausteine/          Verträge und Muster (dokumentiert, kein Code)
 ├── agents/mcp-server/  MCP-Server für den Projektüberblick
@@ -223,7 +223,7 @@ Check und einen Update-Button.
 ## Was diese Version nicht kann
 
 Damit niemand nach Funktionen sucht, die es nicht gibt: **kein**
-GitHub-URL-Import und **keine** CI-Workflows für externe Projekte. PROPSA arbeitet
+GitHub-URL-Import und **keine** CI-Workflows für externe Projekte. PROPAKT arbeitet
 ausschließlich auf dem lokalen Dateisystem. Der Live-Modus beobachtet ein Projekt
 gleichzeitig und arbeitet mit Timer-Ticks (kein FS-Watcher): Änderungen
 sind erst mit dem nächsten Tick sichtbar. Er meldet Anomalien, greift

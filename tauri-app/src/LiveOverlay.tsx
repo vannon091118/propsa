@@ -167,7 +167,7 @@ export function LiveOverlay() {
       <div className="flex w-[352px] flex-col gap-2 rounded-knopf border border-white/10 bg-[#0b1220]/85 p-3 shadow-[0_8px_32px_rgb(0_0_0/0.45)]">
         <div className="flex items-center gap-2">
         <span className={`h-3 w-3 rounded-full ${AMPEL_FARBE[ampel]}`} data-ampel={ampel} />
-        <strong className="text-tinte">PROPSA Live</strong>
+        <strong className="text-tinte">PROPAKT Live</strong>
         <span className="ml-auto">
           {laeuft ? "läuft" : "aus"}
           {laeuft && effektiv !== null && effektiv !== Number(intervallText) && ` · ${effektiv}s`}

@@ -1,5 +1,5 @@
 /**
- * Projektspezifische Ausschlüsse: `.propsaignore` im Projekt-Root.
+ * Projektspezifische Ausschlüsse: `.propaktignore` im Projekt-Root.
  *
  * Die Datei ist versionierbar und ergänzt die eingebauten Ausschlüsse
  * (Katalog der ignorierten Verzeichnisse, `AUSGESCHLOSSENE_DATEIEN`,
@@ -9,24 +9,38 @@
  * - `!muster` negiert: ein passender Eintrag der Vorbelegung wird wieder
  *   eingeschlossen (nützlich für Pfade, die der Standard ausschließt),
  * - gematcht wird gegen relativen Pfad und Dateinamen wie bei `-e`,
- * - die Datei selbst und `.propsa/` werden nie gescannt.
+ * - die Datei selbst und `.propakt/` werden nie gescannt.
  *
  * Gegenstück in der GUI: `tauri-app/src-tauri/src/filter.rs`
- * (`propsaignore_muster`); beide Seiten müssen zusammen geändert werden.
+ * (`propaktignore_muster`); beide Seiten müssen zusammen geändert werden.
  */
 import * as fs from 'fs';
 import * as path from 'path';
 
-export const PROPSAIGNORE_DATEI = '.propsaignore';
+export const PROPAKTIGNORE_DATEI = '.propaktignore';
 
-/** Zeilen einer vorhandenen `.propsaignore` (ohne Kommentare/Leerzeilen). */
-export function propsaignoreLesen(basisPfad: string): string[] {
-  let inhalt: string;
-  try {
-    inhalt = fs.readFileSync(path.join(basisPfad, PROPSAIGNORE_DATEI), 'utf8');
-  } catch {
-    return [];
+/** Dateiname vor der Umbenennung – nur als Rückfall, siehe `propaktignoreLesen`. */
+const PROPAKTIGNORE_ALT = '.propsaignore';
+
+/**
+ * Zeilen der Ignore-Datei des Projekts (ohne Kommentare/Leerzeilen).
+ *
+ * Gelesen wird `.propaktignore`; fehlt sie, wird auf den Altnamen
+ * `.propsaignore` zurückgefallen, damit die Ausschlüsse eines bestehenden
+ * Projekts durch die Umbenennung nicht wirkungslos werden. Liegen beide vor,
+ * gewinnt der neue Name – die alte Datei wird dann ignoriert.
+ */
+export function propaktignoreLesen(basisPfad: string): string[] {
+  let inhalt: string | null = null;
+  for (const datei of [PROPAKTIGNORE_DATEI, PROPAKTIGNORE_ALT]) {
+    try {
+      inhalt = fs.readFileSync(path.join(basisPfad, datei), 'utf8');
+      break;
+    } catch {
+      // nächste Datei versuchen
+    }
   }
+  if (inhalt === null) return [];
   return inhalt
     .split(/\r?\n/)
     .map(zeile => zeile.trim())
@@ -57,8 +71,8 @@ export function negierteVerzeichnisse(negationen: string[]): string[] {
 }
 
 /**
- * Merged die Ausschlussmuster: Eingebauter Katalog + `-e` + `.propsaignore`,
- * danach Negationen (`!…`) aus `.propsaignore` angewendet.
+ * Merged die Ausschlussmuster: Eingebauter Katalog + `-e` + `.propaktignore`,
+ * danach Negationen (`!…`) aus `.propaktignore` angewendet.
  *
  * Rückgabe: wirksame Exclude-Muster (mit `!`-Einträgen) und ein Flag, ob die
  * Datei vorhanden war – für die Sichtbarkeit im Paketkopf.
@@ -67,15 +81,15 @@ export function ausschluesseMergen(
   basisPfad: string,
   eingebaute: string[],
   benutzerMuster: string[]
-): { excludes: string[]; propsaignoreAktiv: boolean } {
-  const dateiMuster = propsaignoreLesen(basisPfad);
+): { excludes: string[]; propaktignoreAktiv: boolean } {
+  const dateiMuster = propaktignoreLesen(basisPfad);
   const negationen = dateiMuster.filter(m => m.startsWith('!'));
   const positive = dateiMuster.filter(m => !m.startsWith('!'));
 
   if (negationen.length === 0) {
     return {
       excludes: [...eingebaute, ...benutzerMuster, ...positive],
-      propsaignoreAktiv: dateiMuster.length > 0,
+      propaktignoreAktiv: dateiMuster.length > 0,
     };
   }
 
@@ -95,6 +109,6 @@ export function ausschluesseMergen(
   });
   return {
     excludes: [...gefiltert, ...benutzerMuster, ...positive, ...negationen],
-    propsaignoreAktiv: true,
+    propaktignoreAktiv: true,
   };
 }

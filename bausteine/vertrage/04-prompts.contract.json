@@ -87,7 +87,7 @@
     "last_verified_against_code": null,
     "known_gaps": [
       "Dieser Vertrag beschreibt Dokumente, keine Programmiersprache. Das Muster hat keinen ausführbaren Teil, und künstlich einen einzufügen wäre eine Falschzusage.",
-      "PROPSA hat kein Äquivalent. Kontextpakete liefern Herkunft über Quellen-Domänen, aber keinen Beleg mit Statuswechsel.",
+      "PROPAKT hat kein Äquivalent. Kontextpakete liefern Herkunft über Quellen-Domänen, aber keinen Beleg mit Statuswechsel.",
       "Die Belegverwaltung wäre der aufwendigste Teil, weil sie Speicher über Aufgaben hinweg voraussetzt. Nicht gemessen."
     ]
   }

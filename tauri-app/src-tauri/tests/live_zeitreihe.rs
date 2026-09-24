@@ -4,10 +4,10 @@
 //! Leseansicht auf der echten SQLite-WAL-Datenbank: Reihenfolge,
 //! Zeitraum-Filter und der Umgang mit kaputten Zeitstempeln.
 
-use propsa_lib::live_store::{
+use propakt_lib::live_store::{
     kuerzen, oeffne_db, snapshot_schreiben, BaumEintrag, TickErgebnis,
 };
-use propsa_lib::live_zeitreihe::zeitreihe_lesen;
+use propakt_lib::live_zeitreihe::zeitreihe_lesen;
 
 /// Zeitstempel von vor `stunden` Stunden im App-Format `%Y-%m-%d %H:%M:%S`.
 ///

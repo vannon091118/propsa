@@ -1,13 +1,13 @@
 //! Integrationstests des Scan-Zwischenspeichers (Rust-Spiegel).
 //!
 //! Gegenstück: `src-tauri/src/zwischenspeicher.rs`, Vertrag:
-//! `@propsa/core` (`zwischenspeicher.ts`). Geprüft wird der volle
+//! `@propakt/core` (`zwischenspeicher.ts`). Geprüft wird der volle
 //! Lifecycle — und bewusst auch der Tamper-Fall: Ein manipulierter
 //! Cache darf niemals als „unverändert“ durchgehen (Fail Loud).
 
-use propsa_lib::filter::Kandidat;
-use propsa_lib::scan::{DateiInfo, ScanErgebnis};
-use propsa_lib::zwischenspeicher::{
+use propakt_lib::filter::Kandidat;
+use propakt_lib::scan::{DateiInfo, ScanErgebnis};
+use propakt_lib::zwischenspeicher::{
     baum_eintraege, baum_signatur, cache_laden, cache_ordner, cache_pfad, cache_speichern,
     cache_treffer, gleiche_signatur, konfigurations_schluessel, ZWISCHENSPEICHER_SCHEMA,
     ZWISCHENSPEICHER_VERSION,
@@ -276,11 +276,11 @@ fn baum_aenderung_ungueltigt_cache() {
 }
 
 #[test]
-fn cache_ordner_liegt_unter_propsa_heim() {
+fn cache_ordner_liegt_unter_propakt_heim() {
     let ordner = cache_ordner();
     let text = ordner.to_string_lossy().replace('\\', "/");
     pruefe(
-        "Cache-Ordner ist ~/.propsa/cache",
-        text.ends_with("/.propsa/cache"),
+        "Cache-Ordner ist ~/.propakt/cache",
+        text.ends_with("/.propakt/cache"),
     );
 }

@@ -58,7 +58,7 @@ pub fn ereignis_typen(typ: &str) -> &'static str {
 /// Schichtlage. Übergaben laufen ausschließlich nach unten.
 ///
 /// Eine Position allein ist kein Bautein: sie beschreibt, wo ein Baustein
-/// einzuordnen wäre, nicht dass PROPSA eine Position bekommt.
+/// einzuordnen wäre, nicht dass PROPAKT eine Position bekommt.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Position {
     Praesentation = 0,

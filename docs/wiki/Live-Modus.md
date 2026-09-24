@@ -1,8 +1,8 @@
-# PROPSA – Live-Modus
+# PROPAKT – Live-Modus
 
 ## Was ist der Live-Modus?
 
-Der **Agenten-Wächter**: Nach dem Aktivieren setzt sich PROPSA als
+Der **Agenten-Wächter**: Nach dem Aktivieren setzt sich PROPAKT als
 Tray-Icon in den Hintergrund und öffnet ein transparentes Overlay-Widget.
 Ein sequenzieller Zyklus (Scan → Abgleich → nächster Tick, nie
 überlappend) verfolgt in Echtzeit, was im beobachteten Projekt passiert —
@@ -41,7 +41,7 @@ Alles-oder-nichts: Bestands-Spiegelung, Snapshot und Kürzung laufen in
 **einer Transaktion** — ein Absturz zwischen den Schritten darf keine
 halben Ticks hinterlassen.
 
-Speicherort: `~/.propsa/live/<identitaet>.db` (**SQLite im WAL-Modus**),
+Speicherort: `~/.propakt/live/<identitaet>.db` (**SQLite im WAL-Modus**),
 eine Datenbank je Projekt-Identität (Root-Commit-Hash, sonst Pfad).
 Identität, Tabellen und Vertrag: `live_store.rs`, Spiegel `history.rs` ↔
 `history.ts`. Im gescannten Projekt bleibt nichts zurück.
@@ -92,7 +92,7 @@ Bestands-Eintrag.
   wie der Scan, Hardware-Schonung. Änderungen sind daher erst mit dem
   nächsten Tick sichtbar.
 - **Kein Auto-Eingriff:** Der Wächter meldet, greift nie ein (kein
-  Kill, kein Revert). Er schreibt ausschließlich nach `~/.propsa/live/`.
+  Kill, kein Revert). Er schreibt ausschließlich nach `~/.propakt/live/`.
 - **Keine Telemetrie:** Alles bleibt auf dem Dateisystem des Nutzers.
 - **Ein Projekt gleichzeitig:** v1 beobachtet ein Projekt; das Layout
   (eine DB je Identität) erlaubt später mehrere.

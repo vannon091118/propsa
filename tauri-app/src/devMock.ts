@@ -284,7 +284,7 @@ export function mockLiveZeitreihe(stunden: number | null): Promise<LiveZeitreihe
     const dateien = 40 + Math.round(Math.sin(i / 6) * 6);
     const zeilen = 5200 + Math.round(Math.cos(i / 5) * 400);
     punkte.push({
-      // „sv“-Locale = exakt das PROPSA-Format „JJJJ-MM-TT HH:MM:SS“.
+      // „sv“-Locale = exakt das PROPAKT-Format „JJJJ-MM-TT HH:MM:SS“.
       zeitstempel: zeit.toLocaleString("sv"),
       dateien,
       zeilen,

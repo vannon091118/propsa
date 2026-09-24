@@ -9,7 +9,7 @@ use std::collections::HashMap;
 
 /// Kopfzeilen, die in jeder Datei des Pakets stehen.
 pub fn kopf(titel: &str, scan: &ScanErgebnis, zeilen: &[String]) -> String {
-    let mut text = format!("# PROPSA – {}\n\n", titel);
+    let mut text = format!("# PROPAKT – {}\n\n", titel);
     text.push_str(&format!("**Projekt:** {}\n", scan.titel));
     text.push_str(&format!("**Erzeugt:** {}\n", scan.zeitstempel));
     text.push_str(&zeilen.join("\n"));

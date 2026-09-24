@@ -6,7 +6,7 @@
  * Nur LOC + Regex + Pfadlisten – kein AST.
  */
 import { GescannteDatei } from './scanner';
-import { SchemaMeta } from '@propsa/core';
+import { SchemaMeta } from '@propakt/core';
 import { kopf } from './paketBasis';
 
 const GOD_GRENZE = 300;

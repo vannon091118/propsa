@@ -81,13 +81,13 @@
       "schichtenlage": "IMPLEMENTED — die Lage ist in bausteine/muster/07-integration.md beschrieben und in diesem Vertrag kodiert.",
       "gate_schema": "IMPLEMENTED — alle sieben Verträge in bausteine/vertrage/ tragen dieselben sieben Punkte. Das war vorher nicht der Fall.",
       "selbstverifikation": "IMPLEMENTED — jeder Vertrag trägt overall, sections, last_verified_against_code und known_gaps.",
-      "eine_wahrheit_je_regel": "STUB — für die sieben neuen Verträge gilt die Regel, weil jeder genau eine Quelle hat. Über die bestehenden PROPSA-Kataloge erzwingt npm run pruefen das bereits maschinell."
+      "eine_wahrheit_je_regel": "STUB — für die sieben neuen Verträge gilt die Regel, weil jeder genau eine Quelle hat. Über die bestehenden PROPAKT-Kataloge erzwingt npm run pruefen das bereits maschinell."
     },
     "last_verified_against_code": "2026-09-24",
     "known_gaps": [
       "Dieser Vertrag beschreibt die Form der anderen sechs. Er liefert selbst keine Funktion, und das ist beabsichtigt: die sieben Bausteine sind dokumentierte Muster, kein laufender Code.",
-      "PROPSA hat keine Orchestrierungsschicht und braucht keine. Die Positionsnummern beschreiben, wo ein Baustein einzuordnen wäre — nicht, dass PROPSA eine Position bekommt.",
-      "Der entscheidende Punkt des Musters — ein einheitliches Gate-Schema für alle sieben — ist der Teil, der in PROPSA tatsächlich neu ist. Er ist hier zum ersten Mal angewandt."
+      "PROPAKT hat keine Orchestrierungsschicht und braucht keine. Die Positionsnummern beschreiben, wo ein Baustein einzuordnen wäre — nicht, dass PROPAKT eine Position bekommt.",
+      "Der entscheidende Punkt des Musters — ein einheitliches Gate-Schema für alle sieben — ist der Teil, der in PROPAKT tatsächlich neu ist. Er ist hier zum ersten Mal angewandt."
     ]
   }
 }

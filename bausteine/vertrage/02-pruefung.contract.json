@@ -86,7 +86,7 @@
     },
     "last_verified_against_code": null,
     "known_gaps": [
-      "PROPSA hat Kritik-Schwellwerte in tauri-app/src-tauri/src/kritik_regeln.rs und einen Pakettext in packages/core/src/paketKritik.ts. Beides sind Erzeuger, keine Prüfer.",
+      "PROPAKT hat Kritik-Schwellwerte in tauri-app/src-tauri/src/kritik_regeln.rs und einen Pakettext in packages/core/src/paketKritik.ts. Beides sind Erzeuger, keine Prüfer.",
       "Die geplante Prüfschicht wäre eine Ebene DARÜBER. Sie ist nicht gebaut, und sie ist auch nicht für die nächste Ausbaustufe eingeplant.",
       "Der Aufwand dieser Schicht ist nicht gemessen. Vor einer Zusage wäre eine Messung an echten Anforderungen nötig."
     ]

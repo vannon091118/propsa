@@ -40,7 +40,7 @@ export function TitleLeiste({ vorschau }: Props) {
           <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" fill="currentColor" />
         </svg>
         <span className="pointer-events-none text-[12px] font-semibold tracking-[0.08em] text-leise">
-          PROPSA
+          PROPAKT
         </span>
         {/* Update-Kreis + Versionsnummer mit Notiz-Popup (oben links). */}
         <UpdateBereich vorschau={vorschau} />

@@ -1,4 +1,4 @@
-# PROPSA – CLI-Usage
+# PROPAKT – CLI-Usage
 
 ## Was ist die CLI?
 
@@ -16,7 +16,7 @@ npm install
 ```bash
 npm start <pfad> [optionen]
 # oder direkt:
-npx ts-node src/propsa.ts <pfad> [optionen]
+npx ts-node src/propakt.ts <pfad> [optionen]
 ```
 
 `<pfad>` ist ein Verzeichnis; ein Dateipfad wird mit Fehlermeldung abgelehnt.
@@ -34,7 +34,7 @@ npx ts-node src/propsa.ts <pfad> [optionen]
 
 | Flag | Bedeutung |
 |------|-----------|
-| `-o, --output <ordner>` | Zielordner des Pakets (Standard: `propsa-kontext`) |
+| `-o, --output <ordner>` | Zielordner des Pakets (Standard: `propakt-kontext`) |
 | `--einzeln <datei>` | Statt des Pakets eine einzelne Datei (`.md` oder `.json`) |
 | `-e, --exclude <muster>` | Weitere Glob-Muster zum Ausschließen (Komma-getrennt) |
 | `-i, --include <muster>` | Nur diese Muster einbeziehen (leer = alles) |
@@ -44,8 +44,8 @@ npx ts-node src/propsa.ts <pfad> [optionen]
 | `--entrypoint <datei>` | Slice: Einstiegsdatei plus lokale Import-Kette |
 | `--depth <n>` | Slice: nur Dateien bis zu dieser Ordnertiefe (≥ 1) |
 | `--top-files <n>` | Slice: nur die n größten Dateien nach Zeilen |
-| `--delta` | Delta zum letzten Lauf melden (`~/.propsa/history/`) |
-| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propsa/cache/`) |
+| `--delta` | Delta zum letzten Lauf melden (`~/.propakt/history/`) |
+| `--cache` | Ergebnis aus dem Zwischenspeicher holen, wenn der Baum unverändert ist (`~/.propakt/cache/`) |
 
 ## Slice-Selektoren statt Kompaktmodus
 
@@ -75,9 +75,9 @@ die kanonische Scan-Reihenfolge bleibt immer erhalten.
 npm start ~/Code/mein-projekt --delta
 ```
 
-Nach jedem Lauf mit `--delta` hängt PROPSA einen Eintrag (Zeitstempel,
+Nach jedem Lauf mit `--delta` hängt PROPAKT einen Eintrag (Zeitstempel,
 Identität, Inhalts-Hash je Datei) an die zentrale History im
-Benutzerverzeichnis an: `~/.propsa/history/<identitaet>.jsonl` – eine Datei
+Benutzerverzeichnis an: `~/.propakt/history/<identitaet>.jsonl` – eine Datei
 je Projekt-Identität. Im gescannten Projekt bleibt nichts zurück.
 Beim nächsten Lauf meldet die CLI:
 
@@ -91,7 +91,7 @@ Git-Repository/Commit wird der normierte Pfad als Fallback gehasht; die
 Herkunft steht in jedem Eintrag (`herkunft: "root-commit" | "pfad"`).
 
 Die History wird auf 50 Einträge gekürzt und gehört nie in ein Paket:
-`.propsa` steht im Ignorier-Katalog von CLI, Rust und Frontend.
+`.propakt` steht im Ignorier-Katalog von CLI, Rust und Frontend.
 Ein abweichender Scan (andere Includes/Limits/Slices) erzeugt ein Delta
 genau so, wie die Dateien dann eben stehen.
 
@@ -101,25 +101,25 @@ genau so, wie die Dateien dann eben stehen.
 npm start ~/Code/mein-projekt --cache
 ```
 
-Vor dem Lesen der Dateien bildet PROPSA eine **Baum-Signatur** (relativer
+Vor dem Lesen der Dateien bildet PROPAKT eine **Baum-Signatur** (relativer
 Pfad, Größe, Änderungszeit je Datei) und vergleicht sie mit dem letzten
 Lauf derselben Konfiguration (Pfad, Muster, Limits). Bei Übereinstimmung
-kommt das Ergebnis aus `~/.propsa/cache/`, ohne die Inhalte erneut zu
+kommt das Ergebnis aus `~/.propakt/cache/`, ohne die Inhalte erneut zu
 lesen; die Meldung `♻️  Zwischenspeicher-Treffer` zeigt es an.
 
 - Geändert auch nur eine Datei, ist die Signatur vorbei – der Lauf liest
   vollständig neu und speichert das Ergebnis erneut.
 - Ein Guardrail-Abbruch wird nie gespeichert; ein Limit bricht auch aus
   dem Cache-Lauf mit Exit-Code 2 ab.
-- Der Vertrag (Signatur, Treffer-Entscheidung) lebt in `@propsa/core`
+- Der Vertrag (Signatur, Treffer-Entscheidung) lebt in `@propakt/core`
   (`zwischenspeicher.ts`), die Umsetzungen in `src/zwischenspeicher.ts`
   (CLI) und `tauri-app/src-tauri/src/zwischenspeicher.rs` (App). Die App
   bietet den Cache als Schalter „Unveränderten Baum aus dem Cache holen“
   (Standard: an).
 
-## Projektspezifische Ausschlüsse: `.propsaignore`
+## Projektspezifische Ausschlüsse: `.propaktignore`
 
-Im Projekt-Root kann eine **versionierbare** `.propsaignore` liegen:
+Im Projekt-Root kann eine **versionierbare** `.propaktignore` liegen:
 
 ```text
 # eine Zeile = ein Glob-Muster, # = Kommentar
@@ -138,16 +138,16 @@ Semantik (identisch in CLI und App):
   werden entfernt (`!vendor/` hebt `vendor/**` auf) und ein
   Katalog-Verzeichnis desselben Namens wird wieder betreten,
 - gematcht wird gegen relativen Pfad und Dateinamen wie bei `-e`,
-- die Datei selbst und `.propsa/` werden nie gescannt.
+- die Datei selbst und `.propakt/` werden nie gescannt.
 
 Die CLI meldet einen aktiven Ausschluss mit
-`📜 .propsaignore eingelesen`. Das Gegenstück in der GUI liegt in
+`📜 .propaktignore eingelesen`. Das Gegenstück in der GUI liegt in
 `tauri-app/src-tauri/src/filterignore.rs`.
 
 ## Beispiele
 
 ```bash
-# Paket nach ./propsa-kontext/
+# Paket nach ./propakt-kontext/
 npm start ~/Code/mein-projekt
 
 # Eigener Zielordner und zusätzliche Ausschlüsse

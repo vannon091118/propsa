@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Root index of the PROPSA project, listing top-level ownership modules.",
+  "description": "Root index of the PROPAKT project, listing top-level ownership modules.",
   "modules": [
     {
       "name": "agents",
@@ -29,7 +29,7 @@
     {
       "name": "packages",
       "path": "packages/",
-      "description": "Shared TypeScript packages (@propsa/core).",
+      "description": "Shared TypeScript packages (@propakt/core).",
       "index": "packages/INDEX.json"
     },
     {

@@ -1,4 +1,4 @@
-//! Einstiegspunkt der PROPSA-Anwendung.
+//! Einstiegspunkt der PROPAKT-Anwendung.
 //!
 //! Die eigentliche Arbeit liegt in Modulen (ein Besitzer je Aufgabe):
 //! `scan` (Verzeichnis-Scan mit Filtern/Limits), `domaene` (Aufteilung des
@@ -107,5 +107,5 @@ pub fn run() {
                     llm_bruecke::llm_beratung
                 ])
         .run(tauri::generate_context!())
-        .expect("PROPSA konnte nicht gestartet werden");
+        .expect("PROPAKT konnte nicht gestartet werden");
 }

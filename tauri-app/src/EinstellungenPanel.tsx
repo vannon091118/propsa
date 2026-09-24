@@ -95,7 +95,7 @@ export function EinstellungenPanel({
           <span>Änderungen zum letzten Lauf melden</span>
         </label>
         <div className={HINWEIS}>
-          Legt ~/.propsa/history/&lt;identitaet&gt;.jsonl im
+          Legt ~/.propakt/history/&lt;identitaet&gt;.jsonl im
           Benutzerverzeichnis an; im Projekt bleibt nichts zurück.
           Identität: Root-Commit-Hash, sonst Pfad.
         </div>
@@ -113,7 +113,7 @@ export function EinstellungenPanel({
           <span>Unveränderten Baum aus dem Cache holen</span>
         </label>
         <div className={HINWEIS}>
-          Liegt unter ~/.propsa/cache/; die Baum-Signatur (Pfad, Größe,
+          Liegt unter ~/.propakt/cache/; die Baum-Signatur (Pfad, Größe,
           Änderungszeit) entscheidet. Bei jeder Änderung wird neu gelesen.
         </div>
       </div>

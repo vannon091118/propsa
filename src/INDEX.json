@@ -4,18 +4,18 @@
   "contents": [
     { "type": "file", "name": "datei.ts", "path": "datei.ts", "description": "Dateizugriff und Zeilen Zählen für Scanner.", "size": "549 bytes" },
     { "type": "file", "name": "formatter.ts", "path": "formatter.ts", "description": "Einzeldatei-Ausgabe des Projekts als Markdown.", "size": "264 bytes" },
-    { "type": "file", "name": "history.ts", "path": "history.ts", "description": "Delta- und History-Erkennung.", "size": "1128 bytes" },
+    { "type": "file", "name": "history.ts", "path": "history.ts", "description": "Delta- und History-Erkennung, Ablage-Migration.", "size": "8263 bytes" },
     { "type": "file", "name": "paket.ts", "path": "paket.ts", "description": "Das Kontextpaket: mehrere Dateien in einem Ordner, aufgeteilt nach Domänen.", "size": "390 bytes" },
     { "type": "file", "name": "paketBasis.ts", "path": "paketBasis.ts", "description": "Gemeinsame Bausteine aller Paketexte.", "size": "378 bytes" },
     { "type": "file", "name": "paketKritik.ts", "path": "paketKritik.ts", "description": "Kritik-Linse für das Paket: Godfiles, Logikmischung, Artefakte, Doku-Lügen.", "size": "828 bytes" },
     { "type": "file", "name": "paketQuellen.ts", "path": "paketQuellen.ts", "description": "Die zwei Volltext-Teile des Pakets: Dokumentation und Domänenquellen.", "size": "315 bytes" },
     { "type": "file", "name": "paketTexte.ts", "path": "paketTexte.ts", "description": "Die zwei Übersichtstexte des Pakets: Zusammenfassung und Architektur.", "size": "357 bytes" },
-    { "type": "file", "name": "propsa.ts", "path": "propsa.ts", "description": "Haupt-Einstiegspunkt des CLI: Argument-Parsing, Orchestrierung, Ausgabe.", "size": "954 bytes" },
-    { "type": "file", "name": "propsaignore.ts", "path": "propsaignore.ts", "description": "Projektspezifische Ausschlüsse: `.propsaignore` im Projekt-Root.", "size": "504 bytes" },
+    { "type": "file", "name": "propakt.ts", "path": "propakt.ts", "description": "Haupt-Einstiegspunkt des CLI: Argument-Parsing, Orchestrierung, Ausgabe.", "size": "7600 bytes" },
+    { "type": "file", "name": "propaktignore.ts", "path": "propaktignore.ts", "description": "Projektspezifische Ausschlüsse: `.propaktignore` im Projekt-Root, Rückfall auf `.propsaignore`.", "size": "4027 bytes" },
     { "type": "file", "name": "scanner.ts", "path": "scanner.ts", "description": "Verarbeitung der Scan-Kandidaten: Inhalte lesen, Guardrails anwenden, Sprachen erkennen und Fortschritt melden.", "size": "1040 bytes" },
     { "type": "file", "name": "slice.ts", "path": "slice.ts", "description": "Slice-Selektoren: zielbasierte Auswahl statt arbiträrer Grenzen.", "size": "726 bytes" },
     { "type": "file", "name": "update.ts", "path": "update.ts", "description": "Git-basierter Auto-Updater: Check + Update-Lauf.", "size": "756 bytes" },
     { "type": "file", "name": "updateKommando.ts", "path": "updateKommando.ts", "description": "Hilfskommando für den Auto-Updater.", "size": "258 bytes" },
-    { "type": "file", "name": "zwischenspeicher.ts", "path": "zwischenspeicher.ts", "description": "Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik.", "size": "996 bytes" }
+    { "type": "file", "name": "zwischenspeicher.ts", "path": "zwischenspeicher.ts", "description": "Scan-Cache: Baum-Signatur, `~/.propakt/cache/`, Treffer-Logik.", "size": "5670 bytes" }
   ]
 }

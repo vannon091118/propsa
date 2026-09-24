@@ -11,7 +11,7 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@propsa/core": ["../packages/core/src"]
+      "@propakt/core": ["../packages/core/src"]
     }
   },
   "include": ["geraest/**/*"],

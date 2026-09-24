@@ -22,16 +22,16 @@ nicht darin, eine Funktion zu liefern.
 - **Kein laufender Code.** `geraest/*.ts` enthalten eine Zusage und sonst
   nichts. Keine Funktion, kein Test, keine Behauptung, es gäbe sie.
 - **Keine Kopie einer Vorlage.** Die Muster sind neu beschrieben. Was hier
-  steht, ist an PROPSA gemessen oder aus der Vorlage als *Form* übernommen —
+  steht, ist an PROPAKT gemessen oder aus der Vorlage als *Form* übernommen —
   nie als Zeilen Code.
 - **Keine Roadmap.** `STUB` bedeutet: die Entscheidung, es nicht zu bauen, ist
   getroffen. Das ist keine offene Aufgabe, die jemand auf nimmt.
 
 ## Regeln für dieses Modul
 
-- **Dokumentation folgt dem Code.** Jeder Satz über PROPSA ist am Code
+- **Dokumentation folgt dem Code.** Jeder Satz über PROPAKT ist am Code
   geprüft. Behauptungen über andere Systeme sind als Muster-Aussage zu
-  kennzeichnen, nicht als PROPSA-Zustand.
+  kennzeichnen, nicht als PROPAKT-Zustand.
 - **`STUB` und `NOT_VERIFIED` sind nicht dasselbe.** `STUB` = nicht gebaut, bewusst.
   `NOT_VERIFIED` = gebaut, ungeprüft. Ein `STUB` ist eine Aufgabe, ein
   `NOT_VERIFIED` ein offener Prüfposten. Beides zusammenfassen heisst, die

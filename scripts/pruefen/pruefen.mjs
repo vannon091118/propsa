@@ -60,7 +60,35 @@ console.log(`✓ Version: ${versionSoll} in allen ${Object.keys(versionen).lengt
 // 3. Namen – jetzt auch package-lock.json, damit keine alten Bin-/Paketnamen
 //    im Lockfile überleben.
 const ALTE_NAMEN = ["files-to-prompt", "files_to_prompt", "repomix-parser-llm", "repomix-parser"];
-const NAME_AUSNAHMEN = new Set(["scripts/pruefen/pruefen.mjs", "wiki/Changelog.md", "kontext.md"]);
+// Vorheriger Produktname (Version 0.0.18). Er darf nirgends im Quelltext
+// oder in der Doku mehr auftauchen – ausgenommen zwei bewusst gepflegte
+// Stellen: die Migrationspfade (`~/.propsa`, `.propsaignore`,
+// `propsa-kontext`) in genau den Dateien, die den Altnamen für die
+// Datenübernahme brauchen, und die GitHub-URL des Repositories, das seinen
+// Namen behält.
+const ALTER_PRODUKTNAME = "propsa";
+const PRODUKTNAME_ERLAUBT = new Set([
+  // Migrationsstellen: Datenübernahme aus der Altablage
+  "src/history.ts",
+  "src/propaktignore.ts",
+  "tauri-app/src-tauri/src/history.rs",
+  "scripts/installation/install.mjs",
+  "scripts/installation/deinstall.mjs",
+  // Legacy-Ausschlüsse, damit alte Pakete und Ignore-Dateien weiter greifen
+  "packages/core/src/filters.ts",
+  "tauri-app/src-tauri/src/filter.rs",
+  "tauri-app/src-tauri/src/filterignore.rs",
+  // der Altname wird hier benannt, um den Rückfall zu beschreiben
+  "src/INDEX.json",
+  // stabile Tauri-Kennung: ein Wechsel bricht die Update-Kette der App
+  "tauri-app/src-tauri/tauri.conf.json",
+]);
+const NAME_AUSNAHMEN = new Set([
+  "scripts/pruefen/pruefen.mjs",
+  "docs/wiki/Changelog.md",
+  "tauri-app/src-tauri/Changelog.md",
+  "kontext.md",
+]);
 // kontext.md ist eine **generierte** Ausgabe des Scanners (Kontextpaket des
 // eigenen Repos): Quelltext-Zitate darin (alte Namen, dokumentrelative
 // Links) sind Zitate, keine Quellen – darum von Namen-/Link-Prüfung
@@ -68,8 +96,15 @@ const NAME_AUSNAHMEN = new Set(["scripts/pruefen/pruefen.mjs", "wiki/Changelog.m
 const textdateien = dateienSammeln(WURZEL, [".ts", ".tsx", ".rs", ".mjs", ".js", ".json", ".md", ".html", ".svg"])
   .filter(pfad => !pfad.endsWith("Cargo.lock") && !NAME_AUSNAHMEN.has(relativ(pfad)));
 for (const pfad of textdateien) {
-  const inhalt = readFileSync(pfad, "utf8");
-  for (const name of ALTE_NAMEN) if (inhalt.includes(name)) fehler.push(`${relativ(pfad)}: alter Name "${name}"`);
+  const pfadRel = relativ(pfad);
+  let inhalt = readFileSync(pfad, "utf8");
+  // Die GitHub-URL des Repositories zeigt auf ein Repository, das seinen
+  // Namen behält – sie wird vor der Namensprüfung herausgerechnet.
+  inhalt = inhalt.split("vannon091118/propsa").join("");
+  for (const name of ALTE_NAMEN) if (inhalt.includes(name)) fehler.push(`${pfadRel}: alter Name "${name}"`);
+  if (inhalt.includes(ALTER_PRODUKTNAME) && !PRODUKTNAME_ERLAUBT.has(pfadRel)) {
+    fehler.push(`${pfadRel}: alter Produktname "${ALTER_PRODUKTNAME}" – Migration nur in ${[...PRODUKTNAME_ERLAUBT].join(", ")}`);
+  }
 }
 console.log(`✓ Namen: ${textdateien.length} Dateien (inklusive package-lock.json) auf alte Namen geprüft`);
 
@@ -87,10 +122,10 @@ else {
   if (coreKatalog.join(",") !== rustKatalog.join(",")) fehler.push(`Verzeichnis-Katalog Core ↔ Rust weicht ab (Core ${coreKatalog.length}, Rust ${rustKatalog.length} Einträge)`);
   if (coreDateien.join(",") !== rustDateien.join(",")) fehler.push(`Datei-Katalog Core ↔ Rust weicht ab (Core ${coreDateien.length}, Rust ${rustDateien.length} Einträge)`);
   const typen = readFileSync(join(WURZEL, "tauri-app/src/typen.ts"), "utf8");
-  if (!/@propsa\/core/.test(typen) || !/STANDARD_AUSSCHLUESSE/.test(typen)) {
-    fehler.push("Frontend (tauri-app/src/typen.ts) bezieht STANDARD_AUSSCHLUESSE nicht aus @propsa/core");
+  if (!/@propakt\/core/.test(typen) || !/STANDARD_AUSSCHLUESSE/.test(typen)) {
+    fehler.push("Frontend (tauri-app/src/typen.ts) bezieht STANDARD_AUSSCHLUESSE nicht aus @propakt/core");
   }
-  console.log(`✓ Ausschlusskatalog: Core und Rust je ${coreKatalog.length} Verzeichnisse und ${coreDateien.length} Dateien; Frontend bezieht STANDARD_AUSSCHLUESSE aus @propsa/core`);
+  console.log(`✓ Ausschlusskatalog: Core und Rust je ${coreKatalog.length} Verzeichnisse und ${coreDateien.length} Dateien; Frontend bezieht STANDARD_AUSSCHLUESSE aus @propakt/core`);
 }
 
 // 5. Links – kontext.md bleibt außen vor (generierte Zitate, siehe oben).
@@ -107,7 +142,7 @@ for (const pfad of dokumente) {
 console.log(`✓ Links: ${linkAnzahl} relative Verweise in ${dokumente.length} Dokumenten geprüft`);
 
 // 6. Sprachkataloge – Endungs-Tabelle und Fence-Tabelle müssen zwischen
-//    @propsa/core (TypeScript) und sprache.rs (Rust) deckungsgleich sein.
+//    @propakt/core (TypeScript) und sprache.rs (Rust) deckungsgleich sein.
 function tsKatalogAusBlock(text, blockMuster) {
   const block = text.match(blockMuster);
   if (!block) return null;
@@ -187,7 +222,7 @@ katalogeVergleichen(endungenTs, endungenRust, "Sprachkatalog (Endungen)");
 katalogeVergleichen(fenceTs, fenceRust, "Fence-Katalog");
 
 // 7. Live-Kataloge – Anomalie-Schwere, -Beschreibungen und -Schwellen müssen
-//    zwischen @propsa/core (TypeScript) und live_anomalie.rs deckungsgleich sein.
+//    zwischen @propakt/core (TypeScript) und live_anomalie.rs deckungsgleich sein.
 const liveTs = readFileSync(join(WURZEL, "packages/core/src/live.ts"), "utf8");
 const liveRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/live_anomalie.rs"), "utf8");
 const schwereTs = tsKatalogAusBlock(liveTs, /export const ANOMALIE_SCHWERE: Record<[^>]*> = \{([\s\S]*?)\r?\n\};/);
@@ -201,7 +236,7 @@ katalogeVergleichen(beschreibungenTs, beschreibungenRust, "Live-Katalog (Beschre
 katalogeVergleichen(schwellenTs, schwellenRust, "Live-Katalog (Schwellen)");
 
 // 8. Zwischenspeicher-Konstanten – Formatversion und Schema-Kennung müssen
-//    zwischen @propsa/core und zwischenspeicher.rs deckungsgleich sein.
+//    zwischen @propakt/core und zwischenspeicher.rs deckungsgleich sein.
 const zwischenspeicherRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/zwischenspeicher.rs"), "utf8");
 const zwischenspeicherTs = readFileSync(join(WURZEL, "packages/core/src/zwischenspeicher.ts"), "utf8");
 const versionTs = zwischenspeicherTs.match(/export const ZWISCHENSPEICHER_VERSION = (\d+);/)?.[1];
@@ -219,7 +254,7 @@ if (!versionTs || !schemaTs || !versionRust || !schemaRust) {
 }
 
 // 9. Baustein-Kataloge – Gate-Punkte, Status-Werte und Ereignistypen müssen
-//    zwischen @propsa/core (vertrag.ts) und vertrag.rs deckungsgleich sein.
+//    zwischen @propakt/core (vertrag.ts) und vertrag.rs deckungsgleich sein.
 const vertragTs = readFileSync(join(WURZEL, "packages/core/src/vertrag.ts"), "utf8");
 const vertragRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/vertrag.rs"), "utf8");
 const gatePunkteTs = tsKatalogAusBlock(vertragTs, /export const GATE_PUNKTE: Record<string, string> = \{([\s\S]*?)\r?\n\};/);

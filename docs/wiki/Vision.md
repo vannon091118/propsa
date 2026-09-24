@@ -1,6 +1,6 @@
 # Vision
 
-> **Regel für dieses Dokument:** Jede Aussage über PROPSA verweist auf eine
+> **Regel für dieses Dokument:** Jede Aussage über PROPAKT verweist auf eine
 > geprüfte Datei im Repository. Was nicht gebaut ist, steht als **geplant** und
 > nicht als Zusage. Aussagen über die Architektur darunter stehen in
 > [`bausteine/muster/`](../../bausteine/muster/) und sind dort mit ihrer
@@ -8,8 +8,8 @@
 
 ## Ziel
 
-PROPSA ist der **Einstiegspunkt** in eine Plattform, die darunter aus mehreren
-Bausteinen besteht. PROPSA liefert den Kontext; die Bausteine erzeugen, prüfen
+PROPAKT ist der **Einstiegspunkt** in eine Plattform, die darunter aus mehreren
+Bausteinen besteht. PROPAKT liefert den Kontext; die Bausteine erzeugen, prüfen
 und erklären ihn.
 
 Die Vision ist damit keine Wunschliste, sondern ein Zielbild mit benannten
@@ -17,7 +17,7 @@ Lücken.
 
 ## Die sieben Bausteine
 
-PROPSA steht nicht allein. Unter ihm liegen sieben Bausteine, jeder mit genau
+PROPAKT steht nicht allein. Unter ihm liegen sieben Bausteine, jeder mit genau
 einer Aufgabe. Sie sind nicht nach Namen, sondern nach **Funktion** benannt —
 jeder Baustein tut etwas, und das lässt sich unabhängig von seinem Ursprung
 beschreiben.
@@ -40,11 +40,11 @@ ist Absicht: die Grenze steht genauso ausführlich wie die Fähigkeit.
 
 ## Warum Muster, nicht Code
 
-Der Neuaufbau in PROPSA folgt einer Regel: **Muster statt Zeilen.** Der Code der
+Der Neuaufbau in PROPAKT folgt einer Regel: **Muster statt Zeilen.** Der Code der
 Bausteine wird nicht übernommen, weil er die Regeln dieses Repos verletzt, an
 denen es gemessen wurde:
 
-| Kennzahl | PROPSA | Bausteine (schlechtester Wert) |
+| Kennzahl | PROPAKT | Bausteine (schlechtester Wert) |
 |---|---|---|
 | LOC-Grenze | 299 (Grenze 300, maschinell geprüft) | 1301, 1245, 1284 Zeilen in je einer Datei |
 | Datei-Zuordnung | 242 Dateien, alle in `INDEX.json` | 0 `INDEX.json` in allen sieben Bausteinen |
@@ -87,7 +87,7 @@ NOT_VERIFIED    es wurde gebaut und niemand hat es geprüft
 Beides ist ehrlich, aber es führt zu verschiedenen Entscheidungen — ein `STUB`
 ist eine Aufgabe, ein `NOT_VERIFIED` ein offener Prüfposten.
 
-## Was in PROPSA steht
+## Was in PROPAKT steht
 
 | Funktion | Stand | Beleg |
 |---|---|---|
@@ -107,7 +107,7 @@ ist eine Aufgabe, ein `NOT_VERIFIED` ein offener Prüfposten.
 
 Ein Adapter auf einen lokalen, OpenAI-kompatiblen Vermittler ändert zwei
 Felder: `basisUrl` und `kopfart`. Der bestehende Katalog bleibt als Fallback für
-Direktzugriff erhalten, damit PROPSA ohne laufenden Vermittler weiter
+Direktzugriff erhalten, damit PROPAKT ohne laufenden Vermittler weiter
 funktioniert.
 
 **Das ist der kleinstmögliche Eingriff mit der grössten Wirkung.**
@@ -117,7 +117,7 @@ funktioniert.
 Die Prüflogik des Musters ist formal prüfbar und hat keine
 Datenbankabhängigkeit — sie ist als reine Funktion extrahierbar.
 
-**Die Bedingung:** PROPSA hat zwei Implementierungen, TypeScript-CLI und
+**Die Bedingung:** PROPAKT hat zwei Implementierungen, TypeScript-CLI und
 Rust-Backend. Die Logik muss in **beide** gespiegelt werden, sonst erhalten CLI
 und App verschiedene Kritik-Ergebnisse. Genau diesen Mechanismus erzwingt
 `npm run pruefen` bereits für die Kataloge in `packages/core/src/` ↔
@@ -128,7 +128,7 @@ Messung an echten Anforderungen nötig.
 
 ### 3. Integration → Architektur-Referenz
 
-Die Bausteine veröffentlichen Schnittstellen, nicht Code. PROPSA sollte diese
+Die Bausteine veröffentlichen Schnittstellen, nicht Code. PROPAKT sollte diese
 Verträge referenzieren, statt eigene Annahmen über die Bausteine zu treffen.
 → [`bausteine/vertrage/`](../../bausteine/vertrage/)
 
@@ -138,13 +138,13 @@ Verträge referenzieren, statt eigene Annahmen über die Bausteine zu treffen.
 2. **Prüfung für `Kritik.md`** — fail-closed, in TypeScript *und* Rust.
 3. **Vertragsreferenz** — die Verträge als verbindliche Architekturquelle.
 
-**Nicht in dieser Reihe:** Übersicht als Modul. Fremdformate in PROPSA zu ziehen
+**Nicht in dieser Reihe:** Übersicht als Modul. Fremdformate in PROPAKT zu ziehen
 wäre ein eigener Vorschlag und braucht eine eigene Entscheidung.
 
 ## Zusammenspiel
 
 ```text
-PROPSA (dieses Repo)
+PROPAKT (dieses Repo)
   Kontextpakete  ──────────────────────  Was die Instanz lesen soll
   Live-Modus     ──────────────────────  Was sich gerade ändert
         │

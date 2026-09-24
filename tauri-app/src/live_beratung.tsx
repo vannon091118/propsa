@@ -4,7 +4,7 @@ import { beratungAusfuehren } from "./api";
 import { AUSLOESER_TITEL, type Ausloeser } from "./llm";
 import { istVorschauMock } from "./devMock";
 
-const SPEICHER = "propsa-einstellungen.json";
+const SPEICHER = "propakt-einstellungen.json";
 const SCHLUESSEL = "llm_konfig";
 
 /** Gespeicherte LLM-Konfiguration (siehe LlmBeratung.tsx). */

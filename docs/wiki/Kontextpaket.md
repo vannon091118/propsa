@@ -1,6 +1,6 @@
 # Kontextpaket
 
-PROPSA legt seinen Kontext als **Ordner mit mehreren Dateien** an. Statt einer
+PROPAKT legt seinen Kontext als **Ordner mit mehreren Dateien** an. Statt einer
 großen Datei entsteht je Domäne eine eigene Datei; ein Sprachmodell kann damit
 gezielt nur die Teile lesen, die es braucht.
 
@@ -73,11 +73,11 @@ Zahlen stehen ohne Tausendertrenner und Datumsangaben als lokale Zeit
 
 ```bash
 # CLI: Paket (Standard), Zielordner optional
-npx ts-node src/propsa.ts . -o propsa-kontext
+npx ts-node src/propakt.ts . -o propakt-kontext
 
 # CLI: alles in eine Datei
-npx ts-node src/propsa.ts . --einzeln kontext.md
-npx ts-node src/propsa.ts . --einzeln kontext.json
+npx ts-node src/propakt.ts . --einzeln kontext.md
+npx ts-node src/propakt.ts . --einzeln kontext.json
 
 # App: Ordner wählen, dann „Zielordner wählen und Paket schreiben“
 ```

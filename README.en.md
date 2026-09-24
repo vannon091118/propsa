@@ -1,8 +1,8 @@
-![PROPSA – context packages for language models](assets/banner.svg)
+![PROPAKT – context packages for language models](assets/banner.svg)
 
-# PROPSA
+# PROPAKT
 
-**PROPSA** turns a project folder into an **LLM-ready context package**: several
+**PROPAKT** turns a project folder into an **LLM-ready context package**: several
 files instead of one giant blob, split by domain, every file complete.
 
 [Deutsche Fassung](README.md)
@@ -20,7 +20,7 @@ Two surfaces, one contract: a **CLI** (`src/`) for scripting and automation and 
 ## Why not just `cat`?
 
 Because a model loses the thread on a single 12 MB dump — and with a truncated
-export it will not even notice that something is missing. PROPSA writes
+export it will not even notice that something is missing. PROPAKT writes
 
 - **complete** – every file in full, never cut off,
 - **ordered** – one file per domain so a model can read selectively,
@@ -46,7 +46,7 @@ Details (German): [docs/wiki/Kontextpaket.md](docs/wiki/Kontextpaket.md).
 
 ```bash
 npm install
-npm start /path/to/project     # writes the package to ./propsa-kontext/
+npm start /path/to/project     # writes the package to ./propakt-kontext/
 ```
 
 The complete installation guide is [INSTALL.md](INSTALL.md) (German) – it is the
@@ -65,7 +65,7 @@ npm start ~/code/my-project --einzeln context.json
 
 | Flag | Meaning |
 |------|---------|
-| `-o, --output <folder>` | Target folder of the package (default `propsa-kontext`) |
+| `-o, --output <folder>` | Target folder of the package (default `propakt-kontext`) |
 | `--einzeln <file>` | Write a single `.md` or `.json` file instead |
 | `-e, --exclude <patterns>` | Additional glob patterns to exclude (comma-separated) |
 | `-i, --include <patterns>` | Include only these patterns (empty = everything) |
@@ -75,8 +75,8 @@ npm start ~/code/my-project --einzeln context.json
 | `--entrypoint <file>` | Slice: entry file plus its local import chain |
 | `--depth <n>` | Slice: only files up to this folder depth |
 | `--top-files <n>` | Slice: only the n largest files by lines |
-| `--delta` | Report the delta against the last run (`~/.propsa/history/`) |
-| `--cache` | Reuse the cached result when the tree is unchanged (`~/.propsa/cache/`, German docs) |
+| `--delta` | Report the delta against the last run (`~/.propakt/history/`) |
+| `--cache` | Reuse the cached result when the tree is unchanged (`~/.propakt/cache/`, German docs) |
 
 The default is a **complete scan**: no limits. Only dependencies, version
 control, build artifacts and caches are excluded. `node_modules`,
@@ -88,19 +88,19 @@ The former compact mode (`-c`) has been removed. Instead of arbitrary caps
 chain, `--depth` caps the depth, `--top-files` takes the largest files.
 
 With `--delta` (CLI) or the “Report changes since last run” checkbox (app)
-PROPSA reports the changes since the last run: The history lives centrally
-in the user directory (`~/.propsa/history/<identity>.jsonl`); nothing is left
+PROPAKT reports the changes since the last run: The history lives centrally
+in the user directory (`~/.propakt/history/<identity>.jsonl`); nothing is left
 behind in the scanned project. The project is identified via the root commit
 hash (`git rev-list --max-parents=0 HEAD`) — stable across branches, paths
 and remote URLs; without git the identity falls back to the path. Install
 and remove:
 
 ```bash
-npm run installieren    # build + set up central storage ~/.propsa
-npm run deinstallieren  # remove ~/.propsa (with confirmation)
+npm run installieren    # build + set up central storage ~/.propakt
+npm run deinstallieren  # remove ~/.propakt (with confirmation)
 ```
 
-`~/.propsa` holds everything PROPSA keeps between runs — except the output:
+`~/.propakt` holds everything PROPAKT keeps between runs — except the output:
 context packages and `--einzeln` files go where they are requested.
 
 ## Desktop app
@@ -127,7 +127,7 @@ The app can sit in the background as a **tray icon** and follow a project
 folder in a **live cycle**: scan → compare → next tick, sequential, never
 overlapping. A transparent **overlay widget** shows a traffic light, file and
 line counts, a sparkline and the change journal; snapshots are persisted in
-`~/.propsa/live/<identity>.db` (SQLite, WAL) and add a second time series to
+`~/.propakt/live/<identity>.db` (SQLite, WAL) and add a second time series to
 the history graph.
 
 When the cycle detects **anomalies** — flapping, regression, oscillation,
@@ -153,7 +153,7 @@ to the provider and nowhere else.
 
 CLI and app share not only the **contract** but, since 0.0.17, the **code**:
 language detection, filter catalog, domain rule and export schema live once in
-`packages/core/src/` (`@propsa/core`), which the CLI imports directly while the
+`packages/core/src/` (`@propakt/core`), which the CLI imports directly while the
 Rust bridge mirrors the same rules. `npm run pruefen` compares both sides
 catalog by catalog. The scanner collects all candidates, sorts them and reads
 them afterwards — so limits do not depend on filesystem order and always hit
@@ -183,7 +183,7 @@ Releases are automatic: pushing a `v*` tag triggers the GitHub workflow
 ## Not in this version
 
 So nobody hunts for features that do not exist: no GitHub URL input and no CI
-workflows for external projects. PROPSA works on the filesystem only. The live
+workflows for external projects. PROPAKT works on the filesystem only. The live
 mode watches one project at a time and works on timer ticks (no FS watcher):
 changes are only visible with the next tick. It reports anomalies but never
 intervenes (no kill, no revert) and runs in the app only, not in the CLI. Six
@@ -193,8 +193,8 @@ of the seven building blocks are contract, not function.
 
 ```text
 .
-├── src/                CLI (TypeScript), entry: src/propsa.ts
-├── packages/core/      Shared core @propsa/core (types, rules, schema)
+├── src/                CLI (TypeScript), entry: src/propakt.ts
+├── packages/core/      Shared core @propakt/core (types, rules, schema)
 ├── tauri-app/          Desktop app (React frontend, Rust backend)
 ├── bausteine/          Contracts and patterns (documented, no code)
 ├── agents/mcp-server/  MCP server for the project overview

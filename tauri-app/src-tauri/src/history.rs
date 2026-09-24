@@ -1,7 +1,7 @@
 //! Delta- und History-Erkennung im Backend.
 //!
 //! Die History wohnt zentral im Benutzerverzeichnis:
-//! `~/.propsa/history/<identitaet>.jsonl` – je Projekt-Identität eine Datei
+//! `~/.propakt/history/<identitaet>.jsonl` – je Projekt-Identität eine Datei
 //! (pro Zeile ein History-Eintrag, JSONL). Sie wird nach jedem Scan mit
 //! Delta ergänzt; der Vergleich läuft gegen den letzten Eintrag derselben
 //! Identität. Im gescannten Projekt bleibt nichts zurück.
@@ -99,17 +99,30 @@ pub fn projekt_identitaet(basis: &Path) -> (String, String) {
     (format!("{:x}", hasher.finalize()), "pfad".to_string())
 }
 
-/// Zentrale Ablage im Benutzerverzeichnis: `~/.propsa` (Spiegel zu
-/// `PROPSA_HEIM` in `src/history.ts`).
-pub fn propsa_heim() -> PathBuf {
-    dirs::home_dir()
+/// Zentrale Ablage im Benutzerverzeichnis: `~/.propakt` (Spiegel zu
+/// `PROPAKT_HEIM` in `src/history.ts`).
+///
+/// Übernimmt beim ersten Aufruf eine bestehende Ablage unter dem Altnamen
+/// `~/.propsa` einmalig nach `~/.propakt` (History, Cache, Live-Datenbank),
+/// damit die Umbenennung keine Daten verliert. Fehlt die alte Ablage oder
+/// schlägt das Umbenennen fehl, wird still weitergehalten – die Migration ist
+/// eine Bequemlichkeit, kein Grund, den Lauf abzubrechen.
+pub fn propakt_heim() -> PathBuf {
+    let heim = dirs::home_dir()
         .unwrap_or_else(|| PathBuf::from("."))
-        .join(".propsa")
+        .join(".propakt");
+    let alt = dirs::home_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".propsa");
+    if !heim.exists() && alt.exists() {
+        let _ = std::fs::rename(&alt, &heim);
+    }
+    heim
 }
 
-/// History-Datei der Identität unter `~/.propsa/history/`.
+/// History-Datei der Identität unter `~/.propakt/history/`.
 fn history_pfad(identitaet: &str) -> PathBuf {
-    propsa_heim().join("history").join(format!("{identitaet}.jsonl"))
+    propakt_heim().join("history").join(format!("{identitaet}.jsonl"))
 }
 
 /// Liest die History; fehlendes oder fehlerhaftes File ergibt eine leere Liste.
@@ -166,7 +179,7 @@ fn delta_berechnen(aktuell: &ScanErgebnis, frueher: &HistoryEintrag) -> Delta {
 
 /// Hängt den Lauf an die History der Identität an und kürzt auf MAX_EINTRAEGE.
 fn history_ergaenzen(identitaet: &str, eintrag: HistoryEintrag) {
-    let _ = std::fs::create_dir_all(propsa_heim().join("history"));
+    let _ = std::fs::create_dir_all(propakt_heim().join("history"));
     let mut eintraege = history_lesen(identitaet);
     eintraege.push(eintrag);
     if eintraege.len() > MAX_EINTRAEGE {

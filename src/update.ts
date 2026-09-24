@@ -10,11 +10,11 @@
  * Änderungen, Divergenz) und als `UpdateFehler` mit deutschem
  * Lösungshinweis gemeldet – nie als rohe Stacktrace.
  *
- * Vertrag (Typen) lebt in `@propsa/core` (`UpdateCheck`).
+ * Vertrag (Typen) lebt in `@propakt/core` (`UpdateCheck`).
  */
 import { execFileSync } from 'child_process';
 import * as path from 'path';
-import { UpdateCheck, hashKurz, updateVerfuegbar } from '@propsa/core';
+import { UpdateCheck, hashKurz, updateVerfuegbar } from '@propakt/core';
 
 /** Projekt-Wurzel: zwei Ebenen über diesem Modul (src/). */
 const PROJEKT_WURZEL = path.resolve(__dirname, '..');
@@ -61,7 +61,7 @@ function gitHinweis(args: string[], fehler: unknown): string {
       text.includes('would be overwritten')) {
     return 'Lokale Änderungen blockieren den Fast-Forward.\n' +
       '   Lösung: Änderungen commiten (`git commit`) oder zur Seite legen\n' +
-      '   (`git stash`), dann `propsa update` erneut ausführen.';
+      '   (`git stash`), dann `propakt update` erneut ausführen.';
   }
   if (text.includes('Diverging') || text.includes('not possible to fast-forward')) {
     return 'Lokaler Stand ist von origin/main abgezweigt (Divergenz).\n' +
@@ -127,7 +127,7 @@ export function updateAusfuehren(): { vorher: string; nachher: string; installie
     throw new UpdateFehler(
       'Lokale Änderungen blockieren den Fast-Forward.\n' +
       '   Lösung: Änderungen commiten (`git commit`) oder zur Seite legen\n' +
-      '   (`git stash`), dann `propsa update` erneut ausführen.'
+      '   (`git stash`), dann `propakt update` erneut ausführen.'
     );
   }
   git(['pull', '--ff-only', 'origin', 'main', '--quiet']);

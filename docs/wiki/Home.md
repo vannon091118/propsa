@@ -1,7 +1,7 @@
-# PROPSA Wiki – Startseite
+# PROPAKT Wiki – Startseite
 
-**PROPSA** (Parser für Repomix Organisiert Prompt-Systeme für Analysen) macht aus
-einem Projektordner ein **Kontextpaket für Sprachmodelle**: eine Datei je Domäne,
+**PROPAKT** (**PRO**jekt-**PAKT**kontext für Sprachmodelle) macht aus einem
+Projektordner ein **Kontextpaket für Sprachmodelle**: eine Datei je Domäne,
 vollständiger Inhalt, maschinenlesbar als `kontext.json`.
 
 ## Begriffe
@@ -13,13 +13,13 @@ vollständiger Inhalt, maschinenlesbar als `kontext.json`.
 | **Übersprungen** | Datei, die nicht gelesen werden konnte (binär, leer, gesperrt) |
 | **Guardrail** | Hartes Limit (`-m`/`-l`); wird es erreicht, bricht der Scan ab |
 | **Slice-Selektor** | Zielbasierte Auswahl: `--entrypoint`, `--depth`, `--top-files` (nur CLI) |
-| **Delta** | Vergleich zum letzten Lauf (`--delta` bzw. Checkbox in der App, `~/.propsa/history/`) |
+| **Delta** | Vergleich zum letzten Lauf (`--delta` bzw. Checkbox in der App, `~/.propakt/history/`) |
 | **Identität** | Root-Commit-Hash; ohne Git der normierte Pfad (Fallback) |
 | **Einzeldatei** | Alternative Ausgabe `--einzeln datei.md\|json` (nur CLI) |
 
 ## Zwei Oberflächen, ein Vertrag
 
-- **CLI** (`src/`): Einstieg `src/propsa.ts`, Argumente über `commander`.
+- **CLI** (`src/`): Einstieg `src/propakt.ts`, Argumente über `commander`.
 - **App** (`tauri-app/`): Rust-Kommandos `scan` und `paket_schreiben`, React mit
   Vite und Tailwind v4.
 

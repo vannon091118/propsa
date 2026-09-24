@@ -2759,8 +2759,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "propsa"
-version = "0.0.17"
+name = "propakt"
+version = "0.0.19"
 dependencies = [
  "chrono",
  "dirs 5.0.1",

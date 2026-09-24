@@ -1,12 +1,12 @@
 [package]
-name = "propsa"
-version = "0.0.18"
-description = "PROPSA — Projekt-Scankontext als Kontextpaket (Tauri v2 + React)"
+name = "propakt"
+version = "0.0.19"
+description = "PROPAKT — Projekt-Scankontext als Kontextpaket (Tauri v2 + React)"
 authors = ["Vannon"]
 edition = "2021"
 
 [lib]
-name = "propsa_lib"
+name = "propakt_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

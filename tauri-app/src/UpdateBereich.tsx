@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { invoke, updatePruefen, updateStarten } from "./api";
 import { MarkdownRenderer } from "./MarkdownRenderer";
-import type { UpdateCheck } from "@propsa/core";
+import type { UpdateCheck } from "@propakt/core";
 
 type Props = {
   /** Im Browser-Vorschau-Mock ohne Tauri wird nur das Layout gezeigt. */

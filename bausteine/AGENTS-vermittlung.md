@@ -42,7 +42,7 @@ Alles. `implementation_status.overall` ist `STUB`, und die Abschnitte
 `registry`, `scanner`, `key_pool`, `pipeline` und
 `automatische_routing_politik` ebenfalls.
 
-PROPSA verdrahtet heute drei Anbieter fest in `tauri-app/src/llm.ts`. Dieser
+PROPAKT verdrahtet heute drei Anbieter fest in `tauri-app/src/llm.ts`. Dieser
 Baustein würde sie **ersetzen**, nicht ergänzen. Das ist ein Umbau, keine
 Erweiterung, und der Aufwand ist nicht gemessen.
 

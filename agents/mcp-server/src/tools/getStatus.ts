@@ -4,25 +4,25 @@ import * as path from "path";
 import { CONFIG_PATH, SNAPSHOT_DIR, DIFF_DIR, LOGS_DIR, readJsonFile } from "../utils/storage";
 
 /**
- * Tool: Get PROPSA-Status/Betriebsbereitschaft
+ * Tool: Get PROPAKT-Status/Betriebsbereitschaft
  */
 export const getStatusTool = {
-  name: "propsa_get_status",
-  description: "Get PROPSA repository monitor operational status",
+  name: "propakt_get_status",
+  description: "Get PROPAKT repository monitor operational status",
   inputSchema: z.object({}),
   execute: async () => {
     try {
       const configRaw = readJsonFile(CONFIG_PATH);
-      const config = configRaw as { propsa?: any; heartbeat?: any };
-      const propsaConfig = config.propsa || {};
+      const config = configRaw as { propakt?: any; heartbeat?: any };
+      const propaktConfig = config.propakt || {};
       
       // Count files in directories
       const snapshotCount = fs.existsSync(SNAPSHOT_DIR) ? 
         fs.readdirSync(SNAPSHOT_DIR).filter(f => f.endsWith("_snapshot.md")).length : 0;
       const diffCount = fs.existsSync(DIFF_DIR) ? 
         fs.readdirSync(DIFF_DIR).filter(f => f.endsWith("_diff.md") || f.endsWith("_explanation.md")).length : 0;
-      const logSize = fs.existsSync(path.join(LOGS_DIR, "propsa.log")) ? 
-        fs.statSync(path.join(LOGS_DIR, "propsa.log")).size : 0;
+      const logSize = fs.existsSync(path.join(LOGS_DIR, "propakt.log")) ? 
+        fs.statSync(path.join(LOGS_DIR, "propakt.log")).size : 0;
       
       // Check if recent activity (last 10 minutes)
       let lastActivity = "Nie";
@@ -46,7 +46,7 @@ export const getStatusTool = {
         content: [
           {
             type: "text",
-            text: `🥷 PROPSA Repository Monitor Status\n\n🟢 Status: Aktiv und überwachend\n📁 Konfiguration:\n   - Intervall: ${propsaConfig.interval_seconds || 300}s (${((propsaConfig.interval_seconds || 300) / 60)} min)\n   - Heartbeat: ${config.heartbeat?.interval_seconds || 180}s\n   - Deutsche Erklärungen: ${propsaConfig.german_explanations ? "✅" : "❌"}\n   - Fun-Modus: ${propsaConfig.fun_mode ? "✅" : "❌"}\n\n📊 Statistik:\n   - Snapshots erstellt: ${snapshotCount}\n   - Reports/Erklärungen: ${diffCount}\n   - Log-Dateigröße: ${logSize} bytes\n   - Letzte Aktivität: ${lastActivity}\n\n📂 Verzeichnisse:\n   - Snapshots: ${SNAPSHOT_DIR}\n   - Reports: ${DIFF_DIR}\n   - Logs: ${LOGS_DIR}\n\n💡 Verfügbare MCP-Tools:\n   - propsa_trigger_analysis\n   - propsa_get_latest_snapshot\n   - propsa_get_recent_explanations\n   - propsa_get_status\n\n🥷 PROPSA behält dein Repository im Blick!`
+            text: `🥷 PROPAKT Repository Monitor Status\n\n🟢 Status: Aktiv und überwachend\n📁 Konfiguration:\n   - Intervall: ${propaktConfig.interval_seconds || 300}s (${((propaktConfig.interval_seconds || 300) / 60)} min)\n   - Heartbeat: ${config.heartbeat?.interval_seconds || 180}s\n   - Deutsche Erklärungen: ${propaktConfig.german_explanations ? "✅" : "❌"}\n   - Fun-Modus: ${propaktConfig.fun_mode ? "✅" : "❌"}\n\n📊 Statistik:\n   - Snapshots erstellt: ${snapshotCount}\n   - Reports/Erklärungen: ${diffCount}\n   - Log-Dateigröße: ${logSize} bytes\n   - Letzte Aktivität: ${lastActivity}\n\n📂 Verzeichnisse:\n   - Snapshots: ${SNAPSHOT_DIR}\n   - Reports: ${DIFF_DIR}\n   - Logs: ${LOGS_DIR}\n\n💡 Verfügbare MCP-Tools:\n   - propakt_trigger_analysis\n   - propakt_get_latest_snapshot\n   - propakt_get_recent_explanations\n   - propakt_get_status\n\n🥷 PROPAKT behält dein Repository im Blick!`
           }
         ]
       };

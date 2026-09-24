@@ -2,11 +2,11 @@
  * Delta- und History-Erkennung.
  *
  * Die History wohnt zentral im Benutzerverzeichnis:
- * `~/.propsa/history/<identitaet>.json` – je Projekt-Identität eine Datei
+ * `~/.propakt/history/<identitaet>.json` – je Projekt-Identität eine Datei
  * (pro Zeile ein History-Eintrag, JSONL). Sie wird nach jedem erfolgreichen
  * Paketlauf ergänzt; `--delta` vergleicht den aktuellen Lauf mit dem letzten
  * Eintrag derselben Identität. Im gescannten Projekt bleibt nichts zurück –
- * auch keine `.propsa/` und kein `.gitignore`-Eintrag mehr.
+ * auch keine `.propakt/` und kein `.gitignore`-Eintrag mehr.
  *
  * Identity-Matching über den **Root-Commit-Hash** (`git rev-list
  * --max-parents=0 HEAD`): stabil über Branches, Pfade und Remote-URLs.
@@ -20,9 +20,35 @@ import * as path from 'path';
 import { GescannteDatei } from './scanner';
 
 /** Zentrale Ablage im Benutzerverzeichnis (alles außer Output liegt hier). */
-export const PROPSA_HEIM = path.join(os.homedir(), '.propsa');
+export const PROPAKT_HEIM = path.join(os.homedir(), '.propakt');
+/** Ablage vor der Umbenennung – Quelle der einmaligen Migration, siehe `heimMigrieren`. */
+const PROPAKT_HEIM_ALT = path.join(os.homedir(), '.propsa');
 const HISTORY_ORDNER = 'history';
 const MAX_EINTRAEGE = 50;
+
+let migriert = false;
+
+/**
+ * Übernimmt eine bestehende `~/.propsa` einmalig nach `~/.propakt`.
+ *
+ * Ausführen **vor** jedem Zugriff auf die Ablage (History, Zwischenspeicher).
+ * Findet sich nur die neue Ablage, ist nichts zu tun. Findet sich die alte,
+ * wird sie umbenannt – ihre History, ihr Cache und ihre Live-Datenbank gehen
+ * dadurch nicht verloren. Scheitert das Umbenennen (etwa weil die alte Ablage
+ * gerade geöffnet ist), bleibt die alte liegen und der Lauf nutzt die neue
+ * Ablage; das ist ein Fehler, kein Grund abzubrechen.
+ */
+export function heimMigrieren(): void {
+  if (migriert) return;
+  migriert = true;
+  if (fs.existsSync(PROPAKT_HEIM) || !fs.existsSync(PROPAKT_HEIM_ALT)) return;
+  try {
+    fs.renameSync(PROPAKT_HEIM_ALT, PROPAKT_HEIM);
+    console.log(`♻️  Alte Ablage ${PROPAKT_HEIM_ALT} nach ${PROPAKT_HEIM} übernommen.`);
+  } catch {
+    console.warn(`⚠ Alte Ablage ${PROPAKT_HEIM_ALT} gefunden, konnte aber nicht übernommen werden – bitte von Hand umbenennen.`);
+  }
+}
 
 /** Ein History-Eintrag: das Minimum, das ein Delta braucht. */
 export interface HistoryEintrag {
@@ -45,15 +71,17 @@ export interface Delta {
 }
 
 /**
- * Die zentrale Ablage anlegen: `~/.propsa` mit Unterordnern.
+ * Die zentrale Ablage anlegen: `~/.propakt` mit Unterordnern.
  *
- * Installations- und Deinstallationsskript (`scripts/install.mjs`,
- * `scripts/deinstall.mjs`) nutzen denselben Ordner; der Lauf allein braucht
- * ihn aber auch, deshalb legt diese Funktion ihn idempotent an.
+ * Installations- und Deinstallationsskript (`scripts/installation/install.mjs`,
+ * `scripts/installation/deinstall.mjs`) nutzen denselben Ordner; der Lauf allein
+ * braucht ihn aber auch, deshalb legt diese Funktion ihn idempotent an. Vorher
+ * wird eine eventuell vorhandene Ablage unter dem Altnamen übernommen.
  */
 export function heimSichern(): string {
-  fs.mkdirSync(path.join(PROPSA_HEIM, HISTORY_ORDNER), { recursive: true });
-  return PROPSA_HEIM;
+  heimMigrieren();
+  fs.mkdirSync(path.join(PROPAKT_HEIM, HISTORY_ORDNER), { recursive: true });
+  return PROPAKT_HEIM;
 }
 
 /** Root-Commit-Hash oder `null` ohne Git-Repository/Commit. */
@@ -112,9 +140,9 @@ function fingerabdrücke(dateien: GescannteDatei[]): Record<string, string> {
   return abbild;
 }
 
-/** History-Datei der Identität unter `~/.propsa/history/`. */
+/** History-Datei der Identität unter `~/.propakt/history/`. */
 function historyPfad(identitaet: string): string {
-  return path.join(PROPSA_HEIM, HISTORY_ORDNER, `${identitaet}.jsonl`);
+  return path.join(PROPAKT_HEIM, HISTORY_ORDNER, `${identitaet}.jsonl`);
 }
 
 /** Liest die History; fehlendes oder fehlerhaftes File ergibt eine leere Liste. */

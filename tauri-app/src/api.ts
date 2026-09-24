@@ -15,7 +15,7 @@ import {
   mockScan,
 } from "./devMock";
 import type { Fortschritt, ScanEinstellungen, ScanErgebnis } from "./typen";
-import type { UpdateCheck } from "@propsa/core";
+import type { UpdateCheck } from "@propakt/core";
 
 export { invoke };
 export {

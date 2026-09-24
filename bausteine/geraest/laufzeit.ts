@@ -5,7 +5,7 @@
  * Vertrag: `bausteine/vertrage/05-laufzeit.contract.json`
  *
  * **Dieses Modul ist leer und weiss es.** Von den drei Teilen des Musters
- * existiert einer in PROPSA wirklich: der unveränderliche Ereignisstrom
+ * existiert einer in PROPAKT wirklich: der unveränderliche Ereignisstrom
  * (`tauri-app/src-tauri/src/live_store.rs`, SQLite im WAL-Modus). Was fehlt,
  * ist die Ableitung. Sie ist `STUB`, und zwar bewusst – ein selbstlernendes
  * System ohne gemessenen Nutzen wäre eine Zusage ohne Beleg.
@@ -16,7 +16,7 @@
  * Sicht ist ungebaut, und „es geht“ ist kein Beweis dafür, dass es unter einer
  * anderen Regel auch geht.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

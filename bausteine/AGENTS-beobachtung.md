@@ -56,8 +56,8 @@ einen Abbruch auslösen.
 Alles. `implementation_status.overall` ist `STUB`. Die Zuordnungstabelle ist
 leer; `EREIGNIS_TYPEN` benennt die sieben Zieltypen, sonst nichts.
 
-**Abgrenzung zu PROPSA:** `tauri-app/src-tauri/src/live_zyklus.rs` ist ein
-Beobachter — aber ein geschlossener. Quelle und Speicher sind PROPSA selbst.
+**Abgrenzung zu PROPAKT:** `tauri-app/src-tauri/src/live_zyklus.rs` ist ein
+Beobachter — aber ein geschlossener. Quelle und Speicher sind PROPAKT selbst.
 Der Fall, für den dieses Muster gedacht ist, ist ein Zustand **ausserhalb** des
 eigenen Prozesses. Den gibt es hier nicht, und der Bau einer Beobachtung dafür
 wäre Arbeit auf Verdacht.

@@ -123,9 +123,9 @@ als Fehlerzustand, nie als Eingriff.
 - **Keine Rückwirkung auf Entscheidungen.** Auch nicht „nur ein kleiner Hinweis".
   Die Grenze gilt vollständig oder gar nicht.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA hat bereits Live-Modus: ein SQLite-Journal in WAL, einen Taktgeber, eine
+PROPAKT hat bereits Live-Modus: ein SQLite-Journal in WAL, einen Taktgeber, eine
 Anomalie-Erkennung mit Schwellen, ein Overlay-Fenster. Das ist eine
 **Beobachtung ohne Beobachter** – das Muster geht einen Schritt weiter und
 trennt den Journal-Leser vom Vorgang.

@@ -80,14 +80,14 @@
   "implementation_status": {
     "overall": "STUB",
     "sections": {
-      "protokoll": "IMPLEMENTED — der Live-Modus führt eine append-only SQLite-WAL-Kette (live_store.rs). Das ist der Teil des Musters, der in PROPSA wirklich existiert.",
+      "protokoll": "IMPLEMENTED — der Live-Modus führt eine append-only SQLite-WAL-Kette (live_store.rs). Das ist der Teil des Musters, der in PROPAKT wirklich existiert.",
       "wiedergabe": "IMPLEMENTED — zwei Sichten derselben Historie sind über get_history_metrics abrufbar, und die Achsen-Skalierung in HistoryGraph.tsx erlaubt den Vergleich.",
       "lernen": "STUB — bewusst offen. Es gibt keine Ableitung und keine Anpassung. Ohne gemessenen Nutzen wäre das eine Zusage ohne Beleg.",
-      "genau_ein_gate": "STUB — PROPSA hat heute kein Gate dieser Art. Die Regel gilt für den Neubau, nicht für den Ist-Zustand."
+      "genau_ein_gate": "STUB — PROPAKT hat heute kein Gate dieser Art. Die Regel gilt für den Neubau, nicht für den Ist-Zustand."
     },
     "last_verified_against_code": "2026-09-24",
     "known_gaps": [
-      "Der Wiedergabeteil funktioniert, weil die Historie einmal geschrieben und nur gelesen wird. Die Zwei-Sichten-Idee mit zwei Regeln ist an PROPSA nicht geprüft — es gibt nur eine Regel.",
+      "Der Wiedergabeteil funktioniert, weil die Historie einmal geschrieben und nur gelesen wird. Die Zwei-Sichten-Idee mit zwei Regeln ist an PROPAKT nicht geprüft — es gibt nur eine Regel.",
       "Die Rows sind nach Zeitstempel sortiert, nicht nach monotoner Reihenfolge. Ein Zeitsprung rückwärts ist damit nicht abgesichert.",
       "Der Live-Modus ist ein Beobachter über sich selbst. Die Schichtung, die das Muster eigentlich trennt, fehlt hier."
     ]

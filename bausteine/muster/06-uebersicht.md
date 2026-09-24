@@ -88,25 +88,25 @@ findet, ist schlimmer als ein fehlender Leser.
   dargestellt.
 
 **Zur Grössenordnung.** Die Vorlage zu diesem Muster unterstützte über 30
-Fremdformate. Das ist kein Feature, das man in PROPSA übernehmen sollte –
+Fremdformate. Das ist kein Feature, das man in PROPAKT übernehmen sollte –
 es ist eine offene Wartungsverpflichtung mit 30 Einträgen. Was übernehmbar ist,
 ist die *Form* des Musters: ein Leser je Quelle, kein Sammel-Leser, Dedup in
 zwei Stufen.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA hat bereits eine Ergebnis-Tabelle (`ErgebnisTabelle.tsx`) und ein
+PROPAKT hat bereits eine Ergebnis-Tabelle (`ErgebnisTabelle.tsx`) und ein
 Ergebnis-Model mit Zählern, Sprachverteilung und Hotspots. Das ist eine
 Darstellung – aber für genau **eine** Quelle: das gescannte Verzeichnis.
 
-Das Muster ist relevant, sobald PROPSA nicht mehr nur ein Verzeichnis liest.
+Das Muster ist relevant, sobald PROPAKT nicht mehr nur ein Verzeichnis liest.
 Derzeit liest es eines. Ein Leser-Register für Fremdformate wäre Vorbereitung
 auf etwas, das nicht existiert.
 
-**Was stattdessen gilt:** PROPSA hat bereits eine Form von Dedup – die
+**Was stattdessen gilt:** PROPAKT hat bereits eine Form von Dedup – die
 Delta-Erkennung über Baum-Signaturen im Zwischenspeicher. Sie beantwortet
 „was hat sich geändert", nicht „ist das dasselbe". Zwei verschiedene Fragen, und
-PROPSA hat die erste beantwortet.
+PROPAKT hat die erste beantwortet.
 
 **Die Oberflächen-Lehre.** Was übernehmbar ist, liegt in `StatistikKarten.tsx`:
 gestapelte Balken für Anteile, eine Rangliste mit Relativbalken. Keine fremde

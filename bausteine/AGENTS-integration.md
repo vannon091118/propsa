@@ -36,7 +36,7 @@ und Laufzeit → 2 · Vermittlung und Integration → 3.
   war vorher nicht so: die Verträge der Vorlage führten uneinheitliche Felder —
   einer zwei Gate-Felder, die anderen je ein eigenes, anders benanntes. Ein
   Verbraucher, der zwei Bausteine prüfen wollte, musste für jeden eine andere
-  Struktur lesen. Das ist der Teil, der in PROPSA tatsächlich neu ist.
+  Struktur lesen. Das ist der Teil, der in PROPAKT tatsächlich neu ist.
 - **`STUB` ≠ `NOT_VERIFIED`.** Siehe `AGENTS.md` im Wurzelverzeichnis. Der
   Unterschied ist der wichtigste im ganzen Schema.
 - **Kein Aufwärtsgriff aus der Präsentation.** Wer von dort direkt in die
@@ -53,9 +53,9 @@ genommen.
 Ebenso wenig löst es Mehrdeutigkeit: ein Vertrag, den zwei Leser unterschiedlich
 auslegen, ist ungültig — aber keiner der beiden wird es merken.
 
-## Was PROPSA schon bestätigt
+## Was PROPAKT schon bestätigt
 
-PROPSA hat die Schichtenliste nicht — es hat zwei Oberflächen und einen Kern.
+PROPAKT hat die Schichtenliste nicht — es hat zwei Oberflächen und einen Kern.
 Das bestätigt das Muster eher, als dass es ihm folgt:
 
 - **Katalog in beiden Sprachen.** `filters.ts` und `filter.rs` führen denselben
@@ -68,13 +68,13 @@ Das bestätigt das Muster eher, als dass es ihm folgt:
   halten sich daran.
 
 **Was fehlt:** ein Vertrag *für den Austausch zwischen Bausteinen*. Heute ist
-`@propsa/core` die Wahrheit für Kataloge, aber es gab keine Verträge für das,
+`@propakt/core` die Wahrheit für Kataloge, aber es gab keine Verträge für das,
 was ein Prüfer zurückgibt oder was eine Beobachtung beobachtet. Dafür sind die
 sieben Verträge gedacht.
 
-**Was nicht daraus folgt:** PROPSA muss diese Schichten nicht übernehmen. Es
+**Was nicht daraus folgt:** PROPAKT muss diese Schichten nicht übernehmen. Es
 hat keine Orchestrierungsschicht und braucht keine. Die Positionen beschreiben,
-wo ein Baustein einzuordnen **wäre** — nicht, dass PROPSA eine Position
+wo ein Baustein einzuordnen **wäre** — nicht, dass PROPAKT eine Position
 bekommt.
 
 ## Prüfregeln

@@ -78,7 +78,7 @@
   "implementation_status": {
     "overall": "STUB",
     "sections": {
-      "leser_je_quelle": "STUB — PROPSA liest genau eine Quelle: das angegebene Verzeichnis. Ein Leser-Register wäre Vorbereitung auf etwas, das nicht existiert.",
+      "leser_je_quelle": "STUB — PROPAKT liest genau eine Quelle: das angegebene Verzeichnis. Ein Leser-Register wäre Vorbereitung auf etwas, das nicht existiert.",
       "dedup": "STUB — nicht gebaut.",
       "darstellung": "IMPLEMENTED — ErgebnisTabelle.tsx und StatistikKarten.tsx stellen Zähler, Sprachverteilung und Hotspots dar. Handgeschriebenes SVG und CSS, keine fremde Bibliothek."
     },
@@ -86,7 +86,7 @@
     "known_gaps": [
       "Der Darsteil ist echt und braucht keine Fremdformate. Die Leser-Liste wäre reine Zukunftsvorsorge.",
       "Die Grössenordnung der Vorlage war über 30 Fremdformate. Das ist eine offene Wartungsverpflichtung mit 30 Einträgen, kein Feature — und wird nicht übernommen.",
-      "Ob ein echtes Doppelproblem in PROPSA überhaupt vorliegt, ist ungemessen. Delta-Erkennung beantwortet 'was hat sich geändert', nicht 'ist das dasselbe'."
+      "Ob ein echtes Doppelproblem in PROPAKT überhaupt vorliegt, ist ungemessen. Delta-Erkennung beantwortet 'was hat sich geändert', nicht 'ist das dasselbe'."
     ]
   }
 }

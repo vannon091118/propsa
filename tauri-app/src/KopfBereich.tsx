@@ -20,7 +20,7 @@ export function KopfBereich({ zustand, laeuft, meldung }: Props) {
         </svg>
         <div>
           <h1 className="bg-gradient-to-r from-neon-cyan via-neon-violett to-neon-magenta bg-clip-text text-[22px] font-semibold tracking-tight text-transparent">
-            PROPSA
+            PROPAKT
           </h1>
           <p className="mt-1 text-[13px] text-leise">Projekt-Scankontext für LLMs</p>
         </div>

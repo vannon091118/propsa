@@ -7,12 +7,12 @@
 //! dann ruhig bleiben, dann ändern, dann löschen, dann neu — dasJournal muss
 //! jede Stufe exakt melden, der Bestand konsistent bleiben.
 
-use propsa_lib::live_store::{
+use propakt_lib::live_store::{
     bestand_entfernen, bestand_laden, bestand_setzen, kuerzen, letzte_signatur, oeffne_db,
     signatur_aus_json, snapshot_schreiben, BestandEintrag, BaumEintrag, MAX_SNAPSHOTS,
 };
-use propsa_lib::live_anomalie::{anomalien_schreiben, AnomalieBefund};
-use propsa_lib::live_zyklus::tick_berechnen;
+use propakt_lib::live_anomalie::{anomalien_schreiben, AnomalieBefund};
+use propakt_lib::live_zyklus::tick_berechnen;
 use rusqlite::Connection;
 use std::collections::HashMap;
 use std::fs;
@@ -39,7 +39,7 @@ fn projekt_anlegen() -> (tempfile::TempDir, PathBuf) {
 /// Bestand laut Journal spiegeln (dieselbe Regel wie `tick_ausfuehren`).
 fn bestand_spiegeln(
     verbindung: &Connection,
-    journal: &[propsa_lib::live_store::JournalEintrag],
+    journal: &[propakt_lib::live_store::JournalEintrag],
     bestand: &HashMap<String, BestandEintrag>,
 ) {
     for eintrag in journal {
@@ -105,7 +105,7 @@ fn kuerzen_behaelt_neueste_snapshots() {
         mtime_ms: 1,
     }];
     for index in 0..(MAX_SNAPSHOTS + 25) {
-        let ergebnis = propsa_lib::live_store::TickErgebnis {
+        let ergebnis = propakt_lib::live_store::TickErgebnis {
             identitaet: "test".into(),
             zeitstempel: format!("t{index}"),
             dateien: 1,
@@ -135,7 +135,7 @@ fn kuerzen_behaelt_neueste_snapshots() {
 #[test]
 fn tick_folge_ende_zu_ende() {
     let (_ordner, basis) = projekt_anlegen();
-    let verbindung = oeffne_db(&PathBuf::from(std::env::temp_dir()).join("propsa-live-test.db"))
+    let verbindung = oeffne_db(&PathBuf::from(std::env::temp_dir()).join("propakt-live-test.db"))
         .expect("DB");
     // Frische DB je Lauf: alter Stand darf nicht verrutschen.
     verbindung.execute("DELETE FROM snapshots", []).ok();
@@ -236,7 +236,7 @@ fn tick_folge_ende_zu_ende() {
         .expect("zählen");
     assert_eq!(anzahl, 5);
 
-    let _ = fs::remove_file(PathBuf::from(std::env::temp_dir()).join("propsa-live-test.db"));
+    let _ = fs::remove_file(PathBuf::from(std::env::temp_dir()).join("propakt-live-test.db"));
 }
 
 /// Anomalien sind mit Snapshot verknüpft; Kürzen auf 0 Snapshots entfernt
@@ -246,7 +246,7 @@ fn anomalien_waren_und_kuerzen() {
     let ordner = tempfile::tempdir().expect("TempDir");
     let verbindung = oeffne_db(&ordner.path().join("live.db")).expect("DB");
     // Snapshot anlegen, damit die Anomalie ein Ziel hat.
-    let ergebnis = propsa_lib::live_store::TickErgebnis {
+    let ergebnis = propakt_lib::live_store::TickErgebnis {
         identitaet: "test".into(),
         zeitstempel: "2026-09-17 12:00:00".into(),
         dateien: 1,
@@ -255,7 +255,7 @@ fn anomalien_waren_und_kuerzen() {
         geaendert: 1,
         entfernt: 0,
         unverändert: 0,
-        journal: vec![propsa_lib::live_store::JournalEintrag {
+        journal: vec![propakt_lib::live_store::JournalEintrag {
             pfad: "a.ts".into(),
             art: "geaendert".into(),
             zeilen_delta: 1,

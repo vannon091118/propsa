@@ -5,8 +5,8 @@
 //! konstruierten Tick-Folge getrieben: Flattern, Regression (a→b→a),
 //! Löschsturm, Explosion und Pendeln.
 
-use propsa_lib::live_anomalie::{schwere_fuer, schwellwert, BeobachtungsStand};
-use propsa_lib::live_store::{BestandEintrag, JournalEintrag, TickErgebnis};
+use propakt_lib::live_anomalie::{schwere_fuer, schwellwert, BeobachtungsStand};
+use propakt_lib::live_store::{BestandEintrag, JournalEintrag, TickErgebnis};
 use std::collections::HashMap;
 
 fn pruefe(name: &str, bedingung: bool) {

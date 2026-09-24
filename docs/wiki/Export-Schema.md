@@ -2,7 +2,7 @@
 
 `kontext.json` – in der CLI zusätzlich über `--einzeln <datei>.json` – ist **ein
 Format** für beide Oberflächen. Diese Datei ist der Vertrag; die Umsetzungen
-stehen in `packages/core/src/schema.ts` (@propsa/core, von der CLI importiert)
+stehen in `packages/core/src/schema.ts` (@propakt/core, von der CLI importiert)
 und `tauri-app/src-tauri/src/schema.rs` (GUI).
 Beide Seiten werden zusammen geändert. In der GUI entsteht das JSON nur als
 Bestandteil des Kontextpakets (`docs/wiki/Kontextpaket.md`).
@@ -78,7 +78,7 @@ Excludes vor Includes, leere Include-Liste = alles, Sortierung vor dem Lesen,
 Guardrails auf der sortierten Reihenfolge, übersprungene Dateien zählen.
 
 Die Ausschlusslisten sind inhaltsgleich: die Liste lebt in
-`packages/core/src/filters.ts` (@propsa/core), das Frontend bezieht die
+`packages/core/src/filters.ts` (@propakt/core), das Frontend bezieht die
 Vorbelegung von dort, und `filter.rs` spiegelt sie. `npm run pruefen`
 vergleicht die Kataloge.
 
@@ -96,12 +96,12 @@ Bekannte, hingenommene Unterschiede:
 
 ```bash
 # CLI: Paket schreiben (enthält kontext.json)
-npx ts-node src/propsa.ts . -o propsa-kontext
+npx ts-node src/propakt.ts . -o propakt-kontext
 
 # CLI: nur das JSON
-npx ts-node src/propsa.ts . --einzeln kontext.json
+npx ts-node src/propakt.ts . --einzeln kontext.json
 
-# App: Paket schreiben; verglichen wird dann propsa-kontext/kontext.json
+# App: Paket schreiben; verglichen wird dann propakt-kontext/kontext.json
 ```
 
 Gleicher Ordner und gleiche Optionen ⇒ gleiche Feldnamen, gleiche Zähler,

@@ -5,10 +5,10 @@
  * Vertrag: `bausteine/vertrage/06-uebersicht.contract.json`
  *
  * **Dieses Modul ist leer und weiss es.** Von den drei Teilen existiert einer
- * in PROPSA: die Darstellung (`ErgebnisTabelle.tsx`, `StatistikKarten.tsx`,
+ * in PROPAKT: die Darstellung (`ErgebnisTabelle.tsx`, `StatistikKarten.tsx`,
  * `Hotspots.tsx`, handgeschriebenes SVG und CSS, keine fremde Bibliothek).
  *
- * Die Leser-Liste wäre Vorbereitung auf etwas, das nicht existiert: PROPSA
+ * Die Leser-Liste wäre Vorbereitung auf etwas, das nicht existiert: PROPAKT
  * liest genau eine Quelle, das angegebene Verzeichnis. Ein Leser-Register für
  * Fremdformate jetzt anzulegen hiesse, eine Wartungsverpflichtung ohne
  * Nutzen zu erzeugen.
@@ -17,7 +17,7 @@
  * diesem Muster unterstützte über 30 Fremdformate – das ist kein Feature,
  * sondern eine offene Wartungsverpflichtung mit 30 Einträgen.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

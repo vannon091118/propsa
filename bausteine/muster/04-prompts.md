@@ -106,9 +106,9 @@ Mangel: der Wert liegt in der Struktur, nicht im Programm.
   ist nicht Teil dieses Musters. Wer das braucht, braucht [Muster 05](05-laufzeit.md).
 - **Kein Verwerfen.** Alles bleibt. Das ist gewollt und kostet Speicher.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA erzeugt Kontextpakete: Zusammenfassung, Architektur, Kritik,
+PROPAKT erzeugt Kontextpakete: Zusammenfassung, Architektur, Kritik,
 Dokumentation, Quellen. Das Muster fragt vor jeder Aussage: woher kommt sie?
 
 Bei den Pakettexten ist das konkret: eine Aussage über den Code sollte auf
@@ -116,7 +116,7 @@ gelesenen Dateien beruhen, nicht auf dem Dateinamen. Die Quellen-Domänen im
 Paket liefern die Herkunft; `Kritik.md` liefert die Statusmarkierung
 (auffällig, nicht falsch).
 
-**Was PROPSA nicht braucht.** Der Baustein ersetzt nicht das Schreiben von
+**Was PROPAKT nicht braucht.** Der Baustein ersetzt nicht das Schreiben von
 Dateien. Er ist eine Vorstufe: aus Absicht wird eine prüfbare Aufgabe, aus der
 Aufgabe wird ein Beleg, aus dem Beleg wird ein Status.
 

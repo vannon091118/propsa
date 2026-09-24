@@ -1,6 +1,6 @@
 //! Sprach-Erkennung und Codeblock-Mapping für den Export.
 //!
-//! Die Tabellen spiegeln bewusst `packages/core/src/sprache.ts` (@propsa/core,
+//! Die Tabellen spiegeln bewusst `packages/core/src/sprache.ts` (@propakt/core,
 //! von der CLI importiert), damit CLI und GUI bei gleichem Input dieselben
 //! Sprachnamen und Fences erzeugen. `npm run pruefen` vergleicht beide Kataloge.
 

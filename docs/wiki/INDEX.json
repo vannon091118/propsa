@@ -11,7 +11,7 @@
     { "type": "file", "name": "Live-Modus.md", "path": "Live-Modus.md", "description": "Dokumentation zum Live-Modus der Anwendung." },
     { "type": "file", "name": "Live-Modus-Plan.md", "path": "Live-Modus-Plan.md", "description": "Planungsdokument für den Live-Modus." },
     { "type": "file", "name": "Tauri-App.md", "path": "Tauri-App.md", "description": "Informationen zur Tauri-Desktop-Anwendung." },
-    { "type": "file", "name": "Vision.md", "path": "Vision.md", "description": "Zielbild von PROPSA: die sieben Bausteine nach Funktion, das Gate-Schema, Andockstellen. Details in bausteine/muster/." },
+    { "type": "file", "name": "Vision.md", "path": "Vision.md", "description": "Zielbild von PROPAKT: die sieben Bausteine nach Funktion, das Gate-Schema, Andockstellen. Details in bausteine/muster/." },
     { "type": "file", "name": "Bausteine.md", "path": "Bausteine.md", "description": "Einstiegspunkt in die Bausteine: sieben Muster, sieben Verträge, leeres Gerüst. Ohne Bausteinnamen und ohne Coderecycling." }
   ]
 }

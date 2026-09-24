@@ -20,7 +20,7 @@ import {
   istCacheEintrag,
   ZWISCHENSPEICHER_SCHEMA,
   ZWISCHENSPEICHER_VERSION,
-} from '@propsa/core';
+} from '@propakt/core';
 import {
   baumEintraege,
   cachePfad,
@@ -82,7 +82,7 @@ pruefe(
 
 // ── 4. Ende-zu-Ende in einem Wegwerf-Projekt ───────────────────────────────
 async function haupt(): Promise<void> {
-  const projekt = fs.mkdtempSync(path.join(os.tmpdir(), 'propsa-cache-'));
+  const projekt = fs.mkdtempSync(path.join(os.tmpdir(), 'propakt-cache-'));
   const basisOptionen = {
     basisPfad: projekt,
     excludes: [] as string[],

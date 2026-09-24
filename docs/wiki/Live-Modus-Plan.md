@@ -1,4 +1,4 @@
-# PROPSA Live-Modus — Umsetzungsplan
+# PROPAKT Live-Modus — Umsetzungsplan
 
 **Status: GEBAUT.** Phase 1 (Speicher, Zyklus, Kommandos), Phase 2
 (Anomalie-Katalog, Detektion, Persistenz), Phase 3 (Tray, Overlay-Widget,
@@ -13,12 +13,12 @@ Interpretation: „Winget“ = **Widget** (schwebendes Overlay-Fenster).
 
 ## 1. Zielbild
 
-Der Nutzer aktiviert den **Live-Modus**; PROPSA setzt sich in den
+Der Nutzer aktiviert den **Live-Modus**; PROPAKT setzt sich in den
 **Tray-Background** und öffnet ein kleines, **transparentes Overlay-Widget**
 mit dem Live-Graphen. Dort sieht man in Echtzeit, was im beobachteten Projekt
 passiert: Dateien neu/geändert/entfernt, Zeilen-Kurve, Anomalie-Badges.
 
-Im Hintergrund fährt PROPSA einen **sequenziellen Zyklus**:
+Im Hintergrund fährt PROPAKT einen **sequenziellen Zyklus**:
 
 ```text
 Scan (Kandidaten + Signatur) → Abgleich (Δ zur letzten Signatur)
@@ -26,7 +26,7 @@ Scan (Kandidaten + Signatur) → Abgleich (Δ zur letzten Signatur)
       └────────────── nächster Tick ◄──────────┘
 ```
 
-Er schreibt **Snapshots persistent** nach `~/.propsa/live/<identitaet>.db`
+Er schreibt **Snapshots persistent** nach `~/.propakt/live/<identitaet>.db`
 (**SQLite im WAL-Modus**) und erweitert damit den History-Graphen um eine
 langfristige Zeitreihe. Erkennt der Zyklus **Anomalien** — schnell hin- und
 hergeänderte Dateien (Flattern), Regressionen (a→b→a), Löschstürme,
@@ -35,7 +35,7 @@ Wachstums-Explosionen, nicht konvergierende Schleifen — blinkt das
 Befunden einmalig in den Vordergrund.
 
 Zweck: **Agenten-Wächter.** Felix lässt mehrere Agenten parallel in Projekten
-arbeiten. PROPSA Live verfolgt, ob alles im Rahmen bleibt — oder ob Agenten
+arbeiten. PROPAKT Live verfolgt, ob alles im Rahmen bleibt — oder ob Agenten
 verrückt spielen: gegeneinander arbeiten, loopen, diffen, sich gegenseitig
 Überschreibungen zurückrollen.
 
@@ -66,7 +66,7 @@ Sprache erkennen) — dieselbe Bauweise wie der Scan-Cache in der CLI
 
 ## 3. Persistenz: SQLite im WAL-Modus
 
-**Pfad:** `~/.propsa/live/<identitaet>.db` — eine Datenbank je Projekt-
+**Pfad:** `~/.propakt/live/<identitaet>.db` — eine Datenbank je Projekt-
 Identität (gleiche Identitätslogik wie die History: Root-Commit-Hash,
 Fallback Pfad-Hash). Das gescannte Projekt bleibt leer; alles zentral.
 
@@ -117,7 +117,7 @@ CREATE TABLE anomalien (
   erkennen" heißt hier: **Änderungen mehrerer Akteure** erkennen — nicht
   parallele Scans fahren. Ein überlappender Scan wäre ohnehin unzuverlässig.
 - **Tick-Ablauf:**
-  1. Kandidaten sammeln (Filterkatalog wie beim Scan, `.propsaignore` gilt).
+  1. Kandidaten sammeln (Filterkatalog wie beim Scan, `.propaktignore` gilt).
   2. **Baum-Signatur** (relativer Pfad, Größe, mtime) — kein Inhaltslesen.
   3. Vergleich mit letzter Signatur aus SQLite. Identisch → nur
      Herzschlag-Ereignis, fertig (das ist der Normalfall, Kosten ≈ 0).
@@ -200,7 +200,7 @@ Eigenes Tauri-Fenster (`transparent: true`, `decorations: false`,
 - **Kein FS-Watcher (`notify`):** Timer-Zyklus statt Ereignisflut —
   Hardware-Schonung, deterministische Ticks, gleiche Basis wie der Scan.
 - **Kein Auto-Eingriff:** der Wächter meldet, greift nie ein (kein Kill,
-  kein Revert); er schreibt ausschließlich in `~/.propsa/live/`.
+  kein Revert); er schreibt ausschließlich in `~/.propakt/live/`.
 - **Keine Telemetrie:** alles bleibt auf dem Dateisystem des Nutzers.
 - **Kein Multi-Projekt-Widget gleichzeitig** (v1 ein Projekt); das Layout
   (eine DB je Identität) erlaubt später mehrere.

@@ -12,7 +12,7 @@
  * Prüfschicht wäre eine Ebene darüber – und sie ist weder gebaut noch für die
  * nächste Ausbaustufe eingeplant.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

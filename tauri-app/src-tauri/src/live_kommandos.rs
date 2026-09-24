@@ -98,7 +98,7 @@ pub fn live_start(
     let thread_aenderungen = Arc::clone(&aenderungs_ticks);
     let thread_letzte = Arc::clone(&letzte_dateien);
     let handle = std::thread::Builder::new()
-        .name("propsa-live".to_string())
+        .name("propakt-live".to_string())
         .spawn(move || {
             crate::live_takt::zyklus_schleife(
                 app,

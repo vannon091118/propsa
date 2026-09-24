@@ -15,11 +15,11 @@
  * benanntes. Ein Verbraucher, der zwei Bausteine prüfen wollte, musste für
  * jeden eine andere Struktur lesen.
  *
- * PROPSA hat die Schichtenliste nicht, und braucht sie nicht. Es hat zwei
+ * PROPAKT hat die Schichtenliste nicht, und braucht sie nicht. Es hat zwei
  * Oberflächen und einen Kern, und diese Lage bestätigt das Muster eher, als
  * dass es ihm folgt.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

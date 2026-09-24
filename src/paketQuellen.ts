@@ -5,11 +5,11 @@
  * `Dokumentation.md`, alles andere in der Quellendatei der Domäne.
  * Gegenstück in der GUI: `tauri-app/src-tauri/src/paketquellen.rs`.
  */
-import { Domaene, istDokumentation } from '@propsa/core';
+import { Domaene, istDokumentation } from '@propakt/core';
 import { hinweisblock, kopf } from './paketBasis';
 import { GescannteDatei } from './scanner';
-import { SchemaMeta } from '@propsa/core';
-import { codeBlockSprache } from '@propsa/core';
+import { SchemaMeta } from '@propakt/core';
+import { codeBlockSprache } from '@propakt/core';
 
 /** Eine Datei im Volltext. */
 function volltext(datei: GescannteDatei): string {

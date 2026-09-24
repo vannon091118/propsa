@@ -2,9 +2,9 @@
 #
 # 1. npm run pruefen (Konsistenzprüfung: LOC, Versionen, Namen, Kataloge, Links)
 #    plus die drei TypeScript-Tests unter tests/ – die brauchen das gebaute
-#    Core, weil @propsa/core über dist/ aufgelöst wird
+#    Core, weil @propakt/core über dist/ aufgelöst wird
 # 2. Rust-Tests (cargo test)
-# 3. CLI-Build (Core-Workspace + tsc) – Artefakt: propsa-cli-<tag>.tar.gz (dist/)
+# 3. CLI-Build (Core-Workspace + tsc) – Artefakt: propakt-cli-<tag>.tar.gz (dist/)
 # 4. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
 # 5. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
 #
@@ -38,7 +38,7 @@ jobs:
       - name: npm run pruefen
         run: npm run pruefen
       - name: Core bauen (für die ts-node-Tests)
-        run: npm run build --workspace @propsa/core
+        run: npm run build --workspace @propakt/core
       - name: TypeScript-Tests
         run: |
           npx ts-node tests/paketKritik.test.ts
@@ -85,17 +85,17 @@ jobs:
       - name: CLI bauen (Core + tsc)
         run: npm run build
       - name: CLI-Smoke-Test
-        run: node dist/propsa.js . --einzeln "${RUNNER_TEMP}/smoke.json"
+        run: node dist/propakt.js . --einzeln "${RUNNER_TEMP}/smoke.json"
       - name: Artefakt packen
         run: |
-          mkdir -p propsa-cli
-          cp -r dist propsa-cli/dist
-          cp package.json README.md LICENSE propsa-cli/
-          tar -czf "propsa-cli-${GITHUB_REF_NAME}.tar.gz" propsa-cli
+          mkdir -p propakt-cli
+          cp -r dist propakt-cli/dist
+          cp package.json README.md LICENSE propakt-cli/
+          tar -czf "propakt-cli-${GITHUB_REF_NAME}.tar.gz" propakt-cli
       - uses: actions/upload-artifact@v4
         with:
           name: cli
-          path: propsa-cli-*.tar.gz
+          path: propakt-cli-*.tar.gz
 
   app:
     name: Desktop-App bauen (${{ matrix.os }})
@@ -149,14 +149,14 @@ jobs:
         shell: bash
         run: |
           mkdir -p out
-          cp tauri-app/src-tauri/target/release/propsa.exe "out/propsa-${GITHUB_REF_NAME}-windows-x64.exe"
+          cp tauri-app/src-tauri/target/release/propakt.exe "out/propakt-${GITHUB_REF_NAME}-windows-x64.exe"
           find tauri-app/src-tauri/target/release/bundle/msi -type f -name '*.msi' -exec cp {} out/ \;
           find tauri-app/src-tauri/target/release/bundle/nsis -type f -name '*.exe' -exec cp {} out/ \;
       - name: Artefakte sammeln (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
           mkdir -p out
-          cp tauri-app/src-tauri/target/release/propsa "out/propsa-${GITHUB_REF_NAME}-${{ matrix.name }}-$(uname -m)"
+          cp tauri-app/src-tauri/target/release/propakt "out/propakt-${GITHUB_REF_NAME}-${{ matrix.name }}-$(uname -m)"
       - uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.name }}
@@ -193,17 +193,17 @@ jobs:
             drin { print }
           ' docs/wiki/Changelog.md > notiz.md
           {
-            echo "## PROPSA $GITHUB_REF_NAME"
+            echo "## PROPAKT $GITHUB_REF_NAME"
             echo
             cat notiz.md
             echo
             echo "---"
-            echo "Aktualisieren mit \`propsa update\` – siehe [README](https://github.com/${GITHUB_REPOSITORY}#auto-update)."
+            echo "Aktualisieren mit \`propakt update\` – siehe [README](https://github.com/${GITHUB_REPOSITORY}#auto-update)."
           } > release-notiz.md
       - name: GitHub-Release anlegen
         uses: softprops/action-gh-release@v2
         with:
-          name: PROPSA ${{ steps.notiz.outputs.tag }}
+          name: PROPAKT ${{ steps.notiz.outputs.tag }}
           body_path: release-notiz.md
           files: release/*
           fail_on_unmatched_files: true

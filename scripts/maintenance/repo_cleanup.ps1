@@ -1,4 +1,4 @@
-# Repo cleanup and analysis script for PROPSA
+# Repo cleanup and analysis script for PROPAKT
 # This script runs various checks and cleanup tasks.
 
 Write-Host "Running pruefen..."

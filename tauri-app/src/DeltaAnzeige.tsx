@@ -31,7 +31,7 @@ function Liste({ titel, pfade, zeichen }: { titel: string; pfade: string[]; zeic
 /**
  * Delta-Anzeige: Änderungen zum letzten Lauf derselben Projekt-Identität.
  *
- * Die History (`~/.propsa/history/<identitaet>.jsonl`) führt das Backend;
+ * Die History (`~/.propakt/history/<identitaet>.jsonl`) führt das Backend;
  * hier wird nur der Vergleich aufbereitet.
  */
 export function DeltaAnzeige({ info }: Props) {

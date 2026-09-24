@@ -13,7 +13,7 @@
  * Was bereits existiert: nichts Vergleichbares. Kontextpakete liefern Herkunft
  * über Quellen-Domänen, aber keinen Beleg mit Statuswechsel.
  */
-import type { Vertrag } from '@propsa/core';
+import type { Vertrag } from '@propakt/core';
 
 /** Der Baustein und das, was er nach aussen zusagt. */
 export const VERTRAG: Vertrag = {

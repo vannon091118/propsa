@@ -51,7 +51,7 @@ Signal, das beim nächsten Mal hilft.
 
 Alles. `implementation_status.overall` ist `STUB`.
 
-PROPSA hat kein Äquivalent. Kontextpakete liefern Herkunft über
+PROPAKT hat kein Äquivalent. Kontextpakete liefern Herkunft über
 Quellen-Domänen — das ist etwas anderes als ein Beleg mit Statuswechsel, und
 es wäre eine Übertreibung, das gleichzusetzen.
 

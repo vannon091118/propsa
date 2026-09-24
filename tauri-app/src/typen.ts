@@ -4,7 +4,7 @@
  * Die Feldnamen der Backend-Typen sind bewusst snake_case, weil sie 1:1 den
  * Rust-Structs in `src-tauri/src/scan.rs` und `export.rs` entsprechen.
  */
-import { STANDARD_AUSSCHLUESSE } from "@propsa/core";
+import { STANDARD_AUSSCHLUESSE } from "@propakt/core";
 
 /**
  * Eine gescannte Datei (Rust: `DateiInfo`).
@@ -79,14 +79,14 @@ export type ScanEinstellungen = {
   maxZeilen: number | null;
   includeMuster: string;
   excludeMuster: string;
-  /** Delta zum letzten Lauf melden (~/.propsa/history/). */
+  /** Delta zum letzten Lauf melden (~/.propakt/history/). */
   delta: boolean;
-  /** Scan-Zwischenspeicher (~/.propsa/cache/) bei unverändertem Baum. */
+  /** Scan-Zwischenspeicher (~/.propakt/cache/) bei unverändertem Baum. */
   cache: boolean;
 };
 
 /**
- * Standardausschlüsse des Ausschlussfelds: aus `@propsa/core` – dieselbe
+ * Standardausschlüsse des Ausschlussfelds: aus `@propakt/core` – dieselbe
  * Quelle wie in der CLI und als Spiegel in `src-tauri/src/filter.rs`.
  */
 export { STANDARD_AUSSCHLUESSE };

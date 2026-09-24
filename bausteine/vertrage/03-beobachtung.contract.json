@@ -87,7 +87,7 @@
     },
     "last_verified_against_code": null,
     "known_gaps": [
-      "Der Live-Modus in tauri-app/src-tauri/src/live_zyklus.rs ist ein Beobachter — aber ein geschlossener: Quelle und Speicher sind PROPSA selbst.",
+      "Der Live-Modus in tauri-app/src-tauri/src/live_zyklus.rs ist ein Beobachter — aber ein geschlossener: Quelle und Speicher sind PROPAKT selbst.",
       "Es gibt keinen Beobachter über eine Prozessgrenze hinweg. Der wichtigste Fall des Musters — Zustand abgleichen, ohne ihn zu verändern — ist damit ungemessen.",
       "Ob der bestehende Live-Speicher die Trennung von Rohereignis und Ableitung erfüllt, ist nicht geprüft."
     ]

@@ -2,14 +2,14 @@
 //!
 //! Gegenstück: `tests/paketKritik.test.ts` (CLI). Nutzt eine minimale
 //! `ScanErgebnis`-Fabrik statt echter Scans, damit die Linse isoliert
-//! geprüft wird. Aufruf: `cargo test -p propsa`.
+//! geprüft wird. Aufruf: `cargo test -p propakt`.
 //!
 //! Reparatur 2026-09-17: Das File importierte mit `crate::…` aus der Lib –
 //! in Integrationstests zeigt `crate` auf den Test selbst, das File konnte
 //! seit 35ffc91 nie kompilieren (`cargo check` baut keine Integrationstests).
 
-use propsa_lib::paketkritik::kritik;
-use propsa_lib::scan::{DateiInfo, ScanErgebnis};
+use propakt_lib::paketkritik::kritik;
+use propakt_lib::scan::{DateiInfo, ScanErgebnis};
 
 fn datei(relativer_pfad: &str, inhalt: &str) -> DateiInfo {
     DateiInfo {

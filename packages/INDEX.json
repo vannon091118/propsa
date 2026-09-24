@@ -6,7 +6,7 @@
       "type": "directory",
       "name": "core",
       "path": "core/",
-      "description": "Gemeinsames TypeScript-Paket @propsa/core mit Sprach-, Filter-, Domänen- und Schema-Definitionen.",
+      "description": "Gemeinsames TypeScript-Paket @propakt/core mit Sprach-, Filter-, Domänen- und Schema-Definitionen.",
       "index": "packages/core/INDEX.json"
     }
   ]

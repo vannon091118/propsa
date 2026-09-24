@@ -11,7 +11,7 @@ ensureDirectories();
 
 // Create MCP server
 const server = new McpServer({
-  name: "propsa-repository-monitor",
+  name: "propakt-repository-monitor",
   version: "1.0.0"
 }, {
   capabilities: {
@@ -30,13 +30,13 @@ server.tool(getStatusTool.name, getStatusTool.description, getStatusTool.inputSc
 async function run() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("🥷 PROPSA MCP Server läuft auf stdio");
+  console.error("🥷 PROPAKT MCP Server läuft auf stdio");
   
   // Log startup
   const { LOGS_DIR } = require("./utils/storage");
   const fs = require("fs");
-  const logEntry = `${new Date().toISOString()} | PROPSA MCP Server gestartet\n`;
-  fs.appendFileSync(`${LOGS_DIR}/propsa.log`, logEntry, "utf-8");
+  const logEntry = `${new Date().toISOString()} | PROPAKT MCP Server gestartet\n`;
+  fs.appendFileSync(`${LOGS_DIR}/propakt.log`, logEntry, "utf-8");
 }
 
 run().catch(console.error);

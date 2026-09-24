@@ -6,11 +6,11 @@
  * ohne Tausendertrenner, damit beide Oberflächen dieselbe Datei erzeugen.
  */
 import { GescannteDatei } from './scanner';
-import { SchemaMeta } from '@propsa/core';
+import { SchemaMeta } from '@propakt/core';
 
 /** Kopfzeilen, die in jeder Datei des Pakets stehen. */
 export function kopf(titel: string, meta: SchemaMeta, zeilen: string[]): string {
-  let text = `# PROPSA – ${titel}\n\n`;
+  let text = `# PROPAKT – ${titel}\n\n`;
   text += `**Projekt:** ${meta.titel}\n`;
   text += `**Erzeugt:** ${meta.zeitstempel}\n`;
   text += `${zeilen.join('\n')}\n`;

@@ -98,15 +98,15 @@ es keine Evidenz gibt.
   Key-Pool zurück, sofern nichts persistiert ist.
 - Keine Kostenoptimierung. Preis je Token ist kein Eingang in die Kette.
 
-## Anbindung an PROPSA
+## Anbindung an PROPAKT
 
-PROPSA hat heute drei fest verdrahtete Anbieter mit direkter URL. Das Muster
+PROPAKT hat heute drei fest verdrahtete Anbieter mit direkter URL. Das Muster
 verändert daran nichts grundlegend: es fügt eine **Alternative** hinzu.
 
 Der bestehende Katalog in `tauri-app/src/llm.ts` bekommt ein Attribut, das die
 Quelle benennt – `direkt` oder `vermittelt`. Der Wert bestimmt, wohin die
 Anfrage geht. Der Katalog bleibt der Fallback: ohne laufenden Vermittler
-arbeitet PROPSA genau wie heute weiter.
+arbeitet PROPAKT genau wie heute weiter.
 
 Die Oberfläche zeigt Zustände, keine Logik: wie viele Schlüssel je Zustand,
 welcher Anbieter zuletzt bedient, wie lange der letzte Versuch gedauert hat.

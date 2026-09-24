@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projekt-Überblick
 
-**PROPSA** (Parser für Repomix Organisiert Prompt-Systeme für Analysen) macht aus einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien statt eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
+**PROPAKT** (**PRO**jekt-**PAKT**kontext für Sprachmodelle) macht aus einem Projektordner ein **Kontextpaket für Sprachmodelle**: mehrere Dateien statt eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 
 Zwei Oberflächen teilen denselben Vertrag:
 - **CLI** (TypeScript, `src/`) – Skripting und Automatisierung
 - **Desktop-App** (Tauri v2, Rust + React, `tauri-app/`) – klickbasierte Bedienung
 
-Der TypeScript-Kern liegt in **`@propsa/core`** (`packages/core/`) und wird von der CLI direkt importiert. Die Tauri-App bindet den Core per `file:../packages/core` und baut ihn in `dev`/`build` vorab. Das Rust-Backend spiegelt die Regeln; der Abgleich erfolgt durch `npm run pruefen`.
+Der TypeScript-Kern liegt in **`@propakt/core`** (`packages/core/`) und wird von der CLI direkt importiert. Die Tauri-App bindet den Core per `file:../packages/core` und baut ihn in `dev`/`build` vorab. Das Rust-Backend spiegelt die Regeln; der Abgleich erfolgt durch `npm run pruefen`.
 
 ## Wichtige Befehle
 
@@ -18,10 +18,10 @@ Der TypeScript-Kern liegt in **`@propsa/core`** (`packages/core/`) und wird von 
 ```bash
 npm install                    # Abhängigkeiten installieren
 npm run build                  # Core-Workspace + TypeScript-Kompilierung
-npm start <pfad> [optionen]    # Projekt scannen, Paket nach ./propsa-kontext/ schreiben
+npm start <pfad> [optionen]    # Projekt scannen, Paket nach ./propakt-kontext/ schreiben
 npm run pruefen                # Konsistenzprüfung (LOC, Versionen, Namen, Kataloge, Links)
-npm run installieren           # Build + zentrale Ablage ~/.propsa einrichten
-npm run deinstallieren         # ~/.propsa entfernen (mit Bestätigung)
+npm run installieren           # Build + zentrale Ablage ~/.propakt einrichten
+npm run deinstallieren         # ~/.propakt entfernen (mit Bestätigung)
 npm run changelog:spiegeln     # Changelog-Kopien in der App aktualisieren
 ```
 
@@ -74,12 +74,12 @@ Pfad + Optionen
 ### CLI-Module (`src/`)
 | Modul | Aufgabe |
 |---|---|
-| `propsa.ts` | Einstieg: Argumente, Ablauf, Ausgabe |
+| `propakt.ts` | Einstieg: Argumente, Ablauf, Ausgabe |
 | `scanner.ts` | Kandidaten sammeln, sortieren, Guardrails und Zähler |
 | `slice.ts` | Slice-Selektoren: `--entrypoint`, `--depth`, `--top-files` |
-| `history.ts` | Delta/History: `~/.propsa/history/`, Root-Commit-Identität |
-| `zwischenspeicher.ts` | Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik |
-| `propsaignore.ts` | `.propsaignore`: projektspezifische Ausschlüsse laden/mergen |
+| `history.ts` | Delta/History: `~/.propakt/history/`, Root-Commit-Identität |
+| `zwischenspeicher.ts` | Scan-Cache: Baum-Signatur, `~/.propakt/cache/`, Treffer-Logik |
+| `propaktignore.ts` | `.propaktignore`: projektspezifische Ausschlüsse laden/mergen |
 | `datei.ts` | Datei lesen, Binär-/Leerdateien erkennen, Zeilen zählen |
 | `paket.ts` | Paket bauen und schreiben |
 | `paketBasis.ts`, `paketKritik.ts`, `paketTexte.ts`, `paketQuellen.ts` | Paket-Bausteine |
@@ -98,12 +98,12 @@ Pfad + Optionen
 | `kritik_regeln.rs` | `Kritik.md` Schwellwerte, Befunde |
 | `history.rs` | Delta/History im Backend |
 | `zwischenspeicher.rs` | Scan-Cache (Spiegel zu `src/zwischenspeicher.ts`) |
-| `filterignore.rs` | `.propsaignore` im Backend |
+| `filterignore.rs` | `.propaktignore` im Backend |
 | `schema.rs` | JSON-Vertrag (`kontext.json`) |
 | `sprache.rs` | Sprache und Codeblock-Kennung |
 | `fortschritt.rs` | Ereignis `scan-fortschritt` |
 | `update.rs` | Auto-Updater: `update_check`, `update_ausfuehren` |
-| `live_store.rs` | Live-Speicher: SQLite-WAL `~/.propsa/live/<identitaet>.db` |
+| `live_store.rs` | Live-Speicher: SQLite-WAL `~/.propakt/live/<identitaet>.db` |
 | `live_zyklus.rs` | Live-Tick-Kern: Kandidaten, Baum-Signatur, Vergleich, Änderungen |
 | `live_kommandos.rs` | Live-Kommandos `live_start`/`live_stop`/`live_status` |
 | `live_takt.rs` | Live-Taktgeber-Loop: Ticks, Ereignisse, Tray-Alarm, Beruhigung |
@@ -152,14 +152,14 @@ Immer gemeinsam ändern und dann `npm run pruefen` ausführen:
 - `packages/core/src/zwischenspeicher.ts` ↔ `tauri-app/src-tauri/src/zwischenspeicher.rs`
 - `packages/core/src/vertrag.ts` ↔ `tauri-app/src-tauri/src/vertrag.rs`
 
-Das Frontend (`tauri-app/src/typen.ts`) muss `STANDARD_AUSSCHLUESSE` aus `@propsa/core` importieren.
+Das Frontend (`tauri-app/src/typen.ts`) muss `STANDARD_AUSSCHLUESSE` aus `@propakt/core` importieren.
 
 ### Guardrails (Fail Loud, Never Truncate Silent)
 Ein Limit bricht den Scan **vor der Verarbeitung** ab; es gibt kein Teilergebnis. Die App zeigt einen Fehler, die CLI endet mit Exit-Code 2.
 
-### Zentrale Ablage `~/.propsa`
+### Zentrale Ablage `~/.propakt`
 ```
-~/.propsa/
+~/.propakt/
 ├── history/        Delta-History je Projekt-Identität (<hash>.jsonl)
 ├── cache/          Scan-Cache (Baum-Signatur)
 ├── live/           Live-Modus SQLite-DB (<identitaet>.db, WAL)
@@ -182,7 +182,7 @@ Im gescannten Projekt bleibt **nichts** zurück. Output (Kontextpakete, `--einze
 
 GitHub Actions Workflow (`.github/workflows/release.yml`) läuft bei Push eines `v*`-Tags:
 1. `npm run pruefen` (inkl. Doku-Tests)
-2. CLI-Build → Artefakt `propsa-cli-<tag>.tar.gz`
+2. CLI-Build → Artefakt `propakt-cli-<tag>.tar.gz`
 3. Desktop-App-Build für Windows/Linux/macOS (Matrix)
 4. GitHub-Release mit allen Artefakten und Changelog-Notiz des Tags
 

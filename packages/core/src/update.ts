@@ -1,7 +1,7 @@
 /**
  * Update-Vertrag: gemeinsame Typen und Regeln für CLI und App.
  *
- * PROPSA aktualisiert sich git-basiert über `origin/main`: Der Check holt
+ * PROPAKT aktualisiert sich git-basiert über `origin/main`: Der Check holt
  * den Stand der Fernquelle (git fetch) und vergleicht die lokale Commit-Hash
  * mit `origin/main`. Liegt die Fernquelle voraus, gibt es ein Update.
  *

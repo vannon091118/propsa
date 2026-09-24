@@ -1,5 +1,5 @@
 /**
- * Geteilter Kern von PROPSA.
+ * Geteilter Kern von PROPAKT.
  *
  * Enthält die Regeln und Verträge, die CLI und GUI gemeinsam haben: Sprach-
  * Erkennung, Filterkatalog, Domänen-Regel und das Export-Schema. Die GUI

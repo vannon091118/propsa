@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "description": "Beziehungen zwischen den Modulen des PROPSA-Projekts. Die Modulliste selbst steht ausschließlich in INDEX.json – sie wird hier nicht wiederholt, damit zwei Dateien sie nicht getrennt pflegen.",
+  "description": "Beziehungen zwischen den Modulen des PROPAKT-Projekts. Die Modulliste selbst steht ausschließlich in INDEX.json – sie wird hier nicht wiederholt, damit zwei Dateien sie nicht getrennt pflegen.",
   "quelle": "INDEX.json",
   "relationships": [
-    { "from": "src", "to": "packages", "type": "dependency", "description": "CLI nutzt das gemeinsame TypeScript-Paket @propsa/core." },
-    { "from": "tauri-app", "to": "packages", "type": "dependency", "description": "Tauri-App nutzt @propsa/core für Typen, Kataloge und den Baustein-Vertrag." },
+    { "from": "src", "to": "packages", "type": "dependency", "description": "CLI nutzt das gemeinsame TypeScript-Paket @propakt/core." },
+    { "from": "tauri-app", "to": "packages", "type": "dependency", "description": "Tauri-App nutzt @propakt/core für Typen, Kataloge und den Baustein-Vertrag." },
     { "from": "tauri-app", "to": "src-tauri", "type": "dependency", "description": "Tauri-App nutzt das Rust-Backend unter tauri-app/src-tauri/src; die Kommandos sind in lib.rs registriert." },
     { "from": "tauri-app", "to": "assets", "type": "dependency", "description": "Tauri-App nutzt Assets wie Banner und Logo." },
     { "from": "agents", "to": "tauri-app", "type": "dependency", "description": "Der Agentenprozess beobachtet Repository-Zustände und Ereignisse der App." },
@@ -12,7 +12,7 @@
     { "from": "scripts", "to": "packages", "type": "dependency", "description": "Wartungsskripte greifen auf das gemeinsame Paket zu, etwa für die Versionsprüfung." },
     { "from": "scripts", "to": "src", "type": "dependency", "description": "Wartungsskripte können CLI-Build oder -Ausführung auslösen." },
     { "from": "scripts", "to": "bausteine", "type": "verification", "description": "scripts/pruefen/pruefen.mjs vergleicht vertrag.ts gegen vertrag.rs (Regel 9) und zählt bausteine/geraest/ in der LOC-Prüfung mit." },
-    { "from": "bausteine", "to": "packages", "type": "dependency", "description": "Das Gerüst importiert Vertrag, Regel und die drei Kataloge aus @propsa/core." },
+    { "from": "bausteine", "to": "packages", "type": "dependency", "description": "Das Gerüst importiert Vertrag, Regel und die drei Kataloge aus @propakt/core." },
     { "from": "bausteine", "to": "docs", "type": "documentation", "description": "docs/wiki/Vision.md verweist auf bausteine/muster/ und bausteine/vertrage/." },
     { "from": "plan", "to": "src", "type": "dependency", "description": "Implementierungspläne beschreiben Änderungen am CLI-Quellcode." },
     { "from": "docs", "to": "bausteine", "type": "documentation", "description": "Die Vision beschreibt die sieben Bausteine nach Funktion, nicht nach Herkunft." }

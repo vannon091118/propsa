@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# PROPSA setup script - cross-platform installer
+# PROPAKT setup script - cross-platform installer
 # Calls the Node.js install script
 
-echo "Setting up PROPSA..."
+echo "Setting up PROPAKT..."
 # Ensure we are in the repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deinstallation von PROPSA: entfernt die zentrale Ablage `~/.propsa`
+ * Deinstallation von PROPAKT: entfernt die zentrale Ablage `~/.propakt`
  * (History, Installations-Metadaten) nach Bestätigung und erklärt, was
  * **nicht** entfernt wird:
  *
@@ -22,7 +22,8 @@ import { createInterface } from 'node:readline/promises';
 import { stdin, stdout, exit } from 'node:process';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const HEIM = join(homedir(), '.propsa');
+const HEIM = join(homedir(), '.propakt');
+const HEIM_ALT = join(homedir(), '.propsa');
 
 /** Zeigt, was entfernt werden wird, und holt im TTY eine Bestätigung ein. */
 async function bestaetigen() {
@@ -34,7 +35,8 @@ async function bestaetigen() {
   const eintraege = existsSync(HEIM) ? readdirSync(HEIM) : [];
   console.log('Es wird entfernt:');
   console.log(`  1. ${HEIM}  (${eintraege.length > 0 ? eintraege.join(', ') : 'leer'})`);
-  console.log('  2. npm-link des Befehls `propsa`, falls vorhanden');
+  if (existsSync(HEIM_ALT)) console.log(`  2. ${HEIM_ALT}  (Altablage vor der Umbenennung)`);
+  console.log('  3. npm-link des Befehls `propakt`, falls vorhanden');
   console.log('\nNicht entfernt werden:');
   console.log('  - geschriebene Kontextpakete und --einzeln-Ausgaben (Output)');
   console.log('  - der Projektordner selbst');
@@ -60,19 +62,23 @@ function linkLoesen() {
 
 await bestaetigen();
 
-if (existsSync(HEIM)) {
+// Beide Ablagen entfernen: die aktuelle `~/.propakt` und – falls die Migration
+// sie nicht bereits übernommen hat – die Altablage `~/.propsa`.
+for (const ablage of [HEIM, HEIM_ALT]) {
+  if (!existsSync(ablage)) {
+    console.log(`· ${ablage} nicht vorhanden – nichts zu löschen`);
+    continue;
+  }
   const meta = (() => {
     try {
-      return JSON.parse(readFileSync(join(HEIM, 'version.json'), 'utf8'));
+      return JSON.parse(readFileSync(join(ablage, 'version.json'), 'utf8'));
     } catch {
       return null;
     }
   })();
   if (meta?.version) console.log(`  Ablage der Version ${meta.version}, installiert ${meta.installiert_am}`);
-  rmSync(HEIM, { recursive: true, force: true });
-  console.log(`✓ entfernt: ${HEIM}`);
-} else {
-  console.log(`· ${HEIM} nicht vorhanden – nichts zu löschen`);
+  rmSync(ablage, { recursive: true, force: true });
+  console.log(`✓ entfernt: ${ablage}`);
 }
 
 linkLoesen();

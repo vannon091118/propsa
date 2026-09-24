@@ -1,8 +1,8 @@
 //! Scan-Zwischenspeicher (Rust-Spiegel): Baum-Signatur aus dem Dateisystem,
-//! Cache-Dateien unter `~/.propsa/cache/` und die Treffer-Entscheidung.
+//! Cache-Dateien unter `~/.propakt/cache/` und die Treffer-Entscheidung.
 //!
 //! Der Vertrag (Signatur, Treffer-Entscheidung, Fail Loud) ist Spiegel zu
-//! `@propsa/core` (`zwischenspeicher.ts`), die Dateisystem-Arbeit Spiegel zu
+//! `@propakt/core` (`zwischenspeicher.ts`), die Dateisystem-Arbeit Spiegel zu
 //! `src/zwischenspeicher.ts` (CLI). Beide Seiten werden zusammen geändert:
 //! `zwischenspeicher.ts` ↔ `zwischenspeicher.rs`.
 //!
@@ -25,7 +25,7 @@ pub const ZWISCHENSPEICHER_VERSION: u64 = 1;
 
 /// Kennzeichnet gültige Cache-Dateien im JSON (Spiegel zu
 /// `ZWISCHENSPEICHER_SCHEMA`).
-pub const ZWISCHENSPEICHER_SCHEMA: &str = "propsa-zwischenspeicher";
+pub const ZWISCHENSPEICHER_SCHEMA: &str = "propakt-zwischenspeicher";
 
 /// Eine Datei des Baums, wie der Scanner sie **vor** dem Lesen kennt
 /// (Spiegel zu `BaumEintrag`).
@@ -49,10 +49,10 @@ pub struct CacheEintrag {
     pub ergebnis: ScanErgebnis,
 }
 
-/// Zentrale Ablage des Zwischenspeichers: `~/.propsa/cache` (Spiegel zu
+/// Zentrale Ablage des Zwischenspeichers: `~/.propakt/cache` (Spiegel zu
 /// `CACHE_ORDNER` in `src/zwischenspeicher.ts`).
 pub fn cache_ordner() -> PathBuf {
-    crate::history::propsa_heim().join("cache")
+    crate::history::propakt_heim().join("cache")
 }
 
 /// Cache-Datei einer Konfiguration: `<ordner>/<sha256(schluessel)>.json`

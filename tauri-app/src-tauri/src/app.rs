@@ -29,7 +29,7 @@ pub fn get_history_metrics(identitaet: String) -> Vec<(String, ProjektMetriken)>
     history::get_metrik_historie(&identitaet)
 }
 
-/// Live-Zeitreihe (Phase 4): Snapshots aus `~/.propsa/live/<identitaet>.db`
+/// Live-Zeitreihe (Phase 4): Snapshots aus `~/.propakt/live/<identitaet>.db`
 /// als Graph-Punkte. `stunden` begrenzt den Zeitraum (`None` = alles);
 /// fehlende Datenbank ergibt eine leere Serie, kein Fehler.
 #[tauri::command]

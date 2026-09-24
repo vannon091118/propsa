@@ -43,7 +43,7 @@ geht, und zwar unbemerkt.
 
 ## Was nicht gebaut ist
 
-Die Leser-Liste ist `STUB`, und zwar aus einem konkreten Grund: **PROPSA liest
+Die Leser-Liste ist `STUB`, und zwar aus einem konkreten Grund: **PROPAKT liest
 genau eine Quelle**, das angegebene Verzeichnis. Ein Leser-Register für
 Fremdformate jetzt anzulegen hiesse, eine Wartungsverpflichtung ohne Nutzen zu
 erzeugen.
