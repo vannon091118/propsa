@@ -3,9 +3,10 @@
  *
  * Eine Wahrheit je Regel (AGENTS.md): `docs/wiki/Changelog.md` ist die
  * einzige gepflegte Quelle. Die App liest zur Laufzeit
- * `tauri-app/src-tauri/resources/Changelog.md` (bündelt als Resource);
- * die Zweitkopie `tauri-app/src-tauri/Changelog.md` bleibt deckungs-
- * gleich. Beide Kopien werden hier erzeugt – nie von Hand ändern.
+ * `tauri-app/src-tauri/Changelog.md` – genau die Datei, die
+ * `tauri.conf.json` unter `bundle.resources` als Resource bündelt und
+ * die `fetch_changelog` (app.rs) per `BaseDirectory::Resource` auflöst.
+ * Die Kopie wird hier erzeugt – nie von Hand ändern.
  *
  * Die Link-Transformationen leben in `changelog_kopie.mjs` (geteilt mit
  * `npm run pruefen`, damit Prüfung und Erzeugung nicht auseinanderlaufen).
@@ -19,10 +20,7 @@ import { changelogKopie } from "./changelog_kopie.mjs";
 
 const WURZEL = resolve(import.meta.dirname, "..", "..");
 const QUELLE = join(WURZEL, "docs", "wiki", "Changelog.md");
-const ZIELE = [
-  join(WURZEL, "tauri-app", "src-tauri", "resources", "Changelog.md"),
-  join(WURZEL, "tauri-app", "src-tauri", "Changelog.md"),
-];
+const ZIELE = [join(WURZEL, "tauri-app", "src-tauri", "Changelog.md")];
 
 const gespiegelt = changelogKopie(readFileSync(QUELLE, "utf8"));
 for (const ziel of ZIELE) {

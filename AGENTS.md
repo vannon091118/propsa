@@ -26,7 +26,7 @@
 - Cache: `packages/core/src/zwischenspeicher.ts` ↔ `src/zwischenspeicher.ts` ↔ `tauri-app/src-tauri/src/zwischenspeicher.rs`. History ist **nicht** im Core, sondern `src/history.ts` ↔ `tauri-app/src-tauri/src/history.rs`.
 - `npm run pruefen` vergleicht tatsächlich Filterkataloge, Sprach-/Fence-Kataloge, Live-Kataloge, Cache-Version und -Schema sowie die Baustein-Kataloge in `vertrag.ts` ↔ `vertrag.rs` (Gate-Punkte, Status-Werte, Ereignistypen); Schema, Domäne und History werden dort nicht automatisch verglichen.
 - Der Prüfer liest die betreffenden TypeScript-Objekte und Rust-`match`-Arme per Regex. Die Form der geprüften Deklarationen und Match-Arme nicht durch Umformatieren oder Umbenennen verändern.
-- Changelog-Quelle ist ausschließlich `docs/wiki/Changelog.md`. `npm run pruefen` vergleicht `tauri-app/src-tauri/resources/Changelog.md` und `tauri-app/src-tauri/Changelog.md`; Tauri bündelt laut `tauri-app/src-tauri/tauri.conf.json` die zweite Datei.
+- Changelog-Quelle ist ausschließlich `docs/wiki/Changelog.md`. `npm run changelog:spiegeln` erzeugt daraus die eine Kopie `tauri-app/src-tauri/Changelog.md`; `npm run pruefen` vergleicht sie. Genau diese Datei bündelt `tauri-app/src-tauri/tauri.conf.json` unter `bundle.resources`, und genau sie löst `fetch_changelog` zur Laufzeit auf.
 - Produktname ausschließlich `PROPSA`. Die Versionsprüfung umfasst nur `package.json`, `tauri-app/package.json`, `tauri-app/src-tauri/Cargo.toml` und `tauri-app/src-tauri/tauri.conf.json`; Core-Paket und Lockfiles werden derzeit nicht mitgeprüft.
 
 ## Befehle

@@ -44,18 +44,21 @@ for (const pfad of quelldateien) {
 }
 console.log(`✓ Zeilenbegrenzung: ${quelldateien.length} Dateien geprüft, größte ${groesste} Zeilen (Grenze ${LOC_GRENZE})`);
 
-// 1b. Changelog-Spiegel: Die Kopien der Desktop-App müssen der transformierten
-//     Quelle entsprechen — die App liest resources/Changelog.md zur Laufzeit,
-//     alte Kopien zeigen im Changelog-Tab also alte Versionen.
+// 1b. Changelog-Spiegel: Die Kopie der Desktop-App muss der transformierten
+//     Quelle entsprechen. Gelesen wird genau eine Datei: tauri.conf.json
+//     bündelt "Changelog.md" aus dem src-tauri-Wurzelverzeichnis, und
+//     `fetch_changelog` löst genau diesen Namen als Resource auf. Eine alte
+//     Kopie zeigte im Changelog-Tab alte Versionen.
 const changelogQuelle = readFileSync(join(WURZEL, "docs", "wiki", "Changelog.md"), "utf8");
 const changelogSoll = changelogKopie(changelogQuelle);
-for (const kopie of ["tauri-app/src-tauri/resources/Changelog.md", "tauri-app/src-tauri/Changelog.md"]) {
+const changelogKopien = ["tauri-app/src-tauri/Changelog.md"];
+for (const kopie of changelogKopien) {
   const inhalt = readFileSync(join(WURZEL, kopie), "utf8");
   if (inhalt !== changelogSoll) {
     fehler.push(`${kopie}: weicht von docs/wiki/Changelog.md ab – npm run changelog:spiegeln ausführen`);
   }
 }
-console.log("✓ Changelog-Spiegel: 2 Kopien deckungsgleich mit der Quelle");
+console.log(`✓ Changelog-Spiegel: ${changelogKopien.length} Kopie${changelogKopien.length === 1 ? "" : "n"} deckungsgleich mit der Quelle`);
 
 // 2. Version
 const versionen = {

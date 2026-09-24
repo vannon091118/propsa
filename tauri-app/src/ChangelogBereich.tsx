@@ -10,7 +10,7 @@ type Props = {
 
 /**
  * Changelog-Bereich im Tab „Einstellungen“: die vollständige, scrollbare
- * Liste aller Versionen (Markdown aus `resources/Changelog.md`).
+ * Liste aller Versionen (Markdown aus der gebündelten `Changelog.md`).
  */
 export function ChangelogBereich({ inhalt, laedt, onNeuLaden }: Props) {
   return (

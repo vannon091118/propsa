@@ -61,7 +61,7 @@ export function UpdateBereich({ vorschau }: Props) {
   const [popupOffen, setPopupOffen] = useState(false);
   const kastenRef = useRef<HTMLDivElement>(null);
 
-  // Versionsnummer + Notizen (aus resources/Changelog.md) einmalig laden.
+  // Versionsnummer + Notizen (aus der gebündelten Changelog.md) einmalig laden.
   useEffect(() => {
     if (vorschau) {
       setVersion("0.0.0-preview");
