@@ -89,7 +89,8 @@ const PRODUKTNAME_ERLAUBT = new Set([
   "tauri-app/src-tauri/src/filterignore.rs",
   // der Altname wird hier benannt, um den Rückfall zu beschreiben
   "src/INDEX.json",
-  // stabile Tauri-Kennung: ein Wechsel bricht die Update-Kette der App
+  // stabile Tauri-Kennung: erhält die Windows-Installationsidentität (ProductCode/UpgradeCode);
+  // der app-eigene Update-Check ist git-basiert und benutzt sie nicht
   "tauri-app/src-tauri/tauri.conf.json",
 ]);
 const NAME_AUSNAHMEN = new Set([
