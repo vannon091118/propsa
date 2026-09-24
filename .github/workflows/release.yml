@@ -8,8 +8,11 @@
 # 4. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
 # 5. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
 #
-# Die Version stammt aus dem Tag; die Manifeste müssen übereinstimmen
-# (das prüft `npm run pruefen` und schlägt sonst fehl).
+# Die Version stammt aus den Manifesten, nicht aus dem Tag: `npm run pruefen`
+# vergleicht package.json, tauri-app/package.json, Cargo.toml und
+# tauri.conf.json gegeneinander, liest den Tag aber nicht. Ein Hotfix
+# bekommt deshalb einen Suffix (v0.0.17a, v0.0.17b, …), ohne dass die
+# Manifeste hochgezählt werden - der Tag prägt nur die Artefaktnamen.
 
 name: Release
 
