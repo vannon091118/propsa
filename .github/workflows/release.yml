@@ -177,10 +177,17 @@ jobs:
           find artefakte -type f -exec cp {} release/ \;
           ls -la release/
       - name: Release-Notiz aus dem Changelog ziehen
+        id: notiz
         run: |
           tag="${GITHUB_REF_NAME#v}"
+          # Hotfix-Suffix abschneiden: aus v0.0.17d wird 0.0.17. Der Changelog
+          # kennt nur Abschnitte je Grundversion, ein Suffix liefe ins Leere
+          # und die Release-Notiz bliebe leer.
+          basis="${tag%%[a-z]*}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "basis=$basis" >> "$GITHUB_OUTPUT"
           # Abschnitt "## <version>" bis zur nächsten "## "-Zeile extrahieren.
-          awk -v ver="$tag" '
+          awk -v ver="$basis" '
             $0 ~ "^## " ver "$" { drin=1; next }
             drin && /^## / { exit }
             drin { print }
@@ -196,6 +203,7 @@ jobs:
       - name: GitHub-Release anlegen
         uses: softprops/action-gh-release@v2
         with:
+          name: PROPSA ${{ steps.notiz.outputs.tag }}
           body_path: release-notiz.md
           files: release/*
           fail_on_unmatched_files: true
