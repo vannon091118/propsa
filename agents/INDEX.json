@@ -4,10 +4,10 @@
   "contents": [
     {
       "type": "directory",
-      "name": "shon-mcp-server",
-      "path": "shon-mcp-server/",
+      "name": "mcp-server",
+      "path": "mcp-server/",
       "description": "MCP-Server-Prozess: liest und schreibt Repository-Snapshots, Diffs und Logs.",
-      "index": "agents/shon-mcp-server/INDEX.json"
+      "index": "agents/mcp-server/INDEX.json"
     }
   ]
 }

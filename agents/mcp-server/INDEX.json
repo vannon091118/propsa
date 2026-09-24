@@ -21,13 +21,13 @@
       "name": "src",
       "path": "src/",
       "description": "TypeScript source code of the MCP server.",
-      "index": "agents/shon-mcp-server/src/INDEX.json"
+      "index": "agents/mcp-server/src/INDEX.json"
     },
     {
       "type": "file",
       "name": "README.md",
       "path": "README.md",
-      "description": "Overview of the Shinon MCP Server.",
+      "description": "Overview of the PROPSA MCP Server.",
       "size": "2842 bytes"
     },
     {

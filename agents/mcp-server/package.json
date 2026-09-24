@@ -1,7 +1,7 @@
 {
-  "name": "shinon-mcp-server",
+  "name": "propsa-mcp-server",
   "version": "1.0.0",
-  "description": "MCP Server for SHINON Repository Monitor Agent",
+  "description": "MCP Server for PROPSA Repository Monitor Agent",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
@@ -11,8 +11,8 @@
     "dev": "ts-node src/index.ts",
     "inspect": "npx @modelcontextprotocol/inspector dist/index.js"
   },
-  "keywords": ["mcp", "shinon", "repository-monitor", "model-context-protocol"],
-  "author": "SHINON Agent",
+  "keywords": ["mcp", "propsa", "repository-monitor", "model-context-protocol"],
+  "author": "PROPSA Agent",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",

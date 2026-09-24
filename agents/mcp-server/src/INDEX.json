@@ -14,14 +14,14 @@
       "name": "tools",
       "path": "tools/",
       "description": "Tools für den MCP Server: Funktionen zum Abrufen von Snapshots, Erklärungen, Status usw.",
-      "index": "agents/shon-mcp-server/src/tools/INDEX.json"
+      "index": "agents/mcp-server/src/tools/INDEX.json"
     },
     {
       "type": "directory",
       "name": "utils",
       "path": "utils/",
       "description": "Utility-Module wie Scanner und Storage.",
-      "index": "agents/shon-mcp-server/src/utils/INDEX.json"
+      "index": "agents/mcp-server/src/utils/INDEX.json"
     }
   ]
 }

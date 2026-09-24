@@ -4,11 +4,11 @@ import * as path from "path";
 import { SNAPSHOT_DIR, readTextFile } from "../utils/storage";
 
 /**
- * Tool: Get information about the most recent SHINON snapshot
+ * Tool: Get information about the most recent PROPSA snapshot
  */
 export const getLatestSnapshotTool = {
-  name: "shinon_get_latest_snapshot",
-  description: "Get information about the most recent SHINON snapshot",
+  name: "propsa_get_latest_snapshot",
+  description: "Get information about the most recent PROPSA snapshot",
   inputSchema: z.object({}),
   execute: async () => {
     try {
@@ -17,7 +17,7 @@ export const getLatestSnapshotTool = {
           content: [
             {
               type: "text",
-              text: "📭 Noch keine Snapshots vorhanden. Führen Sie zuerst 'shinon_trigger_analysis' aus."
+              text: "📭 Noch keine Snapshots vorhanden. Führen Sie zuerst 'propsa_trigger_analysis' aus."
             }
           ]
         };
@@ -33,7 +33,7 @@ export const getLatestSnapshotTool = {
           content: [
             {
               type: "text",
-              text: "📭 Noch keine Snapshots vorhanden. Führen Sie zuerst 'shinon_trigger_analysis' aus."
+              text: "📭 Noch keine Snapshots vorhanden. Führen Sie zuerst 'propsa_trigger_analysis' aus."
             }
           ]
         };
@@ -53,7 +53,7 @@ export const getLatestSnapshotTool = {
         content: [
           {
             type: "text",
-            text: `📸 Neuster SHINON Snapshot\n\n🆔 ID: ${idMatch ? idMatch[1] : "Unbekannt"}\n🕐 Zeit: ${timestampMatch ? timestampMatch[1] : "Unbekannt"}\n📁 Dateien: ${filesMatch ? filesMatch[1] : "Unbekannt"}\n🔢 LOC: ${locMatch ? locMatch[1] : "Unbekannt"}\n\n📍 Pfad: ${snapshotPath}\n\n📄 Vorschau:\n${content.substring(0, Math.min(500, content.length))}${content.length > 500 ? "..." : ""}`
+            text: `📸 Neuster PROPSA Snapshot\n\n🆔 ID: ${idMatch ? idMatch[1] : "Unbekannt"}\n🕐 Zeit: ${timestampMatch ? timestampMatch[1] : "Unbekannt"}\n📁 Dateien: ${filesMatch ? filesMatch[1] : "Unbekannt"}\n🔢 LOC: ${locMatch ? locMatch[1] : "Unbekannt"}\n\n📍 Pfad: ${snapshotPath}\n\n📄 Vorschau:\n${content.substring(0, Math.min(500, content.length))}${content.length > 500 ? "..." : ""}`
           }
         ]
       };

@@ -6,21 +6,21 @@
       "type": "file",
       "name": "getLatestSnapshot.ts",
       "path": "getLatestSnapshot.ts",
-      "description": "Ruft den neuesten Snapshot aus dem Shinon-System ab.",
+      "description": "Ruft den neuesten Snapshot aus dem PROPSA-System ab.",
       "size": "2438 bytes"
     },
     {
       "type": "file",
       "name": "getRecentExplanations.ts",
       "path": "getRecentExplanations.ts",
-      "description": "Ruft jüngste Erklärungen aus dem Shinon-System ab.",
+      "description": "Ruft jüngste Erklärungen aus dem PROPSA-System ab.",
       "size": "2554 bytes"
     },
     {
       "type": "file",
       "name": "getStatus.ts",
       "path": "getStatus.ts",
-      "description": "Ruft den aktuellen Status des Shinon-Systems ab.",
+      "description": "Ruft den aktuellen Status des PROPSA-Systems ab.",
       "size": "3083 bytes"
     },
     {

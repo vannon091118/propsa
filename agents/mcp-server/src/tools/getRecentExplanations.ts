@@ -7,8 +7,8 @@ import { DIFF_DIR, readTextFile } from "../utils/storage";
  * Tool: Get recent explanations
  */
 export const getRecentExplanationsTool = {
-  name: "shinon_get_recent_explanations",
-  description: "Get recent SHINON explanations (German with fun messages)",
+  name: "propsa_get_recent_explanations",
+  description: "Get recent PROPSA explanations (German with fun messages)",
   inputSchema: z.object({
     limit: z.number().min(1).max(10).optional().default(3).describe("Number of recent explanations to return")
   }),
@@ -21,7 +21,7 @@ export const getRecentExplanationsTool = {
           content: [
             {
               type: "text",
-              text: "📭 Noch keine Erklärungen vorhanden. Führen Sie zuerst 'shinon_trigger_analysis' aus."
+              text: "📭 Noch keine Erklärungen vorhanden. Führen Sie zuerst 'propsa_trigger_analysis' aus."
             }
           ]
         };
@@ -38,7 +38,7 @@ export const getRecentExplanationsTool = {
           content: [
             {
               type: "text",
-              text: "📭 Noch keine Erklärungen vorhanden. Führen Sie zuerst 'shinon_trigger_analysis' aus."
+              text: "📭 Noch keine Erklärungen vorhanden. Führen Sie zuerst 'propsa_trigger_analysis' aus."
             }
           ]
         };
@@ -57,7 +57,7 @@ export const getRecentExplanationsTool = {
         };
       });
       
-      let response = `📝 Letzte ${explanations.length} SHINON Erklärungen:\n\n`;
+      let response = `📝 Letzte ${explanations.length} PROPSA Erklärungen:\n\n`;
       results.forEach((exp, index) => {
         response += `${index + 1}. ${exp.file}\n`;
         response += `   🕐 ${exp.timestamp}\n`;
