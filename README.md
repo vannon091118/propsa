@@ -9,7 +9,7 @@ eines Riesenblobs, aufgeteilt nach Domänen, jeweils mit vollständigem Inhalt.
 [English version](README.en.md)
 
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-3fb950)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.0.18-4aa3ff)](package.json)
+[![Version](https://img.shields.io/badge/Version-0.0.19-4aa3ff)](package.json)
 [![Plattform](https://img.shields.io/badge/Plattform-Windows%20%7C%20macOS%20%7C%20Linux-1e5bff)](#desktop-app)
 [![Release](https://img.shields.io/github/v/release/vannon091118/propsa?label=Release&color=4aa3ff)](https://github.com/vannon091118/propsa/releases/latest)
 

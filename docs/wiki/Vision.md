@@ -47,10 +47,14 @@ denen es gemessen wurde:
 | Kennzahl | PROPAKT | Bausteine (schlechtester Wert) |
 |---|---|---|
 | LOC-Grenze | 299 (Grenze 300, maschinell geprüft) | 1301, 1245, 1284 Zeilen in je einer Datei |
-| Datei-Zuordnung | 242 Dateien, alle in `INDEX.json` | 0 `INDEX.json` in allen sieben Bausteinen |
+| Datei-Zuordnung | 279 Dateien einem Modul zugeordnet | 0 `INDEX.json` in allen sieben Bausteinen |
 | Changelog | gespiegelt, 2 deckungsgleiche Kopien | 5 von 7 ohne Changelog |
 | Eine Wahrheit je Regel | erzwungen über `npm run pruefen` | zwei Falsifikations-Gates parallel, beide produktiv |
 | Harte Pfade | keine | 3 Dateien, bei behaupteter Portabilität |
+
+Die Index-Vollständigkeit ist davon getrennt zu lesen: `npm run architecture:check`
+prüft, dass jede Datei einem Modul zugeordnet ist. Ob sie zusätzlich einzeln in
+ihrem Modul-`INDEX.json` steht, bleibt Sorgfalt und ist kein Gate.
 
 Dazu kam: die Verträge der Vorlage verwiesen selbst auf nicht existierende
 Dateien, und sie waren untereinander uneinheitlich — einer führte zwei
@@ -58,7 +62,10 @@ Gate-Felder, die anderen je ein eigenes, anders benanntes.
 
 Was daraus entstanden ist, steht unter [`bausteine/`](../../bausteine/):
 Muster, sieben Verträge mit einheitlichem Gate-Schema, und ein leeres Gerüst.
-**Leer ist ausdrücklich.** Kein Baustein ist gebaut.
+**Leer ist ausdrücklich:** `bausteine/geraest/` enthält Typverträge, aber keine
+ausführbare Logik. Sechs Bausteine tragen den Status `STUB`; allein die
+Integration trägt `IMPLEMENTED`, weil ihre Verträge als verbindliche Quelle
+referenziert werden.
 
 ## Das Gate-Schema
 

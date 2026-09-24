@@ -7,6 +7,12 @@
 - **Produkt umbenannt:** Aus PROPSA wird **PROPAKT** – **PRO**jekt-**PAKT**-kontext für Sprachmodelle. Der alte Name behauptete eine Herkunft („Parser für Repomix"), die es nicht (mehr) gab, und benannte den Inhaltskern nicht: das Produkt erzeugt vollständige, geordnete, ehrliche Kontextpakete. Der neue Name nennt, was es tut. Umbenannt sind Paketname, Befehl (`propakt`), geteilter Kern (`@propakt/core`), zentrale Ablage (`~/.propakt`), Ignore-Datei (`.propaktignore`), Standardausgabe (`propakt-kontext/`), Katalog, Banner und Werkzeugnamen. Die Desktop-App behält ihre Tauri-Kennung `com.vannon.propsa`, weil ein Wechsel die Update-Kette der installierten App brechen würde.
 - **Daten bleiben erhalten:** Eine vorhandene Ablage `~/.propsa` (History, Zwischenspeicher, Live-Datenbank) wird beim ersten Zugriff einmalig nach `~/.propakt` übernommen – in der CLI (`src/history.ts`), in der Desktop-App (`tauri-app/src-tauri/src/history.rs`) und beim Einrichten (`scripts/installation/install.mjs`). Bestehende Pakete unter `propsa-kontext/` und Ignore-Dateien `.propsaignore` werden weiterhin ausgeschlossen bzw. gelesen, damit die Umbenennung keine Datei außerhalb der Ablage verschluckt oder unwirksam macht.
 
+**Folge für bestehende Installationen**
+
+Der Befehl der CLI heißt jetzt `propakt` statt `propsa`. Wer die Werkzeuge global eingerichtet hatte, findet den alten Namen nicht mehr vor und ruft `propakt` auf; `npm run installieren` richtet Befehl und Ablage neu ein. Die Tauri-Kennung `com.vannon.propsa` bleibt dagegen bewusst unverändert, damit bereits installierte Desktop-Apps ihre Updates weiterhin erkennen.
+
+**Außerhalb des Repos zu erledigen:** Die MCP-Server-Einträge in den Claude-Code-Einstellungen tragen noch die alten Werkzeugnamen und den alten Pfad. Sie zeigen jetzt `propakt_get_status`, `propakt_get_latest_snapshot`, `propakt_get_recent_explanations` und `propakt_trigger_analysis` unter `agents/mcp-server`. Laufende Server müssen dafür neu gestartet werden.
+
 ## 0.0.18
 
 **Neu**

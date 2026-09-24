@@ -7,6 +7,7 @@
  *   - tauri-app/package.json
  *   - tauri-app/src-tauri/Cargo.toml
  *   - tauri-app/src-tauri/tauri.conf.json
+ *   - README.md, README.en.md (Versions-Badge)
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -62,6 +63,20 @@ const files = [
       const obj = JSON.parse(content);
       obj.version = newVersion;
       return JSON.stringify(obj, null, 2) + "\n";
+    },
+  },
+  {
+    // Das Badge steht als shields.io-URL im Text – nur die Ziffernfolge
+    // wechselt, Farbe und Zielpfad bleiben.
+    path: join(WURZEL, "README.md"),
+    updater: (content: string): string => {
+      return content.replace(/Version-\d+\.\d+\.\d+-/, `Version-${newVersion}-`);
+    },
+  },
+  {
+    path: join(WURZEL, "README.en.md"),
+    updater: (content: string): string => {
+      return content.replace(/Version-\d+\.\d+\.\d+-/, `Version-${newVersion}-`);
     },
   },
 ];

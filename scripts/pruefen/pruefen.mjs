@@ -47,6 +47,7 @@ console.log(`✓ Changelog-Spiegel: ${changelogKopien.length} Kopie${changelogKo
 // 2. Version
 const versionen = {
   "package.json": JSON.parse(readFileSync(join(WURZEL, "package.json"), "utf8")).version,
+  "packages/core/package.json": JSON.parse(readFileSync(join(WURZEL, "packages/core/package.json"), "utf8")).version,
   "tauri-app/package.json": JSON.parse(readFileSync(join(WURZEL, "tauri-app/package.json"), "utf8")).version,
   "tauri-app/src-tauri/Cargo.toml": readFileSync(join(WURZEL, "tauri-app/src-tauri/Cargo.toml"), "utf8").match(/^version = "([^"]+)"/m)?.[1],
   "tauri-app/src-tauri/tauri.conf.json": JSON.parse(readFileSync(join(WURZEL, "tauri-app/src-tauri/tauri.conf.json"), "utf8")).version,
@@ -55,7 +56,15 @@ const versionSoll = versionen["package.json"];
 for (const [datei, version] of Object.entries(versionen)) {
   if (version !== versionSoll) fehler.push(`Version ${versionSoll} erwartet, ${datei} nennt ${version}`);
 }
-console.log(`✓ Version: ${versionSoll} in allen ${Object.keys(versionen).length} Dateien`);
+// Die Versions-Badges in beiden READMEs sind ebenfalls eine Wahrheit: sie
+// zeigen sonst den Stand der Vorversion an, ohne dass jemand darauf aufmerkt.
+for (const datei of ["README.md", "README.en.md"]) {
+  const inhalt = readFileSync(join(WURZEL, datei), "utf8");
+  if (!inhalt.includes(`Version-${versionSoll}-`)) {
+    fehler.push(`${datei}: Badge nennt nicht ${versionSoll} – scripts/version/bump-version.ts laufen lassen`);
+  }
+}
+console.log(`✓ Version: ${versionSoll} in allen ${Object.keys(versionen).length} Dateien, Badges in beiden READMEs`);
 
 // 3. Namen – jetzt auch package-lock.json, damit keine alten Bin-/Paketnamen
 //    im Lockfile überleben.
