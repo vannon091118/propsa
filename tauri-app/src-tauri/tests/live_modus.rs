@@ -116,6 +116,7 @@ fn kuerzen_behaelt_neueste_snapshots() {
             unverändert: 1,
             journal: vec![],
             ruhig: false,
+            erstaufnahme: false,
         };
         snapshot_schreiben(&verbindung, &ergebnis, &signatur).expect("schreiben");
         // Phase-2-Verantwortung: Der Aufrufer kürzt (Kinder zuerst).
@@ -260,6 +261,7 @@ fn anomalien_waren_und_kuerzen() {
             zeilen_delta: 1,
         }],
         ruhig: false,
+        erstaufnahme: false,
     };
     snapshot_schreiben(
         &verbindung,

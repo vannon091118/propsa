@@ -29,6 +29,7 @@ fn tick(journal: Vec<JournalEintrag>, dateien: usize, zeilen: usize) -> TickErge
         unverändert: 0,
         journal,
         ruhig: false,
+        erstaufnahme: false,
     }
 }
 

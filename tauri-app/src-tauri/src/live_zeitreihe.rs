@@ -64,6 +64,15 @@ pub fn zeitreihe_lesen(
     let grenze_text = grenze.format("%Y-%m-%d %H:%M:%S").to_string();
     Ok(gelesen
         .into_iter()
-        .filter(|punkt| punkt.zeitstempel >= grenze_text)
+        .filter(|punkt| {
+            // Erst die Formatprüfung, dann der Textvergleich. Der Vergleich
+            // allein lässt kaputte Zeitstempel durch: "kaputt" sortiert mit
+            // 'k' hinter der Grenze, die mit '2' beginnt. Die Zusage aus dem
+            // Modulkopf — kaputte Zeitstempel fliegen im gefilterten Modus
+            // heraus — braucht beide Hälften.
+            chrono::NaiveDateTime::parse_from_str(&punkt.zeitstempel, "%Y-%m-%d %H:%M:%S")
+                .is_ok()
+                && punkt.zeitstempel >= grenze_text
+        })
         .collect())
 }

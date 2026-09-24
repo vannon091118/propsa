@@ -21,16 +21,15 @@
     { "type": "file", "name": "live_zyklus.rs", "path": "live_zyklus.rs", "description": "Live-Tick-Kern: Kandidaten, Baum-Signatur, Vergleich, Änderungen.", "size": "1332 bytes" },
     { "type": "file", "name": "paket.rs", "path": "paket.rs", "description": "Kommando `paket_schreiben`: schreibt das Kontextpaket in einen Ordner.", "size": "492 bytes" },
     { "type": "file", "name": "paketbasis.rs", "path": "paketbasis.rs", "description": "Gemeinsame Bausteine der Paketexte (Spiegel zu paketBasis.ts).", "size": "468 bytes" },
-    { "type": "file", "name": "paketeite.rs", "path": "paketeite.rs", "description": "Paketexte: Übersichtstexte (Zusammenfassung, Architektur). (Spiegel zu paketTexte.ts).", "size": "606 bytes" },
+    { "type": "file", "name": "pakettexte.rs", "path": "pakettexte.rs", "description": "Paketexte: Übersichtstexte (Zusammenfassung, Architektur). (Spiegel zu paketTexte.ts).", "size": "3902 bytes" },
     { "type": "file", "name": "paketquellen.rs", "path": "paketquellen.rs", "description": "Paketexte: Dokumentation und Domänenquellen. (Spiegel zu paketQuellen.ts).", "size": "540 bytes" },
-    { "type": "file", "name": "paketkritik.rs", "path": "paketkritik.rs", "description": "Paketekst: Kritik.md (Godfiles, Logikmischung etc.). (Spiegel zu paketKritik.ts).", "size": "1098 bytes" },
+    { "type": "file", "name": "paketkritik.rs", "path": "paketkritik.rs", "description": "Pakettext: Kritik.md (Godfiles, Logikmischung etc.). (Spiegel zu paketKritik.ts).", "size": "1098 bytes" },
     { "type": "file", "name": "prozesse.rs", "path": "prozesse.rs", "description": "Verwaltung von Unterprozessen (z. B. für Tauri-Updates).", "size": "216 bytes" },
     { "type": "file", "name": "scan.rs", "path": "scan.rs", "description": "Kommando `scan`: Kandidaten sammeln, Limits anwenden, Fortschritt melden, Cache-Andock.", "size": "1602 bytes" },
     { "type": "file", "name": "schema.rs", "path": "schema.rs", "description": "JSON-Vertrag (kontext.json, Schema v2) (Spiegel zu schema.ts).", "size": "366 bytes" },
     { "type": "file", "name": "sprache.rs", "path": "sprache.rs", "description": "Sprache nach Endung und Codeblock-Kennung (Spiegel zu sprache.ts).", "size": "366 bytes" },
     { "type": "file", "name": "tray.rs", "path": "tray.rs", "description": "Tray-Icon, Menü, Widget-Vordergrund-Hub.", "size": "702 bytes" },
     { "type": "file", "name": "update.rs", "path": "update.rs", "description": "Auto-Updater: Kommandos `update_check` und `update_ausfuehren`.", "size": "912 bytes" },
-    { "type": "file", "name": "zwischenspeicher.rs", "path": "zwischenspeicher.rs", "description": "Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik (Spiegel zu zwischenspeicher.ts).", "size": "1062 bytes" },
-    { "type": "directory", "name": "tests", "path": "tests/", "description": "Unit-Tests für das Rust-Backend.", "index": "tauri-app/src-tauri/src/tests/INDEX.json" }
+    { "type": "file", "name": "zwischenspeicher.rs", "path": "zwischenspeicher.rs", "description": "Scan-Cache: Baum-Signatur, `~/.propsa/cache/`, Treffer-Logik (Spiegel zu zwischenspeicher.ts).", "size": "1062 bytes" }
   ]
 }
