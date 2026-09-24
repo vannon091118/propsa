@@ -10,6 +10,7 @@
     { "type": "file", "name": "Kontextpaket.md", "path": "Kontextpaket.md", "description": "Spezifikation des Kontextpakets und seiner Struktur." },
     { "type": "file", "name": "Live-Modus.md", "path": "Live-Modus.md", "description": "Dokumentation zum Live-Modus der Anwendung." },
     { "type": "file", "name": "Live-Modus-Plan.md", "path": "Live-Modus-Plan.md", "description": "Planungsdokument für den Live-Modus." },
-    { "type": "file", "name": "Tauri-App.md", "path": "Tauri-App.md", "description": "Informationen zur Tauri-Desktop-Anwendung." }
+    { "type": "file", "name": "Tauri-App.md", "path": "Tauri-App.md", "description": "Informationen zur Tauri-Desktop-Anwendung." },
+    { "type": "file", "name": "Vision.md", "path": "Vision.md", "description": "Platzierung von PROPSA in der eigenen Agenten-Plattform: Bausteine, Verträge, Andockstellen." }
   ]
 }

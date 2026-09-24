@@ -5,7 +5,7 @@
     {
       "name": "agents",
       "path": "agents/",
-      "description": "Agent processes like the Shinon MCP server.",
+      "description": "Agent processes and their helpers, addressed by capability rather than by product name.",
       "index": "agents/INDEX.json"
     },
     {
@@ -13,6 +13,12 @@
       "path": "assets/",
       "description": "Media assets such as banners and logos.",
       "index": "assets/INDEX.json"
+    },
+    {
+      "name": "bausteine",
+      "path": "bausteine/",
+      "description": "Sieben Bausteine als dokumentierte Muster: Muster, Verträge und leeres Gerüst.",
+      "index": "bausteine/INDEX.json"
     },
     {
       "name": "docs",

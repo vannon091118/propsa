@@ -1,12 +1,14 @@
 /**
  * Konsistenzprüfung des Repos – prüft die Regeln aus AGENTS.md:
  *
- *  1. Zeilenbegrenzung (200 LOC) für alle Quelldateien
+ *  1. Zeilenbegrenzung (300 LOC) für alle Quelldateien
  *  2. eine Version in package.json, Cargo.toml und tauri.conf.json
  *  3. keine alten Produktnamen in Quelltext, Dokumenten und Lockfiles * 4. Ignorier-Katalog in Core, Rust und Frontend inhaltsgleich
  * 5. alle relativen Links in den Dokumenten zeigen auf vorhandene Dateien
  * 6. Sprachkataloge (Endungen und Fences) in Core und Rust deckungsgleich
- * 7. Live-Kataloge (Schwere, Beschreibungen, Schwellen) Core ↔ Rust deckungsgleich
+ *  7. Live-Kataloge (Schwere, Beschreibungen, Schwellen) Core ↔ Rust deckungsgleich
+ *  8. Zwischenspeicher-Konstanten (Version, Schema) Core ↔ Rust deckungsgleich
+ *  9. Baustein-Kataloge (Gate-Punkte, Status-Werte, Ereignistypen) Core ↔ Rust
  *
  * Aufruf: `npm run pruefen`
  */
@@ -228,6 +230,17 @@ if (!versionTs || !schemaTs || !versionRust || !schemaRust) {
     console.log(`✓ Zwischenspeicher: Version ${versionTs} und Schema deckungsgleich (Core ↔ Rust)`);
   }
 }
+
+// 9. Baustein-Kataloge – Gate-Punkte, Status-Werte und Ereignistypen müssen
+//    zwischen @propsa/core (vertrag.ts) und vertrag.rs deckungsgleich sein.
+const vertragTs = readFileSync(join(WURZEL, "packages/core/src/vertrag.ts"), "utf8");
+const vertragRust = readFileSync(join(WURZEL, "tauri-app/src-tauri/src/vertrag.rs"), "utf8");
+const gatePunkteTs = tsKatalogAusBlock(vertragTs, /export const GATE_PUNKTE: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+const statusWerteTs = tsKatalogAusBlock(vertragTs, /export const STATUS_WERTE: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+const ereignisTypenTs = tsKatalogAusBlock(vertragTs, /export const EREIGNIS_TYPEN: Record<string, string> = \{([\s\S]*?)\r?\n\};/);
+katalogeVergleichen(gatePunkteTs, rustKatalogAusFunktion(vertragRust, "gate_punkte"), "Baustein-Katalog (Gate-Punkte)");
+katalogeVergleichen(statusWerteTs, rustKatalogAusFunktion(vertragRust, "status_werte"), "Baustein-Katalog (Status-Werte)");
+katalogeVergleichen(ereignisTypenTs, rustKatalogAusFunktion(vertragRust, "ereignis_typen"), "Baustein-Katalog (Ereignistypen)");
 
 // Ergebnis
 if (fehler.length > 0) {

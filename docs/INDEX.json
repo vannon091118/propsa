@@ -13,7 +13,7 @@
       "type": "directory",
       "name": "snapshots",
       "path": "snapshots/",
-      "description": "Verzeichnis für Shinon-Snapshots und Diffs.",
+      "description": "Verzeichnis für Repo-Snapshots und Diffs.",
       "index": "docs/snapshots/INDEX.json"
     },
     {

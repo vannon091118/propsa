@@ -1,0 +1,64 @@
+{
+  "modul": "bausteine/vertrage",
+  "titel": "Bausteine — Verträge",
+  "beschreibung": "Sieben Komponentenverträge mit einheitlichem Gate-Schema. Jeder Vertrag trägt dieselben sieben Punkte je Regel und eine Selbstverifikation.",
+  "dateien": [
+    {
+      "pfad": "01-vermittlung.contract.json",
+      "titel": "Vermittlung",
+      "position": 3,
+      "muster": "muster/01-vermittlung.md",
+      "geraest": "geraest/vermittlung.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "02-pruefung.contract.json",
+      "titel": "Prüfung",
+      "position": 2,
+      "muster": "muster/02-pruefung.md",
+      "geraest": "geraest/pruefung.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "03-beobachtung.contract.json",
+      "titel": "Beobachtung",
+      "position": 2,
+      "muster": "muster/03-beobachtung.md",
+      "geraest": "geraest/beobachtung.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "04-prompts.contract.json",
+      "titel": "Prompts",
+      "position": 1,
+      "muster": "muster/04-prompts.md",
+      "geraest": "geraest/prompts.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "05-laufzeit.contract.json",
+      "titel": "Laufzeit",
+      "position": 2,
+      "muster": "muster/05-laufzeit.md",
+      "geraest": "geraest/laufzeit.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "06-uebersicht.contract.json",
+      "titel": "Übersicht",
+      "position": 0,
+      "muster": "muster/06-uebersicht.md",
+      "geraest": "geraest/uebersicht.ts",
+      "implementation_status": "STUB"
+    },
+    {
+      "pfad": "07-integration.contract.json",
+      "titel": "Integration",
+      "position": 3,
+      "muster": "muster/07-integration.md",
+      "geraest": "geraest/integration.ts",
+      "implementation_status": "IMPLEMENTED"
+    }
+  ],
+  "schema_version": 1
+}

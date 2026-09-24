@@ -39,7 +39,7 @@ arbeiten. PROPSA Live verfolgt, ob alles im Rahmen bleibt — oder ob Agenten
 verrückt spielen: gegeneinander arbeiten, loopen, diffen, sich gegenseitig
 Überschreibungen zurückrollen.
 
-Abgrenzung zu Shinon: Shinon bleibt die read-only Repo-Archäologie
+Abgrenzung zur Snapshot-Archäologie: Die bleibt read-only
 (5-Minuten-Snapshots nach `docs/snapshots/`). Live-Modus ist die App-native,
 schnellere Echtzeit-Schwester mit eigener Persistenz — kein doppeltes Zuhause.
 
@@ -110,7 +110,8 @@ CREATE TABLE anomalien (
 ## 4. Zyklus: sequenziell, billig, deterministisch
 
 - **Intervall:** konfigurierbar; Vorschlag **60 s** Standard, Minimum 10 s
-  (alte-Hardware-Schonung; Shinon läuft mit 300 s/Heartbeat 3 min).
+  (alte-Hardware-Schonung; die Snapshot-Archäologie läuft mit 300 s/Heartbeat
+  3 min).
 - **Ein Tick, niemals überlappt:** der nächste Tick startet erst, wenn der
   vorherige abgeschlossen ist (Join auf den Zyklus-Task). „Parallel arbeiten
   erkennen" heißt hier: **Änderungen mehrerer Akteure** erkennen — nicht

@@ -7,7 +7,7 @@
     "propsa": "./dist/propsa.js"
   },
   "scripts": {
-    "build": "npm run build --workspace @propsa/core && tsc",
+    "build": "npm run build --workspace @propsa/core && tsc && tsc -p bausteine/tsconfig.json",
     "start": "ts-node src/propsa.ts",
     "pruefen": "node scripts/pruefen/pruefen.mjs",
     "changelog:spiegeln": "node scripts/changelog/changelog_spiegeln.mjs",

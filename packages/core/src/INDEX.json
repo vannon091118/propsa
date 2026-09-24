@@ -9,8 +9,9 @@
     { "type": "file", "name": "live.ts", "path": "live.ts", "description": "Live-Kataloge: ANOMALIE_SCHWERE, ANOMALIE_BESCHREIBUNGEN, ANOMALIE_SCHWELLEN.", "size": "2931 bytes" },
     { "type": "file", "name": "schema.ts", "path": "schema.ts", "description": "JSON-Vertrag (kontext.json, Schema v2).", "size": "3076 bytes" },
     { "type": "file", "name": "sprache.ts", "path": "sprache.ts", "description": "Sprache nach Endung und Codeblock-Kennung.", "size": "2089 bytes" },
-    { "type": "file", "name": "tsconfig.json", "path": "tsconfig.json", "description": "TypeScript compiler configuration.", "size": "352 bytes" },
+    { "type": "file", "name": "tsconfig.json", "path": "../tsconfig.json", "description": "TypeScript-Konfiguration des Pakets – liegt in packages/core/, nicht in src/." },
     { "type": "file", "name": "update.ts", "path": "update.ts", "description": "Hilfsfunktionen für Updates.", "size": "1545 bytes" },
+    { "type": "file", "name": "vertrag.ts", "path": "vertrag.ts", "description": "Baustein-Vertrag: Typen und Kataloge (Gate-Punkte, Status-Werte, Ereignistypen). Spiegel in src-tauri/src/vertrag.rs, geprüft durch npm run pruefen." },
     { "type": "file", "name": "zwischenspeicher.ts", "path": "zwischenspeicher.ts", "description": "Cache-Vertrag: Version, Schema, Baum-Signatur.", "size": "3076 bytes" }
   ]
 }

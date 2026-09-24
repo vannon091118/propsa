@@ -1,0 +1,19 @@
+{
+  "//": "Typprüfung für das Bausteine-Gerüst. Ohne diese Datei erfasst kein tsc-Lauf die Module unter geraest/, und sie könnten still veralten, ohne dass es jemand merkt. `noEmit`, weil hier nichts ausgeliefert wird: das Gerüst besteht aus Zusage und leerer Form.",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@propsa/core": ["../packages/core/src"]
+    }
+  },
+  "include": ["geraest/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Integration — Component Contract",
+  "description": "Beschreibt die Schichtenlage, die Uebergaberichtung zwischen den Bausteinen und die gemeinsamen Vertragsformen. Bausteine geben Vertrage heraus, keinen Code. Uebergaben laufen nach unten, nie nach oben.",
+  "component": {
+    "name": "Integration",
+    "position": 3,
+    "role": "infrastructure_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Keine eigene Eingabe. Dieser Vertrag beschreibt die Form aller anderen sechs.",
+    "fields": {
+      "baustein": { "type": "string", "description": "Position 0 bis 3." },
+      "anfrage": { "type": "object", "description": "Was die aufrufende Schicht übergibt." }
+    }
+  },
+
+  "output": {
+    "description": "Die Zusage, die ein Baustein nach aussen gibt.",
+    "fields": {
+      "position": { "enum": [0, 1, 2, 3], "description": "0 Präsentation, 1 Prompts, 2 Orchestrierung, 3 Infrastruktur." },
+      "zugesagt": { "type": "array", "description": "Was dieser Baustein zusagt." },
+      "nicht_zugesagt": { "type": "array", "description": "Was ausdrücklich nicht zugesagt wird. Der wichtigere Teil." },
+      "implementation_status": { "type": "string", "description": "IMPLEMENTED, STUB, NOT_IMPLEMENTED oder NOT_VERIFIED." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "eine_wahrheit_je_regel",
+        "POSITIVE": "Jede Frage wird an genau einer Stelle beantwortet.",
+        "FORBIDDEN": "Zwei Bausteine beantworten dieselbe Frage getrennt, und niemand kann sagen, welche gilt.",
+        "FALLBACK": "Bei Doppelantwort gewinnt die ältere, und die zweite Stelle wird entfernt.",
+        "ERROR": "duplicate_authority",
+        "TRACE": "Jede Antwort nennt ihre einzige Quelle.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Wer dieselbe Frage zweimal stellen muss, hat die Frage falsch geschnitten — oder zwei Bausteine gebaut, wo einer hingehört."
+      },
+      {
+        "gate": "uebergabe_nach_unten",
+        "POSITIVE": "Schicht n übergibt an Schicht n-1 oder tiefer, über einen Vertrag.",
+        "FORBIDDEN": "Ein Aufruf nach oben, der einen Zyklus erzeugt.",
+        "FALLBACK": "Fehlt der direkte Weg, führt der Umweg über die Schicht dazwischen — nicht am Vertrag vorbei.",
+        "ERROR": "upward_call_detected",
+        "TRACE": "Jede Uebergabe nennt Absender und Empfaenger mit Position.",
+        "REPLAY": "deterministisch: die Reihenfolge der Schichten ist eindeutig, also ist der Ablauf eindeutig.",
+        "INVARIANT": "Ein Zyklus ist ausgeschlossen. Ohne Aufwaertsaufruf ist die Reihenfolge der Schichten eindeutig und eine Schicht ist isoliert pruefbar."
+      },
+      {
+        "gate": "sieben_punkte_vollstaendig",
+        "POSITIVE": "Jede Regel trägt alle sieben Punkte: POSITIVE, FORBIDDEN, FALLBACK, ERROR, TRACE, REPLAY, INVARIANT.",
+        "FORBIDDEN": "Eine Regel gilt als umgesetzt, weil sechs Punkte gefüllt sind, oder weil einer mit einer Absichtserklärung gefüllt ist.",
+        "FALLBACK": "Eine unvollstaendige Regel zaehlt als STUB, nicht als IMPLEMENTED.",
+        "ERROR": "incomplete_gate",
+        "TRACE": "Der fuenfte und siebte Punkt belegen die Herkunft und die pruefbare Zusage.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Eine Regel ohne alle sieben Punkte ist nicht implementiert, sondern behauptet. Der Satz ist die Regel — er beendet die Diskussion 'ist das jetzt fertig'. Ja, wenn ein Test die Zusage belegt. Nein, wenn sieben Felder mit Absichtserklärung gefüllt sind."
+      },
+      {
+        "gate": "zustandswerte_unterscheidbar",
+        "POSITIVE": "STUB bedeutet: die Entscheidung, es nicht zu bauen, ist getroffen. NOT_VERIFIED bedeutet: es wurde gebaut, und niemand hat es geprueft.",
+        "FORBIDDEN": "Beide werden als 'noch nicht fertig' zusammengefasst.",
+        "FALLBACK": "Unklarheit bedeutet NOT_VERIFIED — die vorsichtigere der beiden Annahmen.",
+        "ERROR": "status_conflation",
+        "TRACE": "last_verified_against_code trennt 'seit wann unveraendert' von 'jemals geprueft'.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Ein STUB ist eine Aufgabe. Ein NOT_VERIFIED ist ein offener Prüfposten. Beides ist ehrlich, aber es führt zu verschiedenen Entscheidungen."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "IMPLEMENTED",
+    "sections": {
+      "schichtenlage": "IMPLEMENTED — die Lage ist in bausteine/muster/07-integration.md beschrieben und in diesem Vertrag kodiert.",
+      "gate_schema": "IMPLEMENTED — alle sieben Verträge in bausteine/vertrage/ tragen dieselben sieben Punkte. Das war vorher nicht der Fall.",
+      "selbstverifikation": "IMPLEMENTED — jeder Vertrag trägt overall, sections, last_verified_against_code und known_gaps.",
+      "eine_wahrheit_je_regel": "STUB — für die sieben neuen Verträge gilt die Regel, weil jeder genau eine Quelle hat. Über die bestehenden PROPSA-Kataloge erzwingt npm run pruefen das bereits maschinell."
+    },
+    "last_verified_against_code": "2026-09-24",
+    "known_gaps": [
+      "Dieser Vertrag beschreibt die Form der anderen sechs. Er liefert selbst keine Funktion, und das ist beabsichtigt: die sieben Bausteine sind dokumentierte Muster, kein laufender Code.",
+      "PROPSA hat keine Orchestrierungsschicht und braucht keine. Die Positionsnummern beschreiben, wo ein Baustein einzuordnen wäre — nicht, dass PROPSA eine Position bekommt.",
+      "Der entscheidende Punkt des Musters — ein einheitliches Gate-Schema für alle sieben — ist der Teil, der in PROPSA tatsächlich neu ist. Er ist hier zum ersten Mal angewandt."
+    ]
+  }
+}

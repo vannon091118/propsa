@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Beobachtung — Component Contract",
+  "description": "Liest Ereignisse aus fremden Quellen, uebersetzt sie in ein eigenes Vokabular und legt sie in einem eigenen Speicher ab. Fail-open: ein Fehler darf den Produzenten nie blockieren. Abgeleitetes Wissen wird nie zur Autoritaet.",
+  "component": {
+    "name": "Beobachtung",
+    "position": 2,
+    "role": "orchestration_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Rohmeldungen aus beliebig vielen Quellen, ungeprüft.",
+    "fields": {
+      "quelle": { "type": "string", "description": "Erzeugende Instanz. Fremde Namen werden nie weitergegeben." },
+      "ereignistyp": { "type": "string", "description": "Fremdbezeichnung. Die Zuordnung steht in genau einer Tabelle." },
+      "inhalt": { "type": "object", "description": "Rohdaten der Quelle, unverändert übernommen." },
+      "zeit": { "type": "string", "description": "Zeitstempel der Quelle, nicht der Aufnahme." }
+    }
+  },
+
+  "output": {
+    "description": "Normalisierte Ereignisse im eigenen Vokabular, mit unveraenderter Herkunft.",
+    "fields": {
+      "typ": { "enum": ["CLAIM", "CHALLENGE", "LIFECYCLE", "VERDICT", "HANDOFF", "COMPLETION", "DIAGNOSTIC"], "description": "Sieben eigene Typen. Ein neuer Produzent braucht eine Zeile in der Zuordnungstabelle, keinen Consumer-Code." },
+      "quelle": { "type": "string", "description": "Herkunft, erhalten geblieben." },
+      "inhalt": { "type": "object", "description": "Übernommene Rohdaten." },
+      "cursor": { "type": "string", "description": "Position in der Quelle, eigener Cursor je Quelle." },
+      "abgeleitet": { "type": "array", "description": "Auswertungen. Niemals Teil der Autoritaet." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "beobachtung_schlaegt_nie_fehl",
+        "POSITIVE": "Ein Beobachtungsfehler wird protokolliert und die Beobachtung läuft mit den übrigen Quellen weiter.",
+        "FORBIDDEN": "Die Beobachtung blockiert, pausiert oder bricht den beobachteten Prozess ab.",
+        "FALLBACK": "Die Quelle wird übersprungen, der Cursor bleibt stehen, der nächste Versuch beginnt dort.",
+        "ERROR": "observation_source_skipped",
+        "TRACE": "Der Fehler landet als DIAGNOSTIC im eigenen Speicher, nicht als Ausnahme beim Produzenten.",
+        "REPLAY": "deterministisch: ein Fehler erzeugt dieselbe Überspringung.",
+        "INVARIANT": "Die Beobachtung ist der einzige Ort, an dem ein Fehler entstehen kann, den jemand spürt — und dieser Ort ist ausserhalb des Beobachteten."
+      },
+      {
+        "gate": "keine_autoritaet_aus_ableitung",
+        "POSITIVE": "Eine Ableitung wird getrennt gespeichert und nur dort verwendet, wo ihre Herkunft sichtbar ist.",
+        "FORBIDDEN": "Abgeleitetes Wissen fliesst ohne Herkunftsangabe in eine Entscheidung ein.",
+        "FALLBACK": "Ohne belegbare Herkunft wird die Ableitung verworfen, nicht geraten.",
+        "ERROR": "derived_without_provenance",
+        "TRACE": "Jede Ableitung führt auf die Ereignisse zurück, aus denen sie entstanden ist.",
+        "REPLAY": "deterministisch, weil die Ableitung aus dem Protokoll berechnet wird.",
+        "INVARIANT": "Es gibt zwei getrennte Speicher: rohe Ereignisse und Ableitungen. Ein Leser des Rohspeichers sieht nie eine Ableitung."
+      },
+      {
+        "gate": "eigener_speicher",
+        "POSITIVE": "Beobachtete Ereignisse landen in einer eigenen Datenbank mit eigenem Schema.",
+        "FORBIDDEN": "Der Fremdspeicher wird beschrieben, gelöscht oder gesperrt.",
+        "FALLBACK": "Schreibfehler heben die Beobachtung auf, nie die Quelle.",
+        "ERROR": "observation_store_write_failed",
+        "TRACE": "Der Slot wird vor dem Schreiben reserviert, damit zwei gleichzeitige Schreiber nicht kollidieren.",
+        "REPLAY": "deterministisch: derselbe Cursor ergibt dieselbe Ereignisfolge.",
+        "INVARIANT": "Ein Cursor ist je Quelle genau einmal in Gebrauch."
+      },
+      {
+        "gate": "frische_luecke",
+        "POSITIVE": "Ein Ereignis, das in der Quelle zwischen zwei Abrufen übersprungen wurde, wird als Lücke sichtbar.",
+        "FORBIDDEN": "Eine Lücke wird dadurch geschlossen, dass ein Schätzwert eingesetzt wird.",
+        "FALLBACK": "Lückenereignis mit Quelle und Zeitbereich, danach geht es weiter.",
+        "ERROR": "gap_detected",
+        "TRACE": "Die Lücke nennt Quelle und Zeitbereich, damit sie gezielt nachgetragen werden kann.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Ein Sprung in der Ereignisnummer ist nie unbemerkt."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "zuordnungstabelle": "STUB — die sieben Typen stehen, die Tabelle ist leer.",
+      "eigener_speicher": "STUB — SQLite-WAL-Schema existiert für den Live-Modus, ist aber nicht dieser Beobachtungsspeicher.",
+      "ableitung": "STUB — bewusst offen. Eine Ableitung ohne Herkunft ist wertlos, und es ist besser, sie nicht zu bauen, als sie ohne Beleg zu bauen."
+    },
+    "last_verified_against_code": null,
+    "known_gaps": [
+      "Der Live-Modus in tauri-app/src-tauri/src/live_zyklus.rs ist ein Beobachter — aber ein geschlossener: Quelle und Speicher sind PROPSA selbst.",
+      "Es gibt keinen Beobachter über eine Prozessgrenze hinweg. Der wichtigste Fall des Musters — Zustand abgleichen, ohne ihn zu verändern — ist damit ungemessen.",
+      "Ob der bestehende Live-Speicher die Trennung von Rohereignis und Ableitung erfüllt, ist nicht geprüft."
+    ]
+  }
+}

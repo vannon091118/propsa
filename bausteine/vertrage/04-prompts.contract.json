@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Prompts — Component Contract",
+  "description": "Führt eine rohe Absicht über Research und Zerlegung in atomare Aufgaben mit überprüfbarem Ergebnis. Jede Aussage führt ihren Beleg mit Status. Das Muster ist textbasiert: es beschreibt Dokumente und Übergaben, keine lauffähigen Typen.",
+  "component": {
+    "name": "Prompts",
+    "position": 1,
+    "role": "prompts_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Freie Absicht in Prosa, ohne überprüfbares Ende.",
+    "fields": {
+      "absicht": { "type": "string", "description": "Was der Mensch will, ungeformt." },
+      "kontext": { "type": "string", "description": "Vorwissen, Ergebnis einer Beobachtung oder einer Recherche." }
+    }
+  },
+
+  "output": {
+    "description": "Eine Liste atomarer Aufgaben mit Anforderungs-ID, Prüfmittel und Beleg-Status.",
+    "fields": {
+      "aufgabe_id": { "type": "string", "description": "Stabile Kennung." },
+      "auftrag": { "type": "string", "description": "Ein Satz mit eingebautem Verb und prüfbarem Ende." },
+      "erwartung": { "type": "string", "description": "Das überprüfbare Ende. Ohne sie ist die Aufgabe nicht fertig gedacht." },
+      "belege": { "type": "array", "description": "Je Beleg: Fundstelle, Herkunft, Status." },
+      "status": { "enum": ["ungeprueft", "bestaetigt", "widerlegt"], "description": "Der Standardzustand ist ungeprueft." },
+      "vorgaben": { "type": "array", "description": "Was nicht verhandelbar ist, getrennt von den Erwartungen." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "atomaritaet",
+        "POSITIVE": "Eine Aufgabe lässt sich an einem einzigen benannten Punkt als erledigt oder nicht erledigt bezeichnen.",
+        "FORBIDDEN": "Eine Aufgabe ohne überprüfbares Ende, oder eine Zusammenfassung mehrerer Aufgaben zu einem Punkt.",
+        "FALLBACK": "Zerlegung in Teilaufgaben, bis der Test gelingt.",
+        "ERROR": "task_not_atomic",
+        "TRACE": "Die Zerlegungskette vom Thema zur Aufgabe bleibt erhalten.",
+        "REPLAY": "deterministisch: dasselbe Thema ergibt dieselbe Zerlegung.",
+        "INVARIANT": "Keine Aufgabe enthält mehr als ein überprüfbares Ende."
+      },
+      {
+        "gate": "herkunftspflicht",
+        "POSITIVE": "Jeder Beleg nennt eine Fundstelle und ob er aus eigenem, fremdem oder Modellmaterial stammt.",
+        "FORBIDDEN": "Eine Aussage ohne Herkunft wird weitergegeben.",
+        "FALLBACK": "Die Aussage wird als ungeprüft und ohne Herkunft gekennzeichnet und nicht verwendet.",
+        "ERROR": "claim_without_provenance",
+        "TRACE": "Die Herkunftsangabe ist Teil des Belegs, nicht Teil der Bewertung.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Ein Beleg aus Modellmaterial ist als solcher gekennzeichnet. Er verschmilzt nie mit eigenem Material."
+      },
+      {
+        "gate": "statuswechsel",
+        "POSITIVE": "Ein Beleg wechselt von ungeprueft nach bestaetigt oder widerlegt, jeweils mit Gegenbeleg.",
+        "FORBIDDEN": "Ein Beleg wird gelöscht, weil er gescheitert ist.",
+        "FALLBACK": "Ohne neuen Beleg bleibt der Status, wo er ist. Ein Wechsel zurück braucht eine Begründung.",
+        "ERROR": "status_change_unjustified",
+        "TRACE": "Jeder Wechsel führt den Beleg mit, der ihn ausgelöst hat.",
+        "REPLAY": "deterministisch, weil der Beleg die Bedingung des Wechsels ist.",
+        "INVARIANT": "Widerlegt ist ein Ergebnis, kein Fehler. Der Bestand wächst, er schrumpft nie."
+      },
+      {
+        "gate": "uebergabe",
+        "POSITIVE": "Eine Übergabe nennt Absender, Empfänger, Stand der Belege und Auftrag.",
+        "FORBIDDEN": "Eine Übergabe enthält eine Bewertung — 'ich finde das riskant' ist keine Übergabe, 'dieser Pfad ist ungetestet' ist eine.",
+        "FALLBACK": "Ohne klaren Auftrag wird die Übergabe zurückgegeben, nicht geraten.",
+        "ERROR": "handoff_without_mandate",
+        "TRACE": "Der Stand der Belege wird mitgeliefert, damit der Empfänger nicht nachfragen muss.",
+        "REPLAY": "semantisch: der Empfänger entscheidet, was er daraus macht.",
+        "INVARIANT": "Der Empfänger kann jede Aussage einer Übergabe auf einen Beleg zurückführen."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "zerlegung": "STUB — die Kette ist beschrieben, kein Zerleger läuft.",
+      "beleg_status": "STUB — die drei Zustände sind benannt, nichts verwaltet sie.",
+      "uebergabe": "STUB — Format beschrieben, kein Protokoll."
+    },
+    "last_verified_against_code": null,
+    "known_gaps": [
+      "Dieser Vertrag beschreibt Dokumente, keine Programmiersprache. Das Muster hat keinen ausführbaren Teil, und künstlich einen einzufügen wäre eine Falschzusage.",
+      "PROPSA hat kein Äquivalent. Kontextpakete liefern Herkunft über Quellen-Domänen, aber keinen Beleg mit Statuswechsel.",
+      "Die Belegverwaltung wäre der aufwendigste Teil, weil sie Speicher über Aufgaben hinweg voraussetzt. Nicht gemessen."
+    ]
+  }
+}

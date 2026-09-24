@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vermittlung — Component Contract",
+  "description": "Wählt Anbieter und Schlüssel für eine Anfrage. Entscheidet nichts inhaltlich. Alle Fehlerzustaende sind Zustandswechsel von Schluesseln, keine Ausnahmen nach oben.",
+  "component": {
+    "name": "Vermittlung",
+    "position": 3,
+    "role": "infrastructure_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Eine Beratungsanfrage mit Nachrichten und gewuenschtem Anbieter.",
+    "fields": {
+      "anbieter": { "type": "string", "description": "Gewuenschte Ziel-ID. Leer bedeutet: Pipeline entscheidet." },
+      "modell": { "type": "string", "description": "Optionale Modell-ID. Leer bedeutet: Registry waehlt aus Faehigkeiten." },
+      "nachrichten": { "type": "array", "description": "Dialog, unverändert weitergereicht." }
+    }
+  },
+
+  "output": {
+    "description": "Antwort des gewaehlten Anbieters, mit Herkunftsangabe.",
+    "fields": {
+      "quelle": { "enum": ["direkt", "vermittelt"], "description": "Wohin die Anfrage ging. PROPSA faellt auf 'direkt' zurueck, wenn kein Vermittler laeuft." },
+      "deployment": { "type": "string", "description": "Gewaehltes Deployment, fuer die Diagnose." },
+      "schluessel_zustand": { "enum": ["bereit", "abkuehlung", "tot"], "description": "Zustand nach der Anfrage." },
+      "antwort": { "type": "string", "description": "Inhalt der Antwort." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "deployment_auswahl",
+        "POSITIVE": "Ein Deployment matcht Faehigkeiten und Kontextlimit, und es hat mindestens einen bereiten Schluessel.",
+        "FORBIDDEN": "Ein Deployment wird gewaehlt, obwohl kein Schluessel bereit ist.",
+        "FALLBACK": "Naechstes Deployment in der Kandidatenfolge.",
+        "ERROR": "no_deployment_available",
+        "TRACE": "Registry-Version und Kandidatenliste werden protokolliert.",
+        "REPLAY": "deterministisch bei gleicher Registry und gleichem Key-Zustand.",
+        "INVARIANT": "Jede Antwort traegt ein Deployment und eine Quelle."
+      },
+      {
+        "gate": "abkuehlung",
+        "POSITIVE": "Ein Schluessel mit gesetztem Fehler- oder Quotenzustand traegt einen Cooldown, der ueber eine monotone Uhr ablaeuft.",
+        "FORBIDDEN": "Cooldown wird ueber die Wanduhr berechnet.",
+        "FALLBACK": "Nach Ablauf wechselt der Schluessel zurueck auf 'bereit'.",
+        "ERROR": "key_cooldown_active",
+        "TRACE": "Cooldown-Dauer und Ablaufzeitpunkt werden protokolliert.",
+        "REPLAY": "deterministisch, weil die Ablaufzeit gespeichert ist.",
+        "INVARIANT": "Ein Schluessel ist nie gleichzeitig 'bereit' und in Abkuehlung."
+      },
+      {
+        "gate": "erschoepfung",
+        "POSITIVE": "Alle Kandidaten durchlaufen, Ergebnis liegt vor.",
+        "FORBIDDEN": "Der Aufrufer sieht ein Teilergebnis als Erfolg.",
+        "FALLBACK": "Exhaustion-Sentinel mit Zahl der Versuche.",
+        "ERROR": "pipeline_exhausted",
+        "TRACE": "Jeder Versuch einzeln protokolliert.",
+        "REPLAY": "deterministisch, solange die Fehlerklassifikation gleich ist.",
+        "INVARIANT": "Ohne vollstaendiges Ergebnis gibt es keinen Erfolg."
+      },
+      {
+        "gate": "geheimhaltung",
+        "POSITIVE": "Jede Darstellung eines Schluessels ist eine Maske.",
+        "FORBIDDEN": "Ein Schluesselwert erscheint in Audit, Log oder Antwort.",
+        "FALLBACK": "Maske ohne Rueckgabewert.",
+        "ERROR": "key_leak_detected",
+        "TRACE": "Die Reduktionsstelle ist die einzige, die einen Schluessel beruehrt.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Es existiert genau eine Funktion, die Schluessel in Text ueberfuehrt."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "registry": "STUB — Signatur steht, keine Implementierung.",
+      "scanner": "STUB — Signatur steht, keine Implementierung.",
+      "key_pool": "STUB — Signatur steht, keine Implementierung.",
+      "pipeline": "STUB — Signatur steht, keine Implementierung.",
+      "automatische_routing_politik": "STUB — bewusst offen. Der Scanner darf messen, aber nicht entscheiden. Eine Entscheidung ohne Evidenz waere schlechter als keine."
+    },
+    "last_verified_against_code": null,
+    "known_gaps": [
+      "Kein laufender Baustein. PROPSA nutzt weiterhin drei fest verdrahtete Anbieter in tauri-app/src/llm.ts.",
+      "Die automatische Routing-Politik ist eine bewusste Entscheidung, keine offene Aufgabe."
+    ]
+  }
+}

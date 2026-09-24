@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "description": "Leere Module mit der Zusage je Baustein. Jedes Modul dokumentiert ausdrücklich, dass es leer ist und dass es das weiss – ein Gerüst, das so täte, als gäbe es die Funktion, wäre schlimmer als keines.",
+  "module": {
+    "typ": "scaffold",
+    "implementation_status": "STUB",
+    "bedeutung_stub": "Die Entscheidung, es nicht zu bauen, ist getroffen.",
+    "liefert_ausgabe": false,
+    "wird_vom_build_erfasst": true,
+    "pruefung": "tsconfig.json in bausteine/ – ohne sie erfasst kein tsc-Lauf diese Module."
+  },
+  "dateien": [
+    {
+      "pfad": "vermittlung.ts",
+      "titel": "Vermittlung",
+      "position": 3,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "pruefung.ts",
+      "titel": "Prüfung",
+      "position": 2,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "beobachtung.ts",
+      "titel": "Beobachtung",
+      "position": 2,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "prompts.ts",
+      "titel": "Prompts",
+      "position": 1,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "laufzeit.ts",
+      "titel": "Laufzeit",
+      "position": 2,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "uebersicht.ts",
+      "titel": "Übersicht",
+      "position": 0,
+      "baut_funktionen": false
+    },
+    {
+      "pfad": "integration.ts",
+      "titel": "Integration",
+      "position": 3,
+      "baut_funktionen": false
+    }
+  ]
+}

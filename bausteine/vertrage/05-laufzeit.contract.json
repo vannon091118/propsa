@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Laufzeit — Component Contract",
+  "description": "Hält jedes Ereignis unveränderlich fest, leitet daraus eine Bewertung ab und erlaubt die Wiedergabe derselben Historie unter einer anderen Regel. Genau ein Gate. Künftige Läufe werden nicht verändert, nur neu gelesen.",
+  "component": {
+    "name": "Laufzeit",
+    "position": 2,
+    "role": "orchestration_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Ein Ereignis aus einer laufenden Ausführung.",
+    "fields": {
+      "typ": { "type": "string", "description": "Ereignistyp, ungeprüft übernommen." },
+      "inhalt": { "type": "object", "description": "Was tatsächlich passiert ist, nicht wie es bewertet wird." },
+      "zeit": { "type": "string", "description": "Monotone Zeit, nicht Wanduhr. Ein Zeitsprung ändert die Reihenfolge nicht." },
+      "herkunft": { "type": "string", "description": "Welche Instanz, welcher Schritt." }
+    }
+  },
+
+  "output": {
+    "description": "Antwort auf die Frage 'wie sähe es unter dieser Regel aus'.",
+    "fields": {
+      "ereignisse": { "type": "array", "description": "Die Protokollkette, unverändert und vollständig." },
+      "bewertung": { "type": "array", "description": "Abgeleitete Werte, je Ereignis, jederzeit neu berechenbar." },
+      "regel": { "type": "string", "description": "Die Regelversion, unter der diese Sicht erzeugt wurde." },
+      "herleitung": { "type": "array", "description": "Welches Ereignis zu welchem gelernten Zusammenhang führt." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "unveraenderlichkeit",
+        "POSITIVE": "Ein Ereignis wird genau einmal angehängt und danach nie geändert.",
+        "FORBIDDEN": "Ein Fehlauftrag wird durch Löschen oder Überschreiben berichtigt.",
+        "FALLBACK": "Ein Gegenereignis hebt den Fehlauftrag auf. Die Kette bleibt lesbar.",
+        "ERROR": "append_only_violation",
+        "TRACE": "Jedes Ereignis trägt Zeit und Herkunft, damit eine Kette auch rückwärts lesbar ist.",
+        "REPLAY": "deterministisch: dieselbe Ereignisfolge ergibt dieselbe Historie.",
+        "INVARIANT": "Es gibt keinen Pfad, der ein Ereignis entfernt."
+      },
+      {
+        "gate": "getrennte_sichten",
+        "POSITIVE": "Zwei Sichten derselben Historie entstehen aus demselben Protokoll, mit unterschiedlichen Regelversionen.",
+        "FORBIDDEN": "Eine Ansicht verändert das Protokoll, damit sie anders aussieht.",
+        "FALLBACK": "Für eine Regel, die nicht historisch existierte, wird sie als rekonstruiert gekennzeichnet.",
+        "ERROR": "view_changed_the_log",
+        "TRACE": "Jede Sicht nennt ihre Regelversion, damit ein Unterschied rückführbar ist.",
+        "REPLAY": "deterministisch: gleiche Regel und gleiche Historie ergeben dieselbe Sicht.",
+        "INVARIANT": "Die Differenz zweier Sichten ist immer eine Regel-Differenz, nie eine Daten-Differenz."
+      },
+      {
+        "gate": "genau_ein_gate",
+        "POSITIVE": "Genau eine Stelle entscheidet über Freigabe oder Abweisung.",
+        "FORBIDDEN": "Eine zweite, gleichwertige Entscheidungsstelle existiert.",
+        "FALLBACK": "Bei Zweifel gilt die ältere Stelle und die zweite wird entfernt — nicht: beide gelten.",
+        "ERROR": "duplicate_gate_detected",
+        "TRACE": "Die Entscheidung nennt ihre Stelle und die geprüfte Regel.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Es existiert genau eine Implementierung des Entscheidungspunkts. Zwei sind keine Ausstattung, sie sind eine offene Frage mit Failure-Exit."
+      },
+      {
+        "gate": "herkunft_des_gelernten",
+        "POSITIVE": "Ein gelernter Zusammenhang führt auf die Ereignisse zurück, aus denen er entstanden ist.",
+        "FORBIDDEN": "Ein Zusammenhang wird gespeichert, ohne dass seine Herleitung rekonstruierbar ist.",
+        "FALLBACK": "Ohne Herleitung wird nicht gelernt. Ein leeres Modell ist ehrlicher als ein unbegründetes.",
+        "ERROR": "learning_without_derivation",
+        "TRACE": "Jeder Zusammenhang nennt die Ereignis-IDs, aus denen er entstanden ist.",
+        "REPLAY": "deterministisch, weil die Ableitung aus dem Protokoll berechnet wird.",
+        "INVARIANT": "Kein Zusammenhang existiert, der nicht auf Ereignisse zurückführt."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "protokoll": "IMPLEMENTED — der Live-Modus führt eine append-only SQLite-WAL-Kette (live_store.rs). Das ist der Teil des Musters, der in PROPSA wirklich existiert.",
+      "wiedergabe": "IMPLEMENTED — zwei Sichten derselben Historie sind über get_history_metrics abrufbar, und die Achsen-Skalierung in HistoryGraph.tsx erlaubt den Vergleich.",
+      "lernen": "STUB — bewusst offen. Es gibt keine Ableitung und keine Anpassung. Ohne gemessenen Nutzen wäre das eine Zusage ohne Beleg.",
+      "genau_ein_gate": "STUB — PROPSA hat heute kein Gate dieser Art. Die Regel gilt für den Neubau, nicht für den Ist-Zustand."
+    },
+    "last_verified_against_code": "2026-09-24",
+    "known_gaps": [
+      "Der Wiedergabeteil funktioniert, weil die Historie einmal geschrieben und nur gelesen wird. Die Zwei-Sichten-Idee mit zwei Regeln ist an PROPSA nicht geprüft — es gibt nur eine Regel.",
+      "Die Rows sind nach Zeitstempel sortiert, nicht nach monotoner Reihenfolge. Ein Zeitsprung rückwärts ist damit nicht abgesichert.",
+      "Der Live-Modus ist ein Beobachter über sich selbst. Die Schichtung, die das Muster eigentlich trennt, fehlt hier."
+    ]
+  }
+}

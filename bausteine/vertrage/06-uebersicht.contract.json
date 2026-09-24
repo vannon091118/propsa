@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Übersicht — Component Contract",
+  "description": "Liest Daten aus fremden Werkzeugen ueber je einen Leser pro Plattform, normalisiert sie, erkennt Doppelungen in zwei Stufen und verknuepft sie, ohne etwas zu ueberschreiben. Kein generischer Sammel-Leser.",
+  "component": {
+    "name": "Übersicht",
+    "position": 0,
+    "role": "presentation_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Keine Eingabe von aussen. Der Baustein durchsucht konfigurierte Suchpfade.",
+    "fields": {
+      "suchpfade": { "type": "array", "description": "Wo die Daten der einzelnen Plattformen liegen sollen." },
+      "plattformen": { "type": "array", "description": "Welche Leser überhaupt aktiv sind. Was nicht gelistet ist, wird nicht gesehen." }
+    }
+  },
+
+  "output": {
+    "description": "Ein normalisierter Datensatz je Fundstelle, mit Herkunft und Verknuepfung.",
+    "fields": {
+      "datensatz": { "type": "object", "description": "Auf gemeinsame Felder gebracht." },
+      "quelle": { "type": "string", "description": "Plattform und Fundstelle." },
+      "fingerabdruck": { "type": "string", "description": "SimHash ueber 64 Bit. Ein Kandidat, kein Beweis." },
+      "verknuepft_mit": { "type": "array", "description": "IDs weiterer Datensätze gleichen Inhalts. Beide bleiben erhalten." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "leser_je_quelle",
+        "POSITIVE": "Jede aktive Plattform hat einen eigenen Leser für ihr Format.",
+        "FORBIDDEN": "Ein Sammel-Leser, der 'irgendwas mit Schlüsseln' erkennt.",
+        "FALLBACK": "Ein Leser, der nichts findet, meldet 'diese Plattform ist hier nicht installiert'. Das ist ein Ergebnis.",
+        "ERROR": "no_reader_for_source",
+        "TRACE": "Jeder Leser nennt das Format, das er erwartet, und das, das er gefunden hat.",
+        "REPLAY": "deterministisch: gleiches Verzeichnis, gleicher Leser, gleiches Ergebnis.",
+        "INVARIANT": "Ein Leser kann falsch werden, aber nicht stumm falsch werden — nicht stumm, weil er dann nichts findet und das auffällt."
+      },
+      {
+        "gate": "normalisieren_vor_dedup",
+        "POSITIVE": "Erst werden die Datensätze auf gemeinsame Felder gebracht, dann verglichen.",
+        "FORBIDDEN": "Ein Byte-Vergleich zweier Texte als Gleichheitsnachweis.",
+        "FALLBACK": "Nicht normalisierbare Datensätze bleiben eigenständig und werden ungeprüft angezeigt.",
+        "ERROR": "normalization_failed",
+        "TRACE": "Die Normalisierungsregel steht im Leser, nicht im Vergleicher.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Zwei gleiche Inhalte in verschiedener Formatierung gelten als gleich."
+      },
+      {
+        "gate": "zweistufige_dedup",
+        "POSITIVE": "SimHash 64 Bit ist ein Kandidat; Jaccard bestätigt die echte Übereinstimmung der Mengen.",
+        "FORBIDDEN": "Ein Fingerabdruck allein begründet eine Zusammenführung.",
+        "FALLBACK": "Bei Zweifel bleiben beide Datensätze stehen, verknüpft und unverschmolzen.",
+        "ERROR": "dedup_inconclusive",
+        "TRACE": "Beide Stufen werden protokolliert, damit ein Treffer nachvollziehbar ist.",
+        "REPLAY": "deterministisch: gleiche Eingabe, gleicher Fingerabdruck, gleiche Menge.",
+        "INVARIANT": "Bei 64 Bit erzeugt SimHash allein Falschtreffer in der Grössenordnung von 1e-19 je Paar. Bei Millionen Paaren sind das einige hundert. Deshalb ist Stufe zwei nicht optional."
+      },
+      {
+        "gate": "nichts_ueberschreiben",
+        "POSITIVE": "Ein Trefferpaar wird verknüpft; beide Datensätze bleiben vollständig erhalten.",
+        "FORBIDDEN": "Ein Zusammenführungsschritt, der den Originaleintrag überschreibt.",
+        "FALLBACK": "Bei widersprüchlichem Inhalt bleiben beide sichtbar und der Widerspruch wird als solcher ausgewiesen.",
+        "ERROR": "duplicate_resolution_attempted",
+        "TRACE": "Die Verknüpfung nennt beide Quellen und den Grund der Zusammenführung.",
+        "REPLAY": "deterministisch.",
+        "INVARIANT": "Es existiert kein Schritt, der entscheidet, welcher von zwei gleichen Datensätzen der richtige ist. Dieser Schritt wäre der, an dem Information verloren geht."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "leser_je_quelle": "STUB — PROPSA liest genau eine Quelle: das angegebene Verzeichnis. Ein Leser-Register wäre Vorbereitung auf etwas, das nicht existiert.",
+      "dedup": "STUB — nicht gebaut.",
+      "darstellung": "IMPLEMENTED — ErgebnisTabelle.tsx und StatistikKarten.tsx stellen Zähler, Sprachverteilung und Hotspots dar. Handgeschriebenes SVG und CSS, keine fremde Bibliothek."
+    },
+    "last_verified_against_code": "2026-09-24",
+    "known_gaps": [
+      "Der Darsteil ist echt und braucht keine Fremdformate. Die Leser-Liste wäre reine Zukunftsvorsorge.",
+      "Die Grössenordnung der Vorlage war über 30 Fremdformate. Das ist eine offene Wartungsverpflichtung mit 30 Einträgen, kein Feature — und wird nicht übernommen.",
+      "Ob ein echtes Doppelproblem in PROPSA überhaupt vorliegt, ist ungemessen. Delta-Erkennung beantwortet 'was hat sich geändert', nicht 'ist das dasselbe'."
+    ]
+  }
+}

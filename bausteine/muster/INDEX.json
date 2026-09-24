@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "description": "Die sieben Muster, aufgeteilt nach ihrer Rolle. Jedes Muster steht auf drei Ebenen: Entscheidung (was wird getroffen), Mechanik (wie), Grenze (wann es nicht gilt).",
+  "konvention": "ASCII in ```text-Fences, nach dem Muster von ARCHITECTURE.md. Kein Mermaid: der Link-Check in pruefen.mjs erkennt ](…) auch innerhalb von Code-Fences, eine Mermaid-Knotenverweisung würde ihn brechen. Keine Chart-Bibliothek – die Laufzeitabhängigkeiten der App sind ausschliesslich @propsa/core, @tauri-apps/api, drei Tauri-Plugins, react und react-dom.",
+  "muster": [
+    {
+      "pfad": "01-vermittlung.md",
+      "titel": "Vermittlung",
+      "position": 3,
+      "kernsatz": "Ein Fehlerzustand ist ein Zustandswechsel eines Schlüssels, kein Sprung nach oben.",
+      "vertrag": "../vertrage/01-vermittlung.contract.json",
+      "geraest": "../geraest/vermittlung.ts"
+    },
+    {
+      "pfad": "02-pruefung.md",
+      "titel": "Prüfung",
+      "position": 2,
+      "kernsatz": "Unabhängigkeit ist notwendig, nicht hinreichend.",
+      "vertrag": "../vertrage/02-pruefung.contract.json",
+      "geraest": "../geraest/pruefung.ts"
+    },
+    {
+      "pfad": "03-beobachtung.md",
+      "titel": "Beobachtung",
+      "position": 2,
+      "kernsatz": "Abgeleitetes Wissen wird nie zur Autorität.",
+      "vertrag": "../vertrage/03-beobachtung.contract.json",
+      "geraest": "../geraest/beobachtung.ts"
+    },
+    {
+      "pfad": "04-prompts.md",
+      "titel": "Prompts",
+      "position": 1,
+      "kernsatz": "Ein Satz ohne Herkunft ist keine Information, sondern ein Geräusch.",
+      "vertrag": "../vertrage/04-prompts.contract.json",
+      "geraest": "../geraest/prompts.ts"
+    },
+    {
+      "pfad": "05-laufzeit.md",
+      "titel": "Laufzeit",
+      "position": 2,
+      "kernsatz": "Was passiert ist, ist passiert. Eine Bewertung ist eine Interpretation.",
+      "vertrag": "../vertrage/05-laufzeit.contract.json",
+      "geraest": "../geraest/laufzeit.ts"
+    },
+    {
+      "pfad": "06-uebersicht.md",
+      "titel": "Übersicht",
+      "position": 0,
+      "kernsatz": "Ein Format, das niemand liest, ist kein Format.",
+      "vertrag": "../vertrage/06-uebersicht.contract.json",
+      "geraest": "../geraest/uebersicht.ts"
+    },
+    {
+      "pfad": "07-integration.md",
+      "titel": "Integration",
+      "position": 3,
+      "kernsatz": "Bausteine geben Verträge heraus, keinen Code.",
+      "vertrag": "../vertrage/07-integration.contract.json",
+      "geraest": "../geraest/integration.ts"
+    }
+  ]
+}

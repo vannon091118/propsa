@@ -14,8 +14,9 @@
  *
  * `zwischenspeicher.ts` (Scan-Cache-Vertrag) wird in
  * `tauri-app/src-tauri/src/zwischenspeicher.rs` gespiegelt; `live.ts`
- * (Live-Kataloge) in `live_anomalie.rs`. Beide vergleicht
- * `npm run pruefen`.
+ * (Live-Kataloge) in `live_anomalie.rs`; `vertrag.ts` (Baustein-Kataloge:
+ * Gate-Punkte, Status-Werte, Ereignistypen) in `vertrag.rs`. Alle drei
+ * vergleicht `npm run pruefen`.
  */
 export { KontextDatei } from './datei';
 export {
@@ -69,3 +70,14 @@ export {
   istDokumentation,
   quellenName,
 } from './domaene';
+export {
+  Position,
+  Regel,
+  Vertrag,
+  VertragsStatus,
+  GATE_PUNKTE,
+  STATUS_WERTE,
+  EREIGNIS_TYPEN,
+  regelVollstaendig,
+  statusBekannt,
+} from './vertrag';

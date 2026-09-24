@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Prüfung — Component Contract",
+  "description": "Erzeugt aus einer Anforderung ein Probe-Set, laesst jede Probe von einer getrennten Instanz ausfuehren und entscheidet allein ueber die Ergebnisse. Fail-closed: nur ein vollstaendig bestaetigtes Probe-Set gibt frei.",
+  "component": {
+    "name": "Prüfung",
+    "position": 2,
+    "role": "orchestration_layer",
+    "kind": "dokumentiertes Muster, kein laufender Baustein"
+  },
+
+  "input": {
+    "description": "Eine Anforderung mit Identitaet, Beschreibung und Abhaengigkeiten.",
+    "fields": {
+      "anforderung_id": { "type": "string", "description": "Stabile Kennung, auf die jede Probe zurueckverweist." },
+      "beschreibung": { "type": "string", "description": "Was gelten soll, im überprüfbaren Satz." },
+      "abhaengigkeiten": { "type": "array", "description": "IDs, deren Belege vor dieser Anforderung vorliegen müssen." }
+    }
+  },
+
+  "output": {
+    "description": "Ein Gate-Ergebnis mit dem Urteil und der Herleitung dazu.",
+    "fields": {
+      "urteil": { "enum": ["FREIGEGEBEN", "ABGEWIESEN", "UNBEKANNT"], "description": "UNBEKANNT ist ein eigener Ausgang, keine Form von ABGEWIESEN. Er unterscheidet 'wir haben es geprueft und es stimmt nicht' von 'wir konnten es nicht pruefen'." },
+      "proben": { "type": "array", "description": "Je Probe: probe_id, anforderung_id, status, evidence." },
+      "ueberdeckung": { "type": "number", "description": "Anteil der Anforderungen, die mindestens eine Probe tragen. 1.0 ist die Untergrenze." },
+      "gruende": { "type": "array", "description": "Maschinenlesbare Ablehnungsgründe." }
+    }
+  },
+
+  "contract_gates": {
+    "title": "Contract Gates",
+    "description": "Eine Regel gilt erst als umgesetzt, wenn alle sieben Punkte belegt sind.",
+    "punkte": ["POSITIVE", "FORBIDDEN", "FALLBACK", "ERROR", "TRACE", "REPLAY", "INVARIANT"],
+    "regeln": [
+      {
+        "gate": "probenerzeugung",
+        "POSITIVE": "Zu jeder Anforderung existiert mindestens eine Probe mit Rückreferenz auf die Anforderungs-ID und ein benanntes Prüfmittel.",
+        "FORBIDDEN": "Eine Probe ohne Anforderungs-ID, oder ein Probe-Set mit einer ungeprüften Lücke.",
+        "FALLBACK": "Fehlende Abhängigkeit als eigene Probe ausschreiben, die die Abhängigkeit prüft.",
+        "ERROR": "coverage_below_threshold",
+        "TRACE": "Jede Probe nennt ihre Herkunfts-Anforderung und die Regel, nach der sie erzeugt wurde.",
+        "REPLAY": "deterministisch: gleiche Anforderung erzeugt dasselbe Probe-Set.",
+        "INVARIANT": "Die Anzahl der Proben ist nie kleiner als die Anzahl der Anforderungen."
+      },
+      {
+        "gate": "formalpruefung",
+        "POSITIVE": "Schema gültig, Abdeckung erreicht, Prüfziel existiert, Anti-Vakuum-Minimum erfüllt.",
+        "FORBIDDEN": "Der Validator bewertet Qualität, Richtigkeit oder Angemessenheit.",
+        "FALLBACK": "Formaler Befund wird abgewiesen, ohne inhaltliche Beurteilung.",
+        "ERROR": "formal_check_failed",
+        "TRACE": "Jeder formale Befund nennt die geprüfte Bedingung.",
+        "REPLAY": "deterministisch: dieselbe Eingabe ergibt denselben Befund.",
+        "INVARIANT": "Ein formal gültiges Probe-Set kann inhaltlich falsch sein. Formal ist nicht semantisch."
+      },
+      {
+        "gate": "zweitinstanz",
+        "POSITIVE": "Eine getrennte Instanz führt jede Probe aus und liefert status und Beleg.",
+        "FORBIDDEN": "Die Zweitinstanz sieht den Gedankengang des Erstprüfers, nicht nur die Behauptungen.",
+        "FALLBACK": "Bleibt eine Probe ohne Ergebnis, gilt sie als UNKLAR, nicht als bestanden.",
+        "ERROR": "probe_execution_failed",
+        "TRACE": "Die Zweitinstanz erhält ausschliesslich den Abschnitt der Falsifikationsversuche, nie die Herleitung.",
+        "REPLAY": "semantisch: die Zweitinstanz urteilt, nicht der Aufrufer.",
+        "INVARIANT": "Der Erstprüfer kann sein eigenes Ergebnis nicht überschreiben."
+      },
+      {
+        "gate": "entscheidung",
+        "POSITIVE": "Alle Proben sind BESTAETIGT, die Abdeckung ist vollständig, und das Gate gibt frei.",
+        "FORBIDDEN": "Eine Teilbestätigung, ein UNKLAR oder eine Unterschreitung der Mindestabdeckung gibt trotzdem frei.",
+        "FALLBACK": "UNBEKANNT, wenn eine Probe ausführbar war, ihr Ergebnis aber nicht vorliegt.",
+        "ERROR": "gate_rejected",
+        "TRACE": "Das Urteil nennt die auswertbaren Proben und die Grundlage der Entscheidung.",
+        "REPLAY": "deterministisch: gleiches Probe-Set, gleiches Urteil.",
+        "INVARIANT": "Genau ein Gate entscheidet. Es gibt kein zweites, das anders entscheiden könnte."
+      }
+    ]
+  },
+
+  "implementation_status": {
+    "overall": "STUB",
+    "sections": {
+      "probenerzeugung": "STUB — Rollen sind beschrieben, kein Erzeuger läuft.",
+      "formalpruefung": "STUB — Bedingungen benannt, keine Implementierung.",
+      "zweitinstanz": "STUB — Trennung beschrieben, keine zweite Instanz.",
+      "entscheidung": "STUB — kein Gate vorhanden."
+    },
+    "last_verified_against_code": null,
+    "known_gaps": [
+      "PROPSA hat Kritik-Schwellwerte in tauri-app/src-tauri/src/kritik_regeln.rs und einen Pakettext in packages/core/src/paketKritik.ts. Beides sind Erzeuger, keine Prüfer.",
+      "Die geplante Prüfschicht wäre eine Ebene DARÜBER. Sie ist nicht gebaut, und sie ist auch nicht für die nächste Ausbaustufe eingeplant.",
+      "Der Aufwand dieser Schicht ist nicht gemessen. Vor einer Zusage wäre eine Messung an echten Anforderungen nötig."
+    ]
+  }
+}

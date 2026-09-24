@@ -41,6 +41,10 @@ pub mod sprache;
 pub mod zwischenspeicher;
 mod tray;
 mod update;
+// Baustein-Kataloge: pub, weil sie der Spiegel zu packages/core/src/vertrag.ts
+// sind und `npm run pruefen` sie als getrennte Paare liest – die Rust-Seite
+// muss deshalb eigenständig benennbar bleiben.
+pub mod vertrag;
 
 /// Startet die Anwendung und registriert die Kommandos für das Frontend.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

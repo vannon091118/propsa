@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "description": "Index of the bausteine module: sieben Bausteine als dokumentierte Muster, mit Verträgen und leerem Gerüst. Kein laufender Code – die Absicht ist, die Form festzuhalten, ohne etwas zu behaupten, das es nicht gibt.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "AGENTS.md",
+      "path": "AGENTS.md",
+      "description": "Regeln für alle Bausteine: Was dieses Modul ist, was es nicht ist, und welche Grenzen beim Bauen gelten."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-vermittlung.md",
+      "path": "AGENTS-vermittlung.md",
+      "description": "Bausteinregeln Vermittlung."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-pruefung.md",
+      "path": "AGENTS-pruefung.md",
+      "description": "Bausteinregeln Prüfung."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-beobachtung.md",
+      "path": "AGENTS-beobachtung.md",
+      "description": "Bausteinregeln Beobachtung."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-prompts.md",
+      "path": "AGENTS-prompts.md",
+      "description": "Bausteinregeln Prompts."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-laufzeit.md",
+      "path": "AGENTS-laufzeit.md",
+      "description": "Bausteinregeln Laufzeit."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-uebersicht.md",
+      "path": "AGENTS-uebersicht.md",
+      "description": "Bausteinregeln Übersicht."
+    },
+    {
+      "type": "file",
+      "name": "AGENTS-integration.md",
+      "path": "AGENTS-integration.md",
+      "description": "Bausteinregeln Integration."
+    },
+    {
+      "type": "file",
+      "name": "tsconfig.json",
+      "path": "tsconfig.json",
+      "description": "Typprüfung für geraest/. Ohne sie erfasst kein tsc-Lauf diese Module."
+    },
+    {
+      "type": "directory",
+      "name": "muster",
+      "path": "muster/",
+      "description": "Die sieben Muster, je auf drei Ebenen: Entscheidung, Mechanik, Grenze.",
+      "index": "muster/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "vertrage",
+      "path": "vertrage/",
+      "description": "Sieben Komponentenverträge mit einheitlichem Gate-Schema und Selbstverifikation.",
+      "index": "vertrage/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "geraest",
+      "path": "geraest/",
+      "description": "Leere Module mit der Zusage je Baustein. Ausdrücklich ohne Implementierung.",
+      "index": "geraest/INDEX.json"
+    }
+  ]
+}
