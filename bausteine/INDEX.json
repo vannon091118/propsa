@@ -61,21 +61,21 @@
       "name": "muster",
       "path": "muster/",
       "description": "Die sieben Muster, je auf drei Ebenen: Entscheidung, Mechanik, Grenze.",
-      "index": "muster/INDEX.json"
+      "index": "bausteine/muster/INDEX.json"
     },
     {
       "type": "directory",
       "name": "vertrage",
       "path": "vertrage/",
       "description": "Sieben Komponentenverträge mit einheitlichem Gate-Schema und Selbstverifikation.",
-      "index": "vertrage/INDEX.json"
+      "index": "bausteine/vertrage/INDEX.json"
     },
     {
       "type": "directory",
       "name": "geraest",
       "path": "geraest/",
       "description": "Leere Module mit der Zusage je Baustein. Ausdrücklich ohne Implementierung.",
-      "index": "geraest/INDEX.json"
+      "index": "bausteine/geraest/INDEX.json"
     }
   ]
 }

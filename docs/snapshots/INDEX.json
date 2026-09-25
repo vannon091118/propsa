@@ -1,34 +1,20 @@
 {
   "version": "1.0",
-  "description": "Index of the docs/snapshots directory: PROPSA-Snapshots und Diffs.",
+  "description": "Index of the docs/snapshots directory. Fuehrt nur versionierte Inhalte. Die Snapshot- und Diff-Berichte, die frueher hier gefuehrt wurden, sind nicht versioniert – ein Zeitstempel im Dateinamen wechselt bei jedem Lauf – und gehoeren deshalb nicht in einen Eigentumsindex.",
   "contents": [
     {
       "type": "directory",
       "name": "repo_snapshots",
       "path": "repo_snapshots/",
-      "description": "Verzeichnis für vollständige Projekt-Snapshots (JSONL oder Markdown).",
+      "description": "Verzeichnis ohne versionierte Inhalte; sein eigener Index fuehrt keine Datei.",
       "index": "docs/snapshots/repo_snapshots/INDEX.json"
     },
     {
       "type": "directory",
       "name": "diffs",
       "path": "diffs/",
-      "description": "Verzeichnis für Diff-Reports zwischen Snapshots.",
+      "description": "Verzeichnis ohne versionierte Inhalte; sein eigener Index fuehrt keine Datei.",
       "index": "docs/snapshots/diffs/INDEX.json"
-    },
-    {
-      "type": "file",
-      "name": "2026-09-16_03-58_snapshot.md",
-      "path": "2026-09-16_03-58_snapshot.md",
-      "description": "Beispiel-Snapshot vom 16.09.2026 03:58.",
-      "size": "109905 bytes"
-    },
-    {
-      "type": "file",
-      "name": "2026-09-16_03-59_diff.md",
-      "path": "2026-09-16_03-59_diff.md",
-      "description": "Beispiel-Diff zum vorherigen Snapshot.",
-      "size": "247 bytes"
     }
   ]
 }

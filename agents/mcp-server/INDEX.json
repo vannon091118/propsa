@@ -22,20 +22,6 @@
       "path": "src/",
       "description": "TypeScript source code of the MCP server.",
       "index": "agents/mcp-server/src/INDEX.json"
-    },
-    {
-      "type": "file",
-      "name": "README.md",
-      "path": "README.md",
-      "description": "Overview of the PROPAKT MCP Server.",
-      "size": "2842 bytes"
-    },
-    {
-      "type": "file",
-      "name": "LICENSE.txt",
-      "path": "LICENSE.txt",
-      "description": "License text (MIT).",
-      "size": "9197 bytes"
     }
   ]
 }

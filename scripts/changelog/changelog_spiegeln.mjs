@@ -15,10 +15,9 @@
  * bzw. `tauri build`-Lauf bündelt die Kopie als Resource in die Exe.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
+import { WURZEL } from "../dateien.mjs";
 import { changelogKopie } from "./changelog_kopie.mjs";
-
-const WURZEL = resolve(import.meta.dirname, "..", "..");
 const QUELLE = join(WURZEL, "docs", "wiki", "Changelog.md");
 const ZIELE = [join(WURZEL, "tauri-app", "src-tauri", "Changelog.md")];
 

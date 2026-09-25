@@ -1,66 +1,88 @@
 {
   "version": "1.0",
-  "description": "Root index of the PROPAKT project, listing top-level ownership modules.",
+  "description": "Root index of the PROPAKT project, listing every ownership zone.",
   "modules": [
     {
       "name": "agents",
-      "path": "agents/",
+      "umfang": ["agents/"],
       "description": "Agent processes and their helpers, addressed by capability rather than by product name.",
       "index": "agents/INDEX.json"
     },
     {
       "name": "assets",
-      "path": "assets/",
+      "umfang": ["assets/"],
       "description": "Media assets such as banners and logos.",
       "index": "assets/INDEX.json"
     },
     {
       "name": "bausteine",
-      "path": "bausteine/",
+      "umfang": ["bausteine/"],
       "description": "Sieben Bausteine als dokumentierte Muster: Muster, Verträge und leeres Gerüst.",
       "index": "bausteine/INDEX.json"
     },
     {
       "name": "docs",
-      "path": "docs/",
+      "umfang": ["docs/"],
       "description": "Documentation files and wiki.",
       "index": "docs/INDEX.json"
     },
     {
       "name": "packages",
-      "path": "packages/",
+      "umfang": ["packages/"],
       "description": "Shared TypeScript packages (@propakt/core).",
       "index": "packages/INDEX.json"
     },
     {
       "name": "plan",
-      "path": "plan/",
+      "umfang": ["plan/"],
       "description": "Planning documents and implementation plans.",
       "index": "plan/INDEX.json"
     },
     {
       "name": "scripts",
-      "path": "scripts/",
+      "umfang": ["scripts/"],
       "description": "Maintenance and utility scripts, grouped by ownership.",
       "index": "scripts/INDEX.json"
     },
     {
       "name": "src",
-      "path": "src/",
+      "umfang": ["src/"],
       "description": "Command-line interface (CLI) source code.",
       "index": "src/INDEX.json"
     },
     {
       "name": "tauri-app",
-      "path": "tauri-app/",
+      "umfang": ["tauri-app/"],
       "description": "Desktop application (Tauri v2, Rust + React).",
       "index": "tauri-app/INDEX.json"
     },
     {
       "name": "tests",
-      "path": "tests/",
+      "umfang": ["tests/"],
       "description": "CLI-Doku- und Fehlerpfad-Tests, ausgeführt über ts-node.",
       "index": "tests/INDEX.json"
+    },
+    {
+      "name": "repo_ebene",
+      "umfang": [
+        ".github/",
+        ".githooks/",
+        ".gitignore",
+        "AGENTS.md",
+        "ARCHITECTURE.md",
+        "CLAUDE.md",
+        "INDEX.json",
+        "INDEX_MATRIX.json",
+        "INSTALL.md",
+        "LICENSE",
+        "README.en.md",
+        "README.md",
+        "package-lock.json",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "description": "Dateien und Verzeichnisse, die keinem Inhaltsmodul gehören, sondern dem Repository selbst: die 13 Wurzeldateien, der GitHub-Actions-Workflow unter .github/ (läuft nur beim Tag-Push) und der Commit-Haken unter .githooks/ (ruft über core.hooksPath das Commit-Gate auf). Ohne diese Zone blieben 15 versionierte Dateien ohne Eigentümer. Sie hat als einzige Zone keinen eigenen INDEX, weil sie keine eigenen Inhalte verwaltet."
     }
-  ]
+  ],
+  "regel": "Jede versionierte Datei gehört genau einer Zone aus `modules`. Die Zugehörigkeit entsteht allein aus `umfang`: ein Eintrag mit Schrägstrich am Ende ist ein Verzeichnispräfix, jeder andere Eintrag eine einzelne Datei. Es gibt keine Datei in zwei Zonen und keine in keiner; geprüft wird das von scripts/architecture-check.mjs."
 }

@@ -3,7 +3,6 @@
   "description": "Index of the tauri-app/src-tauri/src directory: Rust-Quellcode des Backends.",
   "contents": [
     { "type": "file", "name": "app.rs", "path": "app.rs", "description": "Start des Programms (Hauptfunktion).", "size": "240 bytes" },
-    { "type": "file", "name": "build.rs", "path": "build.rs", "description": "Build-Skript für zusätzliche Schritte.", "size": "106 bytes" },
     { "type": "directory", "name": "capabilities", "path": "capabilities/", "description": "Definiert die Fähigkeiten (Permissions) der Anwendung.", "index": "tauri-app/src-tauri/src/capabilities/INDEX.json" },
     { "type": "file", "name": "filter.rs", "path": "filter.rs", "description": "Musterabgleich und Ignorier-Katalog (Spiegel zu filters.ts).", "size": "1080 bytes" },
     { "type": "file", "name": "filterignore.rs", "path": "filterignore.rs", "description": "Verarbeitung von `.propaktignore` im Backend (Spiegel zu propaktignore.ts).", "size": "426 bytes" },

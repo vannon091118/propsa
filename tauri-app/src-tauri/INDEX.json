@@ -2,8 +2,32 @@
   "version": "1.0",
   "description": "Index of the tauri-app/src-tauri directory: Rust-Backend der Desktop-Anwendung.",
   "contents": [
-    { "type": "file", "name": "Cargo.toml", "path": "Cargo.toml", "description": "Rust-Projektmanifest, definiert Abhängigkeiten und Metadaten.", "size": "1478 bytes" },
-    { "type": "file", "name": "src/", "path": "src/", "description": "Rust-Quellcode des Backends.", "index": "tauri-app/src-tauri/src/INDEX.json" },
-    { "type": "directory", "name": "tests", "path": "tests/", "description": "Rust-Integrationstests des Backends (cargo test).", "index": "tauri-app/src-tauri/tests/INDEX.json" }
+    {
+      "type": "file",
+      "name": "Cargo.toml",
+      "path": "Cargo.toml",
+      "description": "Rust-Projektmanifest, definiert Abhängigkeiten und Metadaten.",
+      "size": "1478 bytes"
+    },
+    {
+      "type": "file",
+      "name": "build.rs",
+      "path": "build.rs",
+      "description": "Rust-Buildskript des Tauri-Projekts. Gehört hierhin und nicht nach src/: es liegt im Wurzelverzeichnis von src-tauri."
+    },
+    {
+      "type": "directory",
+      "name": "src/",
+      "path": "src/",
+      "description": "Rust-Quellcode des Backends.",
+      "index": "tauri-app/src-tauri/src/INDEX.json"
+    },
+    {
+      "type": "directory",
+      "name": "tests",
+      "path": "tests/",
+      "description": "Rust-Integrationstests des Backends (cargo test).",
+      "index": "tauri-app/src-tauri/tests/INDEX.json"
+    }
   ]
 }

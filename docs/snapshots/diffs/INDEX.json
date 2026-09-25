@@ -1,7 +1,5 @@
 {
   "version": "1.0",
-  "description": "Index of the docs/snapshots/diffs directory: PROPSA-Diff-Reports.",
-  "contents": [
-    { "type": "file", "name": "2026-09-16_03-59_diff.md", "path": "2026-09-16_03-59_diff.md", "description": "Diff-Report zwischen den Snapshots vom 16.09.2026." }
-  ]
+  "description": "Index of the docs/snapshots/diffs directory. Der frueher hier gefuehrte Diff-Report war nicht versioniert – sein Dateiname enthaelt einen Zeitstempel und wechselt bei jedem Lauf – und stand zusaetzlich im Elternindex. Beide Verweise sind entfernt; ein Index fuehrt nur versionierte Inhalte, und jeder davon genau einmal.",
+  "contents": []
 }

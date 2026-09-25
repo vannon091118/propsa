@@ -1,7 +1,5 @@
 {
   "version": "1.0",
-  "description": "Index of the tauri-app/src-tauri/src/capabilities directory: Anwendungsfähigkeiten (Permissions).",
-  "contents": [
-    { "type": "file", "name": "default.json", "path": "default.json", "description": "Standard-Fähigkeitsdefinition für die Anwendung.", "size": "52 bytes" }
-  ]
+  "description": "Index of the tauri-app/src-tauri/src/capabilities directory: Anwendungsfähigkeiten (Permissions). Das Verzeichnis enthält derzeit nur diese Index-Datei. Eine Fähigkeitsdatei ist nicht vorhanden und wird auch nicht gebraucht: tauri.conf.json setzt unter app.security nur die CSP, keine capabilities-Liste, Tauri v2 wendet dann seine Vorgaben an.",
+  "contents": []
 }
