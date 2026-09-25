@@ -7,6 +7,6 @@
     { "type": "file", "name": "tsconfig.node.json", "path": "tsconfig.node.json", "description": "TypeScript configuration für Node.js-Teile (z. B. Skripte).", "size": "200 bytes" },
     { "type": "directory", "name": "src", "path": "src/", "description": "Quellcode des React-Frontends (TypeScript + TSX).", "index": "tauri-app/src/INDEX.json" },
     { "type": "directory", "name": "src-tauri", "path": "src-tauri/", "description": "Quellcode des Rust-Backends.", "index": "tauri-app/src-tauri/INDEX.json" },
-    { "type": "file", "name": "public/", "path": "public/", "description": "Statische assets wie Logos.", "index": "tauri-app/public/INDEX.json" }
+    { "type": "directory", "name": "public", "path": "public/", "description": "Statische Assets wie Logos. Traegt kein eigenes INDEX, weil es nur eine Datei (logo.svg) enthaelt." }
   ]
 }

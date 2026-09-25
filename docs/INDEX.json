@@ -15,13 +15,6 @@
       "path": "snapshots/",
       "description": "Verzeichnis für Repo-Snapshots und Diffs.",
       "index": "docs/snapshots/INDEX.json"
-    },
-    {
-      "type": "directory",
-      "name": "test-output",
-      "path": "test-output/",
-      "description": "Ausgabe von Testläufen (wird während der Entwicklung erzeugt).",
-      "index": "docs/test-output/INDEX.json"
     }
   ]
 }

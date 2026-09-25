@@ -1,11 +1,11 @@
 {
   "version": "1.0",
-  "description": "Beziehungen zwischen den Modulen des PROPAKT-Projekts. Die Modulliste selbst steht ausschließlich in INDEX.json – sie wird hier nicht wiederholt, damit zwei Dateien sie nicht getrennt pflegen.",
+  "description": "Beziehungen zwischen den Zonen des PROPAKT-Projekts und den Unterpfaden innerhalb dieser Zonen. Die Zonenliste selbst steht ausschließlich in INDEX.json – sie wird hier nicht wiederholt, damit zwei Dateien sie nicht getrennt pflegen. Eigentumszuordnung ist Sache des Index, nicht der Matrix: sie ist eine Eigenschaft einer Zone, keine Beziehung zwischen zwei Zonen. Knotenregel: jeder Knoten ist entweder ein Zonenname aus den modules[] von INDEX.json (repo_ebene eingeschlossen) oder ein Pfad, der in genau einer Zone liegt und diese Zone als Präfix traegt. Jeder Knoten loest damit ohne Interpretationshilfe auf; `tauri-app/src-tauri` ist das Beispiel fuer die zweite Form.",
   "quelle": "INDEX.json",
   "relationships": [
     { "from": "src", "to": "packages", "type": "dependency", "description": "CLI nutzt das gemeinsame TypeScript-Paket @propakt/core." },
     { "from": "tauri-app", "to": "packages", "type": "dependency", "description": "Tauri-App nutzt @propakt/core für Typen, Kataloge und den Baustein-Vertrag." },
-    { "from": "tauri-app", "to": "src-tauri", "type": "dependency", "description": "Tauri-App nutzt das Rust-Backend unter tauri-app/src-tauri/src; die Kommandos sind in lib.rs registriert." },
+    { "from": "tauri-app", "to": "tauri-app/src-tauri", "type": "dependency", "description": "Tauri-App nutzt das Rust-Backend unter tauri-app/src-tauri/src; die Kommandos sind in lib.rs registriert." },
     { "from": "tauri-app", "to": "assets", "type": "dependency", "description": "Tauri-App nutzt Assets wie Banner und Logo." },
     { "from": "agents", "to": "tauri-app", "type": "dependency", "description": "Der Agentenprozess beobachtet Repository-Zustände und Ereignisse der App." },
     { "from": "agents", "to": "docs", "type": "dependency", "description": "Der Agentenprozess schreibt Snapshots und Diffs unter docs/snapshots/." },
@@ -15,6 +15,10 @@
     { "from": "bausteine", "to": "packages", "type": "dependency", "description": "Das Gerüst importiert Vertrag, Regel und die drei Kataloge aus @propakt/core." },
     { "from": "bausteine", "to": "docs", "type": "documentation", "description": "docs/wiki/Vision.md verweist auf bausteine/muster/ und bausteine/vertrage/." },
     { "from": "plan", "to": "src", "type": "dependency", "description": "Implementierungspläne beschreiben Änderungen am CLI-Quellcode." },
-    { "from": "docs", "to": "bausteine", "type": "documentation", "description": "Die Vision beschreibt die sieben Bausteine nach Funktion, nicht nach Herkunft." }
+    { "from": "docs", "to": "bausteine", "type": "documentation", "description": "Die Vision beschreibt die sieben Bausteine nach Funktion, nicht nach Herkunft." },
+    { "from": "tests", "to": "src", "type": "verification", "description": "Die drei ts-node-Tests importieren paketKritik, scanner, update und zwischenspeicher aus dem CLI-Quellcode unter src/." },
+    { "from": "repo_ebene", "to": "scripts", "type": "verification", "description": "Der Commit-Haken .githooks/commit-msg ruft scripts/pruefen/commit_gate.mjs auf; er prüft den Commit-Text gegen die Regeln in AGENTS.md." },
+    { "from": "repo_ebene", "to": "tauri-app", "type": "build", "description": "Der Workflow .github/workflows/release.yml baut die Desktop-App (working-directory: tauri-app) und lädt dazu das Wurzel-Manifest." },
+    { "from": "repo_ebene", "to": "packages", "type": "dependency", "description": "Das Wurzel-Manifest ist die npm-Workspace-Wurzel und deklariert @propakt/core; der Build startet dort mit dem Core." }
   ]
 }
