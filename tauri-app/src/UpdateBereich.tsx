@@ -14,6 +14,9 @@ type Props = {
  * - gelb:  Scan läuft gerade
  * - grün:  LIVE Version (aktuell); ein bereitstehendes Update wird im
  *          Popup angeboten, der Kreis bleibt grün (nur drei Zustände).
+ *          Die Beschriftung folgt ihm nicht: sie unterscheidet „alles
+ *          aktuell“ von „Update bereit“. Beides nebeneinander war eine
+ *          Falschaussage.
  */
 type KreisZustand = "unbekannt" | "pruefe" | "aktuell";
 
@@ -143,14 +146,18 @@ export function UpdateBereich({ vorschau }: Props) {
       : "unbekannt";
   const updateVerfuegbar = Boolean(check?.erreichbar && check.update_verfuegbar);
 
+  // Der Kreis kennt nur drei Zustände, die Beschriftung schon vier.
+  const statusText =
+    updateVerfuegbar && !laeuft ? "LIVE Version – Update bereit" : KREIS_TITEL[kreis];
+
   return (
     <div className="relative" ref={kastenRef}>
       <button
         type="button"
         onClick={() => setPopupOffen((offen) => !offen)}
         className="flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-[12px] text-leise transition-colors hover:border-white/25 hover:text-tinte"
-        aria-label={`Version und Update-Status: ${KREIS_TITEL[kreis]}`}
-        title={KREIS_TITEL[kreis]}
+        aria-label={`Version und Update-Status: ${statusText}`}
+        title={statusText}
       >
         <span className={`size-2.5 flex-none rounded-full ${KREIS[kreis]}`} />
         <span>{version ? `v${version}` : "v…"}{updateVerfuegbar ? " ·" : ""}</span>
@@ -169,7 +176,7 @@ export function UpdateBereich({ vorschau }: Props) {
               Version {version ? `v${version}` : ""}
             </strong>
             <span className="ml-auto text-[11px] text-leise">
-              {laeuft ? "Prüfe…" : KREIS_TITEL[kreis]}
+              {laeuft ? "Prüfe…" : statusText}
             </span>
           </div>
 

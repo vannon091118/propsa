@@ -40,7 +40,7 @@ function git(args: string[]): string {
 }
 
 /** Übersetzt einen git-Fehler in eine deutsche Meldung mit Lösungshinweis. */
-function gitHinweis(args: string[], fehler: unknown): string {
+export function gitHinweis(args: string[], fehler: unknown): string {
   const text = fehler instanceof Error ? `${fehler.message}` : String(fehler);
   if (text.includes('ENOENT') || text.includes('not found')) {
     return 'Git ist nicht installiert oder nicht im PATH.\n' +
@@ -65,8 +65,9 @@ function gitHinweis(args: string[], fehler: unknown): string {
   }
   if (text.includes('Diverging') || text.includes('not possible to fast-forward')) {
     return 'Lokaler Stand ist von origin/main abgezweigt (Divergenz).\n' +
-      '   Lösung: `git pull --rebase` ausführen oder den lokalen Stand verwerfen\n' +
-      '   (`git reset --hard origin/main` – überschreibt lokale Commits!).';
+      '   Lösung: `git pull --rebase origin main` – holt origin/main nach und\n' +
+      '   behält lokale Commits. `git reset --hard origin main` verwirft Commits,\n' +
+      '   die auf keinem Remote liegen: vorher `git push`.';
   }
   return `git ${args.join(' ')} fehlgeschlagen:\n   ${text.split('\n')[0]}`;
 }

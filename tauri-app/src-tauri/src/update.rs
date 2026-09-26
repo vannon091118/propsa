@@ -53,7 +53,7 @@ fn git_hinweis(args: &[&str], text: &str) -> String {
         return "Lokale Änderungen blockieren den Fast-Forward.\nLösung: Änderungen commiten (`git commit`) oder zur Seite legen (`git stash`), dann den Scan mit Update erneut ausführen.".into();
     }
     if text.contains("Diverging") || text.contains("not possible to fast-forward") {
-        return "Lokaler Stand ist von origin/main abgezweigt (Divergenz).\nLösung: `git pull --rebase` ausführen oder den lokalen Stand verwerfen (`git reset --hard origin/main` – überschreibt lokale Commits!).".into();
+        return "Lokaler Stand ist von origin/main abgezweigt (Divergenz).\nLösung: `git pull --rebase origin main` – holt origin/main nach und behält lokale Commits.\n`git reset --hard origin/main` verwirft Commits, die auf keinem Remote liegen: vorher `git push`.".into();
     }
     format!("git {} fehlgeschlagen: {}", args.join(" "), text.trim())
 }

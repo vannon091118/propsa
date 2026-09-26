@@ -7,7 +7,7 @@
 import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { updateAusfuehren, UpdateFehler } from '../src/update';
+import { updateAusfuehren, UpdateFehler, gitHinweis } from '../src/update';
 
 const WURZEL = path.resolve(__dirname, '..');
 
@@ -15,6 +15,14 @@ function pruefe(name: string, bedingung: boolean): void {
   console.log(`${bedingung ? 'PASS' : 'FAIL'} ${name}`);
   if (!bedingung) process.exitCode = 1;
 }
+
+// Reine Textprüfungen: sie berühren die Dateisystem nicht und stehen deshalb
+// vor dem SKIP darunter. Der Divergenz-Hinweis empfahl lange einen Befehl,
+// der ohne Upstream scheitert – das soll nicht still zurückfallen.
+const divergenz = gitHinweis(['pull'], new Error('fatal: Diverging'));
+pruefe('Divergenz nennt die Quelle', divergenz.includes('pull --rebase origin main'));
+pruefe('Divergenz warnt vor ungesicherten Commits', divergenz.includes('git push'));
+pruefe('Divergenz nennt beim Reset die Gefahr', divergenz.includes('reset --hard') && divergenz.includes('Remote'));
 
 // Sauberen Stand voraussetzen; sonst zuerst melden und überspringen.
 const schmutzig = execFileSync('git', ['status', '--porcelain'], {
