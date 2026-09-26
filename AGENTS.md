@@ -106,6 +106,7 @@ cargo build --release --features custom-protocol
 - Vite läuft mit `strictPort` auf Port 1420; die Konfiguration erzwingt keine IPv6-Familie. Vor `tauri dev` Port und laufende Vite-Prozesse prüfen.
 - In Node-Skripten unter Windows `npm` über `execFileSync`/`execSync` nur mit `shell: true` aufrufen, weil npm eine `.cmd`-Datei ist. Für Git-Bash-Pfade in Node `$TMP`/`$HOME` statt `/tmp/...` verwenden.
 - Zeilenumbrüche in Suchmustern als `\r?\n` behandeln. In JSX-Text Pfadnamen wie `<identitaet>` als `&lt;identitaet&gt;` schreiben, sonst interpretiert TypeScript sie als Tag.
+- Zahlen gegen `origin/*` erst nach einem Abruf nennen. Ein lokaler Verweis auf einen gelöschten Remote-Branch bleibt stehen und rechnet weiter: `git log origin/geloescht..HEAD` liefert eine wohlgeformte Zahl gegen einen Zustand, den es nicht mehr gibt. Am 26. September entstand so die Aussage über acht Commits, die keinen Gegenstand hatte, während `git ls-remote` den Branch nicht mehr kannte. `git fetch --prune` und `git remote prune origin` entfernen solche Verweise; ein nicht abgerufener Stand lässt sich aber grundsätzlich nicht erkennen, weshalb hier eine Prüfung in `npm run pruefen` bewusst fehlt — sie würde entweder beim ersten Lauf ohne Netz fehlschlagen oder eine Zusage sein, die nichts prüft.
 - Tauri-Konfiguration und Capabilities gehören unter `tauri-app/src-tauri/`; dort müssen Plugin-Abhängigkeiten und Capability-Permissions zusammenpassen.
 
 ## CI und Skriptstatus
