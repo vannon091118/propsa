@@ -1,0 +1,109 @@
+# NSIS-Installer als Entwurfsartefakt – bei jedem Push auf einen Branch.
+#
+# Zweck: der Installer soll zum Nachprüfen und Ausprobieren herunterladbar
+# sein, ohne ihn lokal zu bauen. Ein Release entsteht weiterhin nur über
+# release.yml bei einem v*-Tag; dieser Workflow veröffentlicht nichts und
+# hängt nichts an einen Tag.
+#
+# Kosten: GitHub-hosted Runner sind für öffentliche Repositories gratis und
+# unbegrenzt – auf allen drei Betriebssystemen, nicht nur auf Linux. Für
+# private Repositories rechnet GitHub dagegen eine Kontingentzahl an Minuten
+# ab (Free: 2.000 im Monat), und selbst gestellte Runner kosten seit dem
+# 1. März 2026 0,002 USD je Minute. Deshalb bricht der Lauf ab, sobald das
+# Repository privat ist, statt heimlich Kontingent zu verbrauchen. Der Wächter
+# läuft auf Linux und braucht Sekunden; die teure Windows-Minute wird gar
+# nicht erst angefordert.
+#
+# Der Push auf einen Tag löst diesen Workflow nicht aus (`branches` ohne
+# `tags`), sonst liefe er beim Release zweimal.
+
+name: Installer (Entwurf)
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Ein neuer Push macht einen laufenden Build überflüssig; ohne das
+# verbraucht jeder zusätzliche Push eine volle Runner-Minute für ein
+# Artefakt, das niemand mehr öffnet.
+concurrency:
+  group: installer-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tier:
+    name: Tier prüfen
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sichtbarkeit melden
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "privat: ${{ github.event.repository.private }}"
+          if [ "${{ github.event.repository.private }}" = "true" ]; then
+            echo "::error::Privates Repository. GitHub-hosted Runner sind im Free-Tier dann nicht unbegrenzt, sondern anteilig an einem Monatskontingent. Der Lauf bricht ab, damit keine Minuten verbraucht werden. Für ein öffentliches Repository ist derselbe Lauf kostenlos."
+            exit 1
+          fi
+          echo "Öffentliches Repository – der Lauf ist kostenlos."
+
+  nsis:
+    name: NSIS bauen
+    needs: tier
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Abhängigkeiten installieren (Wurzel)
+        run: npm install
+
+      # Der gleiche Lauf, den ein Release auch nimmt. Er braucht Sekunden
+      # und fängt Katalog- und Versionsdrift ab, bevor sie in einen
+      # Installer einbaut.
+      - name: Konsistenz prüfen
+        run: npm run pruefen
+
+      - name: Frontend-Abhängigkeiten installieren
+        run: npm install
+        working-directory: tauri-app
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust-Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: tauri-app/src-tauri
+
+      - name: Installer bauen
+        run: npm run tauri build
+        working-directory: tauri-app
+
+      - name: Installer einsammeln
+        shell: bash
+        run: |
+          mkdir -p out
+          find tauri-app/src-tauri/target/release/bundle/nsis -type f -name '*.exe' -exec cp {} out/ \;
+          find tauri-app/src-tauri/target/release/bundle/msi -type f -name '*.msi' -exec cp {} out/ \;
+          ls -la out/
+          if [ -z "$(ls -A out)" ]; then
+            echo "::error::Kein Installer im Bundle-Ordner – der Build lief durch, ohne ein Artefakt zu erzeugen."
+            exit 1
+          fi
+
+      - name: Commit-Stand im Namen führen
+        shell: bash
+        run: echo "PROPAKT-Entwurf-${GITHUB_SHA:0:8}-Installer" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: propakt-entwurf-${{ github.sha }}
+          path: out/*
+          retention-days: 7
+          if-no-files-found: error

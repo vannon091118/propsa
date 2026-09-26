@@ -81,7 +81,7 @@
         "package.json",
         "tsconfig.json"
       ],
-      "description": "Dateien und Verzeichnisse, die keinem Inhaltsmodul gehören, sondern dem Repository selbst: die 13 Wurzeldateien, der GitHub-Actions-Workflow unter .github/ (läuft nur beim Tag-Push) und der Commit-Haken unter .githooks/ (ruft über core.hooksPath das Commit-Gate auf). Ohne diese Zone blieben 15 versionierte Dateien ohne Eigentümer. Sie hat als einzige Zone keinen eigenen INDEX, weil sie keine eigenen Inhalte verwaltet."
+      "description": "Dateien und Verzeichnisse, die keinem Inhaltsmodul gehören, sondern dem Repository selbst: die 13 Wurzeldateien, die beiden GitHub-Actions-Workflows unter .github/ (release.yml läuft nur beim Tag-Push und veröffentlicht, installer.yml bei jedem Push auf einen Branch und legt ein Entwurfsartefakt ab) und der Commit-Haken unter .githooks/ (ruft über core.hooksPath das Commit-Gate auf). Ohne diese Zone blieben 16 versionierte Dateien ohne Eigentümer. Sie hat als einzige Zone keinen eigenen INDEX, weil sie keine eigenen Inhalte verwaltet."
     }
   ],
   "regel": "Jede versionierte Datei gehört genau einer Zone aus `modules`. Die Zugehörigkeit entsteht allein aus `umfang`: ein Eintrag mit Schrägstrich am Ende ist ein Verzeichnispräfix, jeder andere Eintrag eine einzelne Datei. Es gibt keine Datei in zwei Zonen und keine in keiner; geprüft wird das von scripts/architecture-check.mjs."
