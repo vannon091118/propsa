@@ -16,7 +16,8 @@
     { "from": "bausteine", "to": "docs", "type": "documentation", "description": "docs/wiki/Vision.md verweist auf bausteine/muster/ und bausteine/vertrage/." },
     { "from": "plan", "to": "src", "type": "dependency", "description": "Implementierungspläne beschreiben Änderungen am CLI-Quellcode." },
     { "from": "docs", "to": "bausteine", "type": "documentation", "description": "Die Vision beschreibt die sieben Bausteine nach Funktion, nicht nach Herkunft." },
-    { "from": "tests", "to": "src", "type": "verification", "description": "Die drei ts-node-Tests importieren paketKritik, scanner, update und zwischenspeicher aus dem CLI-Quellcode unter src/." },
+    { "from": "tests", "to": "src", "type": "verification", "description": "Die vier ts-node-Tests importieren paketKritik, scanner, update und zwischenspeicher aus dem CLI-Quellcode unter src/; vertrag.test.ts prüft zusätzlich die sieben Baustein-Verträge über @propakt/core." },
+    { "from": "scripts", "to": "tauri-app", "type": "verification", "description": "scripts/abnahme/abnahme.mjs baut und startet die Desktop-App, ruft cargo in tauri-app/src-tauri auf und startet den Dev-Server auf Port 1420 für die Belege." },
     { "from": "repo_ebene", "to": "scripts", "type": "verification", "description": "Der Commit-Haken .githooks/commit-msg ruft scripts/pruefen/commit_gate.mjs auf; er prüft den Commit-Text gegen die Regeln in AGENTS.md." },
     { "from": "repo_ebene", "to": "tauri-app", "type": "build", "description": "Der Workflow .github/workflows/release.yml baut die Desktop-App (working-directory: tauri-app) und lädt dazu das Wurzel-Manifest." },
     { "from": "repo_ebene", "to": "packages", "type": "dependency", "description": "Das Wurzel-Manifest ist die npm-Workspace-Wurzel und deklariert @propakt/core; der Build startet dort mit dem Core." }

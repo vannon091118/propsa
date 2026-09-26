@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "description": "Index of the scripts/abnahme directory: die Abnahme-Routine. Sie baut, prüft, startet, belegt und meldet, was fehlt.",
+  "contents": [
+    {
+      "type": "file",
+      "name": "schritte.mjs",
+      "path": "schritte.mjs",
+      "description": "Die neun Abnahmeschritte als Daten: Reihenfolge, Kommando, Arbeitsverzeichnis, was jeder Schritt beweist und was nicht. Der Läufer kennt keinen Schritt einzeln."
+    },
+    {
+      "type": "file",
+      "name": "ausfuehren.mjs",
+      "path": "ausfuehren.mjs",
+      "description": "Führt die Schritte aus: Kommandos, die vier TypeScript-Tests, der Dev-Server auf Port 1420 und das Warten auf die Belege. Bündelt die Eigenheiten, die den Ablauf brechen – npm als .cmd, die IPv6-Bindung von Vite, Beenden ganzer Prozessbäume."
+    },
+    {
+      "type": "file",
+      "name": "bericht.mjs",
+      "path": "bericht.mjs",
+      "description": "Hält den Laufzustand in lauf.json und erzeugt daraus bericht.md. Der Zustand macht einen Lauf fortsetzbar: fehlende Belege lassen sich mit --fortsetzen nachtragen, ohne den Lauf zu wiederholen."
+    },
+    {
+      "type": "file",
+      "name": "abnahme.mjs",
+      "path": "abnahme.mjs",
+      "description": "Der Ablauf: sammelt die Ergebnisse, beurteilt sie und gibt 0 (abnahmefähig), 1 (Schritt gescheitert) oder 2 (unvollständig belegt) zurück. Aufruf über npm run abnehmen."
+    }
+  ]
+}

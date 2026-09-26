@@ -39,6 +39,13 @@
     },
     {
       "type": "directory",
+      "name": "abnahme",
+      "path": "abnahme/",
+      "description": "Abnahme-Routine (abnehmen): baut, prüft, startet, belegt und meldet, was fehlt.",
+      "index": "scripts/abnahme/INDEX.json"
+    },
+    {
+      "type": "directory",
       "name": "doc",
       "path": "doc/",
       "description": "Skripte zur Dokumentationspflege (z. B. Link-Updates).",

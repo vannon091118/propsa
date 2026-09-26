@@ -2,6 +2,7 @@
   "version": "1.0",
   "description": "Index of the docs/wiki directory: Hauptdokumentation und Spezifikationen.",
   "contents": [
+    { "type": "file", "name": "Abnahme.md", "path": "Abnahme.md", "description": "Abnahme-Routine: neun Schritte, vier Zustände, die Belege und wer freigibt." },
     { "type": "file", "name": "Changelog.md", "path": "Changelog.md", "description": "Projekt-Changelog, historique der Versionen." },
     { "type": "file", "name": "CLI-Usage.md", "path": "CLI-Usage.md", "description": "Detaillierte Dokumentation der CLI-Nutzung." },
     { "type": "file", "name": "Entwicklung.md", "path": "Entwicklung.md", "description": "Build-Stolperfallen und Entwicklungstipps." },

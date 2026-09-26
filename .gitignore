@@ -18,6 +18,13 @@ propakt-kontext/
 test-output/
 logs/
 
+# Die Abnahme-Routine legt ihren Ordner immer an der Projektwurzel an
+# (abnahme/<Zeitstempel>/ mit Bericht, lauf.json und Aufnahmen). Hier ist
+# der Anker zwingend: unverankert würde das Muster scripts/abnahme/
+# mitverslucken – das Modul mit dem Code, nicht die Ausgabe. Genau so hat
+# es unanchoriert /snapshots/ einst docs/snapshots/ mitgenommen.
+/abnahme/
+
 # Berichte unter docs/snapshots/ erzeugt der Agentenprozess bei jedem Lauf.
 # Die INDEX.json desselben Ordners sind Handpflege und versioniert.
 docs/snapshots/**/*.md

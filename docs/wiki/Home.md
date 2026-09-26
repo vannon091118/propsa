@@ -36,6 +36,7 @@ Optionen ergeben dieselben Dateien. Verbindlich sind
 - [Tauri-App](Tauri-App.md) – Voraussetzungen, Bauen, Bedienung
 - [Live-Modus](Live-Modus.md) – Agenten-Wächter: Widget, Zyklus, Anomalien
 - [Entwicklung](Entwicklung.md) – Bauen, Prüfen, Stolperfallen
+- [Abnahme](Abnahme.md) – Routine für die Freigabe eines Stands
 - [Changelog](Changelog.md) – Versionshistorie
 - [Architektur](../../ARCHITECTURE.md) – technischer Aufbau (liegt in der Wurzel)
 
