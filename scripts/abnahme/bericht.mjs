@@ -14,8 +14,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { WURZEL } from "../dateien.mjs";
-import { BESTANDEN, OFFEN } from "./ausfuehren.mjs";
-import { ende } from "./ausfuehren.mjs";
+import { BESTANDEN, OFFEN, ende } from "./ausfuehren.mjs";
 
 /** Zeilen, die der Bericht je Schritt behält. */
 const ZEILEN_BERICHT = 24;
@@ -27,26 +26,48 @@ function kurzCommit() {
 }
 
 /**
- * Das Urteil über einen Lauf, aus seinen Schritten.
+ * Der Zustand des Arbeitsbaums beim Lauf.
+ *
+ * Ohne diese Angabe behauptet der Bericht einen Commit, den der Lauf nicht
+ * geprüft hat: Änderungen, die nicht eingestaged und nicht eingecheckt waren,
+ * bauten mit, der Commit-Hash aber beschreibt sie nicht. Genau die Lücke, die
+ * eine Abnahme schließen soll, würde sie selbst aufreißen.
+ */
+export function baumZustand() {
+  const r = spawnSync("git", ["status", "--porcelain"], { cwd: WURZEL, encoding: "utf8" });
+  const zeilen = (r.stdout ?? "").split("\n").filter(Boolean);
+  return { sauber: zeilen.length === 0, anzahl: zeilen.length };
+}
+
+/**
+ * Das Urteil über einen Lauf, aus seinen Schritten und seinem Baum.
  *
  * Reihenfolge ist nicht beliebig: gescheitert schlägt unvollständig, weil ein
  * Fehlschlag die Aussage über den Stand aufhebt. Sonst wäre ein Lauf, bei dem
  * der Build scheiterte, „unvollständig" statt „gescheitert" – und das wäre die
- * harmlosere Lüge.
+ * harmlosere Lüge. Danach kommt der Arbeitsbaum: alles bestanden auf einem
+ * veränderten Baum ist kein Befund über den Commit, sondern über einen
+ * Zwischenstand, und genau so heißt es.
  */
-export function beurteil(schritte) {
+export function beurteil(schritte, baum) {
   if (schritte.some((s) => s.status === OFFEN)) {
     return { code: 1, befund: "ein Schritt ist gescheitert" };
   }
-  if (schritte.every((s) => s.status === BESTANDEN)) {
-    return { code: 0, befund: "vollständig – abnahmefähig" };
+  if (!schritte.every((s) => s.status === BESTANDEN)) {
+    return { code: 2, befund: "unvollständig – Schritte bestanden, aber nicht alle belegt" };
   }
-  return { code: 2, befund: "unvollständig – Schritte bestanden, aber nicht alle belegt" };
+  if (baum && !baum.sauber) {
+    return {
+      code: 2,
+      befund: `Arbeitsbaum verändert (${baum.anzahl} Einträge) – der Lauf prüft einen Zwischenstand, nicht den Commit`,
+    };
+  }
+  return { code: 0, befund: "vollständig – abnahmefähig" };
 }
 
 /** Den Zustand eines Laufs sichern, damit er fortsetzbar bleibt. */
-export function sichereLauf(laufOrdner, laufName, schritte) {
-  const zustand = { laufName, commit: kurzCommit(), schritte };
+export function sichereLauf(laufOrdner, laufName, schritte, baum) {
+  const zustand = { laufName, commit: kurzCommit(), baum, schritte };
   writeFileSync(join(laufOrdner, "lauf.json"), `${JSON.stringify(zustand, null, 2)}\n`, "utf8");
   return zustand;
 }
@@ -62,13 +83,15 @@ export function ladeLauf(laufOrdner) {
   }
 }
 
-/** Den Bericht aus dem Zustand erzeugen. */
+/** Der Bericht aus dem Zustand erzeugen. */
 export function schreibeBericht(laufOrdner, zustand, befund) {
+  const baum = zustand.baum;
   const zeilen = [
     "# Abnahmebereicht",
     "",
     `Lauf: ${zustand.laufName}`,
     `Commit: ${zustand.commit}`,
+    `Arbeitsbaum: ${!baum ? "unbekannt" : baum.sauber ? "sauber" : `${baum.anzahl} Einträge verändert`}`,
     `Knoten: ${process.version} auf ${process.platform}`,
     `Befund: ${befund}`,
     "",

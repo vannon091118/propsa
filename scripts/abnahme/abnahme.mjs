@@ -35,7 +35,7 @@ import { WURZEL } from "../dateien.mjs";
 import {
   OFFEN, belegeWarten, ende, exeLaeuft, lauf, testsLaufen, vorschauStarten,
 } from "./ausfuehren.mjs";
-import { beurteil, ladeLauf, schreibeBericht, sichereLauf } from "./bericht.mjs";
+import { baumZustand, beurteil, ladeLauf, schreibeBericht, sichereLauf } from "./bericht.mjs";
 import { BELEGE, PORT, SCHRITTE, TESTS } from "./schritte.mjs";
 
 const ORDNER = {
@@ -95,7 +95,7 @@ async function fortsetzen(name) {
   console.log(`▸ Belege nachprüfen für Lauf ${name} …`);
   const ergebnis = await schrittAusfuehren(schritt, laufOrdner);
   zustand.schritte = zustand.schritte.map((s) => (s.nr === schritt.nr ? { ...s, ...ergebnis } : s));
-  const urteil = beurteil(zustand.schritte);
+  const urteil = beurteil(zustand.schritte, zustand.baum);
   schreibeBericht(laufOrdner, zustand, urteil.befund);
   console.log(ergebnis.status);
   if (ergebnis.ausgabe) console.log(ende(ergebnis.ausgabe, ZEILEN_KONSOLE).split("\n").map((z) => `    ${z}`).join("\n"));
@@ -114,6 +114,9 @@ if (setzenName) {
   const auswahl = nurRegeln ? SCHRITTE.filter((s) => s.nr === 1) : SCHRITTE;
   const ergebnisse = [];
   let stoppen = null;
+  // Vor dem ersten Schritt: der Baum, auf dem dieser Lauf arbeitet. Ein Lauf
+  // auf verändertem Baum prüft etwas anderes als den genannten Commit.
+  const baum = baumZustand();
 
   for (const schritt of auswahl) {
     process.stdout.write(`▸ ${schritt.nr} ${schritt.label} … `);
@@ -143,8 +146,8 @@ if (setzenName) {
     });
   }
 
-  const urteil = beurteil(ergebnisse);
-  const zustand = sichereLauf(laufOrdner, laufName, ergebnisse);
+  const urteil = beurteil(ergebnisse, baum);
+  const zustand = sichereLauf(laufOrdner, laufName, ergebnisse, baum);
   schreibeBericht(laufOrdner, zustand, urteil.befund);
   console.log(`\nBefund: ${urteil.befund}`);
   console.log(`Bericht: abnahme/${laufName}/bericht.md`);

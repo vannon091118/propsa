@@ -26,7 +26,8 @@ npm run abnehmen -- --fortsetzen <Lauf>  # trägt die Belege eines Laufs nach
 
 Jeder Lauf legt einen Ordner `abnahme/<Zeitstempel>/` an und schreibt dort
 `bericht.md` und `lauf.json`. Der Ordner ist nicht versioniert: Belege sind
-Stand, keine Quelle.
+Stand, keine Quelle. Der Zustand wird **vor** dem ersten Schritt aufgenommen,
+weil er den Lauf beschreibt, nicht sein Ergebnis.
 
 ## Die neun Schritte
 
@@ -69,9 +70,23 @@ prüfen war".
 |---|---|
 | 0 | alle Schritte gelaufen, bestanden und bezeugt — abnahmefähig |
 | 1 | mindestens ein Schritt fehlgeschlagen |
-| 2 | nichts fehlgeschlagen, aber unvollständig — Belege fehlen oder Schritte wurden ausgelassen |
+| 2 | nichts fehlgeschlagen, aber unvollständig — Belege fehlen, Schritte wurden ausgelassen oder der Arbeitsbaum war verändert |
 
 Der Unterschied zwischen 0 und 2 ist der ganze Zweck der Routine.
+
+## Der Arbeitsbaum gehört dazu
+
+Der Bericht nennt den Commit **und** den Zustand des Arbeitsbaums. Ein Lauf mit
+verändertem Baum endet mit Code 2, auch wenn neun Schritte bestanden haben.
+
+Der Grund ist nicht Strenge. Änderungen, die nicht eingecheckt sind, bauten mit
+– der Commit-Hash aber beschreibt sie nicht. Ein Bericht, der einen Commit
+nennt und einen Zwischenstand prüft, behauptet mehr, als er weiß. Genau diese
+Lücke zu schließen ist der Auftrag der Abnahme; sie aufzureißen wäre
+widersprüchlich.
+
+Wer abnimmt, committet vorher. Der Bericht steht dann unter dem Namen des
+Commits, den er tatsächlich geprüft hat.
 
 ## Die Belege
 
