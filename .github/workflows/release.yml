@@ -1,13 +1,15 @@
 # Release-Build: Läuft bei Push eines v*-Tags (z. B. v0.1.1).
 #
 # 1. npm run pruefen (Konsistenzprüfung: LOC, Versionen, Namen, Kataloge, Links)
-#    plus die drei TypeScript-Tests unter tests/ – die brauchen das gebaute
+#    plus die vier TypeScript-Tests unter tests/ – die brauchen das gebaute
 #    Core, weil @propakt/core über dist/ aufgelöst wird
-# 2. Rust-Tests (cargo test)
-# 3. CLI-Build (Core-Workspace + tsc) – Artefakt: propakt-cli-<tag>.tar.gz (dist/)
-# 4. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe
-# 5. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
-#
+# 2. CLI-Build (Core-Workspace + tsc) – Artefakt: propakt-cli-<tag>.tar.gz (dist/)
+# 3. Desktop-App-Build (Tauri) je Plattform – Artefakte: Installer/Exe.
+#    Die Rust-Tests laufen im Windows-Job mit Release-Profil direkt vor dem
+#    Installer: gleiches Profil, gleiches Zielverzeichnis, gleiche Maschine –
+#    sonst würde die Abhängigkeitskette zweimal übersetzt, debug und release.
+# 4. GitHub-Release mit allen Artefakten und der Changelog-Notiz des Tags
+
 # Die Version stammt aus den Manifesten, nicht aus dem Tag: `npm run pruefen`
 # vergleicht package.json, tauri-app/package.json, Cargo.toml und
 # tauri.conf.json gegeneinander, liest den Tag aber nicht. Ein Hotfix
@@ -44,37 +46,12 @@ jobs:
           npx ts-node tests/paketKritik.test.ts
           npx ts-node tests/zwischenspeicher.test.ts
           npx ts-node tests/updateFehler.test.ts
-
-  rust-tests:
-    name: Rust-Tests
-    runs-on: ubuntu-latest
-    needs: pruefen
-    steps:
-      - uses: actions/checkout@v4
-      - name: Linux-Systempakete (Tauri)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libwebkit2gtk-4.1-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            libxdo-dev \
-            libssl-dev \
-            patchelf
-      - uses: dtolnay/rust-toolchain@stable
-      - name: Rust-Cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: tauri-app/src-tauri
-      - name: Tests ausführen (alle Integrationstests + Unit-Tests)
-        run: cargo test
-        working-directory: tauri-app/src-tauri
+          npx ts-node tests/vertrag.test.ts
 
   cli:
     name: CLI bauen
     runs-on: ubuntu-latest
-    needs: [pruefen, rust-tests]
+    needs: [pruefen]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -100,7 +77,7 @@ jobs:
   app:
     name: Desktop-App bauen (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    needs: [pruefen, rust-tests]
+    needs: [pruefen]
     strategy:
       fail-fast: false
       matrix:
@@ -133,9 +110,21 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: tauri-app/src-tauri
+          # Geteilter Schluessel: sonst legt die Aktion je Branch einen
+          # eigenen an, und der Arbeitszweig findet den von main nicht.
+          shared-key: propakt-rust
       - name: Frontend-Abhängigkeiten installieren
         run: npm install
         working-directory: tauri-app
+      # Gleiches Profil, gleiches Zielverzeichnis, gleiche Maschine:
+      # die Abhaengigkeiten werden dadurch ein- statt zweimal uebersetzt.
+      # Der Preis ist Release-Optimierung auf Testcode – bei Tests, die
+      # nur pruefen, ein guenstiger Tausch gegen fuenf Minuten.
+      - name: Rust-Tests (Release-Profil)
+        if: runner.os == 'Windows'
+        run: cargo test --release
+        working-directory: tauri-app/src-tauri
+
       - name: Installer bauen (Windows)
         if: runner.os == 'Windows'
         run: npm run tauri build

@@ -1,23 +1,27 @@
-# NSIS-Installer als Entwurfsartefakt – bei jedem Push auf einen Branch.
+# Gestufte Prüfung – bei jedem Push auf einen Branch, gestaffelt nach Aufwand.
 #
-# Zweck: der Installer soll zum Nachprüfen und Ausprobieren herunterladbar
-# sein, ohne ihn lokal zu bauen. Ein Release entsteht weiterhin nur über
-# release.yml bei einem v*-Tag; dieser Workflow veröffentlicht nichts und
-# hängt nichts an einen Tag.
+# Stufen, jede für sich lauffähig (die Reihenfolge ist die Abhängigkeit,
+# nicht eine Kette von Hand):
+#   tier     – Wächter, ~4 s. Bricht ab, bevor eine Minute angefordert wird.
+#   regeln   – `npm run pruefen`, wenige Sekunden.
+#   tests    – die vier ts-node-Tests als Matrix, parallel statt nacheinander.
+#   aenderung – entscheidet per git diff, ob Rust oder Frontend betroffen sind.
+#   nsis     – übersetzt und bündelt nur, wenn Stage 4 `true` meldet.
+#
+# Warum gestuft: ein reiner Doku-Commit soll Sekunden kosten, nicht acht
+# Minuten. Die Übersetzung ist der einzige teure Schritt, und sie lohnt nur,
+# wenn sich Rust- oder Frontend-Quellen geändert haben.
 #
 # Kosten: GitHub-hosted Runner sind für öffentliche Repositories gratis und
-# unbegrenzt – auf allen drei Betriebssystemen, nicht nur auf Linux. Für
-# private Repositories rechnet GitHub dagegen eine Kontingentzahl an Minuten
-# ab (Free: 2.000 im Monat), und selbst gestellte Runner kosten seit dem
-# 1. März 2026 0,002 USD je Minute. Deshalb bricht der Lauf ab, sobald das
-# Repository privat ist, statt heimlich Kontingent zu verbrauchen. Der Wächter
-# läuft auf Linux und braucht Sekunden; die teure Windows-Minute wird gar
-# nicht erst angefordert.
+# unbegrenzt – auf allen drei Betriebssystemen. Für private Repositories
+# rechnet GitHub ein Monatskontingent ab, und selbst gestellte Runner kosten
+# seit dem 1. März 2026 0,002 USD je Minute. Deshalb bricht Stage 1 ab, sobald
+# das Repository privat ist, statt heimlich Kontingent zu verbrauchen.
 #
 # Der Push auf einen Tag löst diesen Workflow nicht aus (`branches` ohne
 # `tags`), sonst liefe er beim Release zweimal.
 
-name: Installer (Entwurf)
+name: Prüfung (Entwurf)
 
 on:
   push:
@@ -28,11 +32,11 @@ on:
 permissions:
   contents: read
 
-# Ein neuer Push macht einen laufenden Build überflüssig; ohne das
-# verbraucht jeder zusätzliche Push eine volle Runner-Minute für ein
-# Artefakt, das niemand mehr öffnet.
+# Ein neuer Push macht einen laufenden Lauf überflüssig; ohne das verbraucht
+# jeder zusätzliche Push eine volle Runner-Minute für ein Ergebnis, das
+# niemand mehr öffnet.
 concurrency:
-  group: installer-${{ github.ref }}
+  group: pruefung-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -50,9 +54,75 @@ jobs:
           fi
           echo "Öffentliches Repository – der Lauf ist kostenlos."
 
+  regeln:
+    name: Regeln
+    needs: tier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Abhängigkeiten installieren
+        run: npm install
+      - name: Konsistenz prüfen
+        run: npm run pruefen
+
+  tests:
+    name: Test (${{ matrix.test }})
+    needs: regeln
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # `vertrag.test.ts` fehlte hier bisher in beiden Workflows und war
+        # damit nirgends belegt – dieselbe stille Zusage wie eine Funktion
+        # ohne Aufrufer.
+        test: [paketKritik, zwischenspeicher, updateFehler, vertrag]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Abhängigkeiten installieren
+        run: npm install
+      # `vertrag.test.ts` braucht wie `zwischenspeicher.test.ts` den gebauten
+      # Core: `@propakt/core` wird über dist/ aufgelöst.
+      - name: Core bauen
+        run: npm run build --workspace @propakt/core
+      - name: Test ausführen
+        run: npx ts-node tests/${{ matrix.test }}.test.ts
+
+  aenderung:
+    name: Betroffene Quellen
+    needs: tier
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rust- oder Frontend-Quellen berührt?
+        id: diff
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Vergleich: origin/main...HEAD"
+          geaendert=$(git diff --name-only "origin/main...HEAD" || true)
+          echo "Geänderte Dateien:"
+          echo "$geaendert" | sed 's/^/  /'
+          if echo "$geaendert" | grep -qE '^(tauri-app/src-tauri/|tauri-app/src/)'; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+            echo "Übersetzung nötig."
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+            echo "Nur Dokumentation oder Werkzeugpfade – die Übersetzung entfällt."
+          fi
+
   nsis:
     name: NSIS bauen
-    needs: tier
+    needs: [regeln, tests, aenderung]
+    if: needs.aenderung.outputs.code == 'true'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,22 +134,22 @@ jobs:
       - name: Abhängigkeiten installieren (Wurzel)
         run: npm install
 
-      # Der gleiche Lauf, den ein Release auch nimmt. Er braucht Sekunden
-      # und fängt Katalog- und Versionsdrift ab, bevor sie in einen
-      # Installer einbaut.
-      - name: Konsistenz prüfen
-        run: npm run pruefen
-
       - name: Frontend-Abhängigkeiten installieren
         run: npm install
         working-directory: tauri-app
 
       - uses: dtolnay/rust-toolchain@stable
 
+      # `shared-key` ist der eigentliche Hebel: ohne ihn legt die Aktion
+      # einen je Branch und Profil eigenen Schlüssel an, und der Lauf auf dem
+      # Arbeitszweig findet den Cache des Hauptzweigs nicht – er übersetzt
+      # dann jedes Mal alle Abhängigkeiten von Grund auf. Die 4 Sekunden
+      # Restore im ersten Lauf waren genau das.
       - name: Rust-Cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: tauri-app/src-tauri
+          shared-key: propakt-rust
 
       - name: Installer bauen
         run: npm run tauri build
@@ -96,10 +166,6 @@ jobs:
             echo "::error::Kein Installer im Bundle-Ordner – der Build lief durch, ohne ein Artefakt zu erzeugen."
             exit 1
           fi
-
-      - name: Commit-Stand im Namen führen
-        shell: bash
-        run: echo "PROPAKT-Entwurf-${GITHUB_SHA:0:8}-Installer" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v4
         with:
