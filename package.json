@@ -10,6 +10,7 @@
     "build": "npm run build --workspace @propakt/core && tsc && tsc -p bausteine/tsconfig.json",
     "start": "ts-node src/propakt.ts",
     "pruefen": "node scripts/pruefen/pruefen.mjs",
+    "commit:text": "node scripts/pruefen/commit_text.mjs",
     "abnehmen": "node scripts/abnahme/abnahme.mjs",
     "changelog:spiegeln": "node scripts/changelog/changelog_spiegeln.mjs",
     "installieren": "node scripts/installation/install.mjs",

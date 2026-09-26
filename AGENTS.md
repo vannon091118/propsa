@@ -21,6 +21,14 @@ Jeder Commit-Text wird von `scripts/pruefen/commit_gate.mjs` geprüft, aufgerufe
 
 Umgehen lässt sich der Haken mit `git commit --no-verify`. Das ist Absicht: ein Gate, das sich nicht abschalten lässt, wird umgangen, indem man es löscht. Die CI (`release.yml`) läuft erst beim Tag-Push und ersetzt die lokale Prüfung nicht.
 
+### Der Committext wird vorbereitet
+
+Zwei der fünf Regeln sind mechanisch: die LOC-Zeile im Wortlaut und jede gestagte Datei namentlich. Beides schreibt `npm run commit:text` in eine Datei, aus derselben Quelle, gegen die das Gate prüft — `loc.mjs` für die Zahl, `gestagteDateien()` aus `scripts/dateien.mjs` für die Pfade. Der Mensch ersetzt nur Betreff und Begründung und committet mit `git commit -F <datei>`.
+
+Das ist kein Bypass. Das Gate prüft den Text, nicht das Tippen, und prüft ihn unverändert weiter. Was sich ändert, ist die Frage: von „habe ich daran gedacht" zu „widerspreche ich dem Werkzeug". Regel 2 misst ab der Anhangsmarke aus `commit_anhang.mjs` und damit nur den Teil, der dem Menschen gehört — sonst könnten genug Pfade plus LOC-Zeile die Begründung ersetzen, ohne dass jemand schreibt.
+
+Die Vorlage bleibt absichtlich unausgefüllt: leerer Betreff und zu kurze Begründung lassen den Lauf mit zwei Meldungen scheitern, die beide auf die offene Stelle zeigen.
+
 ## Paketgrenzen und Einstiegspunkte
 
 - `package.json` ist die npm-Workspace-Wurzel und enthält nur `packages/*`; einziges Workspace-Mitglied ist `@propakt/core` unter `packages/core/`.
@@ -52,6 +60,7 @@ npm install
 npm run pruefen
 npm run build
 npm run abnehmen [-- --nur] [-- --starten] [-- --kein-warten] [-- --fortsetzen <lauf>]
+npm run commit:text > .git/COMMIT_EDITMSG.propakt
 npm start -- <pfad> [optionen]
 ```
 

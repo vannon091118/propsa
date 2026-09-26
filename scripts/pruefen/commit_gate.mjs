@@ -14,8 +14,9 @@
  * ohne Argument wird der Text von stdin gelesen. Der Haken .githooks/
  * commit-msg ruft genau so auf.
  */
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { gestagteDateien } from "../dateien.mjs";
+import { ANHANG } from "./commit_anhang.mjs";
 import { locMessen, locZeile } from "./loc.mjs";
 
 /** Englische Füllwörter – sie stehen in keinem deutschen Satz. */
@@ -45,6 +46,21 @@ const ASCII_UMSCHLAG = [
 
 /** Zeilen, die keine Aufzählung sind, obwohl sie Sonderzeichen führen. */
 const TRAILER = /^(Co-Authored-By|Reviewed-by|Signed-off-by|LOC):/;
+
+/**
+ * Der Teil des Bodies, der dem Menschen gehört.
+ *
+ * Der erzeugte Anhang zählt nicht mit: er ist Werkzeugausgabe, nicht
+ * Begründung – so wie Zitate und Code-Fences für die Sprachprüfung keine Prosa
+ * sind. Die Marke kommt aus `commit_anhang.mjs`, dem Ort, an dem Vorbereiter
+ * und Gate dieselbe Form kennen, ohne dass eines das andere importieren muss.
+ */
+function begruendung(text) {
+  const teile = text.split(/\r?\n\r?\n/);
+  const body = teile.slice(1).join("\n").trim();
+  const trenner = body.indexOf(ANHANG);
+  return (trenner === -1 ? body : body.slice(0, trenner)).trim();
+}
 
 const fehler = [];
 
@@ -78,10 +94,12 @@ function pruefeSprache(text) {
 function pruefeBody(text) {
   const teile = text.split(/\r?\n\r?\n/);
   const betreff = (teile[0] ?? "").trim();
-  const body = teile.slice(1).join("\n").trim();
   if (!betreff) fehler.push("Kein Betreff.");
-  if (body.length < 120) fehler.push(`Body zu kurz (${body.length} Zeichen): erklären, warum – mindestens 120 Zeichen.`);
-  return body;
+  const grund = begruendung(text);
+  if (grund.length < 120) {
+    fehler.push(`Begründung zu kurz (${grund.length} Zeichen): erklären, warum – mindestens 120 Zeichen.`);
+  }
+  return grund;
 }
 
 function pruefeAufzaehlung(text) {
@@ -97,20 +115,6 @@ function pruefeAufzaehlung(text) {
 function pruefeLoc(text) {
   const soll = locZeile(locMessen());
   if (!text.includes(soll)) fehler.push(`LOC-Zähler fehlt oder weicht ab. Erwartet wörtlich:\n    ${soll}`);
-}
-
-/** Gestagte Dateien; bei Umbenennungen zählen alte und neue Pfade. */
-function gestagteDateien() {
-  const roh = execFileSync("git", ["diff", "--cached", "--name-status", "-M"], {
-    encoding: "utf8", cwd: process.cwd(),
-  });
-  const pfade = new Set();
-  for (const zeile of roh.split("\n").filter(Boolean)) {
-    const teile = zeile.split("\t");
-    if (teile[0].startsWith("R")) { pfade.add(teile[1]); pfade.add(teile[2]); }
-    else pfade.add(teile[1]);
-  }
-  return [...pfade].filter(Boolean).sort();
 }
 
 function pruefeDateinamen(text, pfade) {

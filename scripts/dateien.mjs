@@ -52,3 +52,34 @@ export function versionierteDateienMitFlag(pfade) {
 export function versionierteDateien(pfade) {
   return versionierteDateienMitFlag(pfade).map(z => z.pfad);
 }
+
+/**
+ * Die für den nächsten Commit vorgemerkten Dateien.
+ *
+ * Zwei Werkzeuge brauchen dieselbe Antwort: das Commit-Gate prüft, ob der
+ * Commit-Text jede dieser Dateien nennt, und der Text-Vorbereiter schreibt sie
+ * hinein. Beide fragen git, also fragen sie hier – sonst könnte der Vorbereiter
+ * eine Datei nennen, die das Gate nicht verlangt, und umgekehrt.
+ *
+ * Der Aufruf läuft mit `cwd: WURZEL` statt mit dem Arbeitsverzeichnis des
+ * Aufrufers. `git diff --cached` filtert zwar nicht nach dem Verzeichnis und
+ * nennt Pfade ab der Wurzel – geprüft, nicht behauptet. Die Änderung ist
+ * trotzdem richtig: eine Antwort, die davon abhängt, wo der Aufrufer steht,
+ * gehört in ein Gate nicht, und stünde der Aufrufer außerhalb des Repos,
+ * wäre die alte Form ins Leere gelaufen.
+ *
+ * Bei Umbenennungen zählen alter und neuer Pfad – so verlangt es das Gate, und
+ * so nennt der Vorbereiter beide.
+ */
+export function gestagteDateien() {
+  const roh = execFileSync("git", ["diff", "--cached", "--name-status", "-M"], {
+    cwd: WURZEL, encoding: "utf8", maxBuffer: 64 * 1024 * 1024,
+  });
+  const pfade = new Set();
+  for (const zeile of roh.split("\n").filter(Boolean)) {
+    const teile = zeile.split("\t");
+    if (teile[0].startsWith("R")) { pfade.add(teile[1]); pfade.add(teile[2]); }
+    else pfade.add(teile[1]);
+  }
+  return [...pfade].filter(Boolean).sort();
+}
