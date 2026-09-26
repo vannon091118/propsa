@@ -19,6 +19,12 @@
       "name": "zwischenspeicher.test.ts",
       "path": "zwischenspeicher.test.ts",
       "description": "Tests des Scan-Zwischenspeichers; Gegenstück zu src/zwischenspeicher.ts und dem Rust-Modul zwischenspeicher.rs."
+    },
+    {
+      "type": "file",
+      "name": "vertrag.test.ts",
+      "path": "vertrag.test.ts",
+      "description": "Ruft regelVollstaendig() und statusBekannt() aus @propakt/core über die sieben Baustein-Verträge auf und hält die Grenze der Funktion fest."
     }
   ]
 }

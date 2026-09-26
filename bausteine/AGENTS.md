@@ -68,10 +68,13 @@ INVARIANT  testbare Zusicherung
 ```
 
 **Eine Regel ohne alle sieben Punkte ist nicht implementiert, sondern behauptet.**
-Der Satz ist die Regel. Damit ist die Frage „ist das jetzt fertig?" beantwortbar:
-ja, wenn eine Zusicherung belegt ist, nein, wenn sieben Felder mit
-Absichtserklärungen gefüllt sind. `regelVollstaendig()` in
-`packages/core/src/vertrag.ts` prüft das maschinell.
+Der Satz ist die Regel, und `npm run pruefen` erzwingt ihn als Regel 10: jede
+Regel in `bausteine/vertrage/` muss alle sieben Punkte aus dem Katalog
+`GATE_PUNKTE` tragen. `regelVollstaendig()` in `packages/core/src/vertrag.ts` ist
+dieselbe Prüfung für TypeScript-Aufrufer, abgesichert durch
+`tests/vertrag.test.ts`. Geprüft wird die Form, nicht die Wahrheit: ein Punkt, der
+mit einer Absicht gefüllt ist, besteht die Prüfung und ist trotzdem keine
+Zusage.
 
 ## Spiegel und Prüfung
 

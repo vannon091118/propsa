@@ -45,10 +45,11 @@ und Laufzeit → 2 · Vermittlung und Integration → 3.
 
 ## Der ungelöste Teil, und warum er wichtig ist
 
-Das Schema macht Lücken sichtbar, es **schliesst** sie nicht. Eine Regel mit
-sieben ausgefüllten Feldern und einem leeren `INVARIANT` sieht vollständig aus
-und ist es nicht. Wer das Gate-Schema als Beweis nimmt, hat es als Abzeichen
-genommen.
+Mechanische Lücken schließt das Schema jetzt selbst: `npm run pruefen` verlangt
+als Regel 10 von jeder Regel in `bausteine/vertrage/` alle sieben Punkte aus dem
+Katalog `GATE_PUNKTE`. Was bleibt, ist die inhaltliche Hälfte. Ein `INVARIANT`,
+der „wird ergänzt" lautet, besteht diese Prüfung und ist keine Zusage. Wer das
+Gate-Schema als Beweis nimmt, hat es als Abzeichen genommen.
 
 Ebenso wenig löst es Mehrdeutigkeit: ein Vertrag, den zwei Leser unterschiedlich
 auslegen, ist ungültig — aber keiner der beiden wird es merken.

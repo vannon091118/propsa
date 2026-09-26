@@ -60,6 +60,7 @@ npm start -- <pfad> [optionen]
 npx ts-node tests/paketKritik.test.ts
 npx ts-node tests/zwischenspeicher.test.ts
 npx ts-node tests/updateFehler.test.ts
+npx ts-node tests/vertrag.test.ts
 ```
 
 **Tauri-Frontend (`tauri-app/`)**
@@ -86,6 +87,7 @@ cargo build --release --features custom-protocol
 - `npm run tauri:exe` baut ohne Bundle; `npm run tauri build` erzeugt das konfigurierte Bundle. Für einen manuellen Rust-Release-Build ist `--features custom-protocol` zwingend.
 - Icon-Änderungen aus `tauri-app/` mit `node scripts/generate-icons.mjs` erzeugen; `sharp` nicht direkt für `.ico` verwenden.
 - Der Delta-Smoke-Test läuft zweimal mit `--delta`; der zweite Lauf muss `0 neu · 0 geändert` melden. `updateFehler.test.ts` überspringt sich bei verschmutztem Git-Arbeitsbaum; `zwischenspeicher.test.ts` benötigt den gebauten Core und legt temporäre Cache-Dateien an.
+- Der Root-`tsc` erfasst `tests/` nicht (`include` ist `src/**/*`). Ein Typfehler in einem Test fällt deshalb erst beim `ts-node`-Lauf auf, nicht im Build – nach dem Anlegen eines Tests also `npx ts-node` ausführen, nicht `npm run build`. `vertrag.test.ts` braucht wie `zwischenspeicher.test.ts` den gebauten Core.
 
 ## Umgebung und Stolperfallen
 

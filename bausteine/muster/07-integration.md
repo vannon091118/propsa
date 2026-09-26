@@ -132,9 +132,11 @@ Formen ein, keine Wahrheiten.
 - **Keine Garantie über Versionsstände.** Verträge sagen nichts darüber, ob
   gegen die neueste Implementierung geprüft wurde. Dafür gibt es
   `last_verified_against_code`.
-- **Keine automatische Prüfung der Gates.** Das Schema macht Lücken sichtbar,
-  es schliesst sie nicht. Eine Regel mit sieben ausgefüllten Feldern und einem
-  leeren `INVARIANT` sieht vollständig aus und ist es nicht.
+- **Keine Prüfung der Absichtserklärungen.** Mechanische Lücken schließt das
+  Schema inzwischen: `npm run pruefen` verlangt als Regel 10 von jeder Regel in
+  `bausteine/vertrage/` alle sieben Punkte aus dem Katalog `GATE_PUNKTE`. Nicht
+  erkennbar bleibt der Punkt, der gefüllt und trotzdem unbelegt ist – ein
+  `INVARIANT`, der „wird ergänzt" lautet, besteht die Prüfung.
 - **Keine Aufwärtskopplung.** Wer von der Präsentation aus direkt in die
   Infrastruktur greift, umgeht den Vertrag – und merkt es nicht, weil es
   funktioniert.

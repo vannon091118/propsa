@@ -10,6 +10,7 @@
  *  7. Live-Kataloge (Schwere, Beschreibungen, Schwellen) Core ↔ Rust deckungsgleich
  *  8. Zwischenspeicher-Konstanten (Version, Schema) Core ↔ Rust deckungsgleich
  *  9. Baustein-Kataloge (Gate-Punkte, Status-Werte, Ereignistypen) Core ↔ Rust
+ * 10. Baustein-Gates: jede Regel trägt alle Gate-Punkte, jede Statusangabe einen Zustand
  *
  * Aufruf: `npm run pruefen`
  */
@@ -17,6 +18,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { changelogKopie } from "../changelog/changelog_kopie.mjs";
 import { WURZEL, dateienSammeln, locMessen, relativ } from "./loc.mjs";
+import { vertragsGatesPruefen } from "./vertragsGates.mjs";
 
 const fehler = [];
 
@@ -273,6 +275,13 @@ const ereignisTypenTs = tsKatalogAusBlock(vertragTs, /export const EREIGNIS_TYPE
 katalogeVergleichen(gatePunkteTs, rustKatalogAusFunktion(vertragRust, "gate_punkte"), "Baustein-Katalog (Gate-Punkte)");
 katalogeVergleichen(statusWerteTs, rustKatalogAusFunktion(vertragRust, "status_werte"), "Baustein-Katalog (Status-Werte)");
 katalogeVergleichen(ereignisTypenTs, rustKatalogAusFunktion(vertragRust, "ereignis_typen"), "Baustein-Katalog (Ereignistypen)");
+
+// 10. Baustein-Gates – die Zusage aus bausteine/AGENTS.md wird hier erzwungen:
+//     eine Regel ohne alle sieben Punkte ist nicht implementiert, sondern
+//     behauptet. Die Punktfamen kommen aus dem Core-Katalog, nicht aus einer
+//     Liste in diesem Skript. Ausgelagert nach vertragsGates.mjs, weil
+//     pruefen.mjs mit 284 Zeilen nahe an der Grenze von 300 liegt.
+vertragsGatesPruefen(fehler);
 
 // Ergebnis
 if (fehler.length > 0) {

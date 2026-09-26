@@ -31,7 +31,7 @@ export const VERTRAG: Vertrag = {
     'Eine Regel ohne alle sieben Punkte ist nicht implementiert, sondern behauptet.',
   ],
   nicht_zugesagt: [
-    'Keine automatische Prüfung der Gates. Das Schema macht Lücken sichtbar, es schliesst sie nicht.',
+    'Keine Prüfung der Absichtserklärungen. Ein fehlender Punkt fällt auf – npm run pruefen verlangt von jeder Regel alle sieben Punkte aus dem Core-Katalog. Ein Punkt, der gefüllt, aber nicht belegt ist, besteht die Prüfung und ist trotzdem keine Zusage.',
     'Keine Auflösung von Mehrdeutigkeit. Ein Vertrag, den zwei Leser unterschiedlich auslegen, ist ungültig – und keiner merkt es.',
   ],
   regeln: [],

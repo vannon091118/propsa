@@ -81,9 +81,10 @@
       "schichtenlage": "IMPLEMENTED — die Lage ist in bausteine/muster/07-integration.md beschrieben und in diesem Vertrag kodiert.",
       "gate_schema": "IMPLEMENTED — alle sieben Verträge in bausteine/vertrage/ tragen dieselben sieben Punkte. Das war vorher nicht der Fall.",
       "selbstverifikation": "IMPLEMENTED — jeder Vertrag trägt overall, sections, last_verified_against_code und known_gaps.",
-      "eine_wahrheit_je_regel": "STUB — für die sieben neuen Verträge gilt die Regel, weil jeder genau eine Quelle hat. Über die bestehenden PROPAKT-Kataloge erzwingt npm run pruefen das bereits maschinell."
+      "eine_wahrheit_je_regel": "STUB — für die sieben neuen Verträge gilt die Regel, weil jeder genau eine Quelle hat. Über die bestehenden PROPAKT-Kataloge erzwingt npm run pruefen das bereits maschinell.",
+      "gate_vollstaendigkeit": "IMPLEMENTED — npm run pruefen prüft als Regel 10 jede Regel aller sieben Verträge gegen den Katalog GATE_PUNKTE und jede Statusangabe gegen STATUS_WERTE. Ausgelegt in scripts/pruefen/vertragsGates.mjs, damit pruefen.mjs unter der Zeilengrenze bleibt. Geprüft wird die Form, nicht die Wahrheit: ein mit einer Absicht gefüllter Punkt besteht die Prüfung."
     },
-    "last_verified_against_code": "2026-09-24",
+    "last_verified_against_code": "2026-09-26",
     "known_gaps": [
       "Dieser Vertrag beschreibt die Form der anderen sechs. Er liefert selbst keine Funktion, und das ist beabsichtigt: die sieben Bausteine sind dokumentierte Muster, kein laufender Code.",
       "PROPAKT hat keine Orchestrierungsschicht und braucht keine. Die Positionsnummern beschreiben, wo ein Baustein einzuordnen wäre — nicht, dass PROPAKT eine Position bekommt.",
