@@ -103,4 +103,26 @@ fn fehlende_brace_variante_wird_einzeln_gemeldet() {
         datei("src/core/io/envelope.ts", "export {};\\n"),
     ]);
     assert!(kritik(&scan).contains("1 von 3 Referenzen fehlen im Paket"));
+
+fn quelle(relativer_pfad: &str, inhalt: &str) -> DateiInfo {
+    let mut d = datei(relativer_pfad, inhalt);
+    d.sprache = "TypeScript".to_string();
+    d
+}
+
+#[test]
+fn unbekannte_src_core_struktur_wird_als_domane_erkannt() {
+    let scan = scan(vec![
+        quelle(
+            "src/core/narrative/engine.ts",
+            "import { clock } from '@/systems/clock';\\nimport { panel } from '@/render/panel';\\nimport { store } from '@/persistence/store';",
+        ),
+        quelle("src/systems/clock.ts", "export const clock = 1;"),
+        quelle("src/render/panel.ts", "export const panel = 1;"),
+        quelle("src/persistence/store.ts", "export const store = 1;"),
+    ]);
+    let text = kritik(&scan);
+    assert!(text.contains("`src/core`"));
+    assert!(text.contains("`src/core/narrative/engine.ts`"));
+}
 }

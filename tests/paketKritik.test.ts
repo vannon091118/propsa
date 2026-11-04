@@ -75,6 +75,20 @@ pruefe('Brace-Expansion erzeugt keine falschen Fehlpfade', !textKlammern.include
 const textTeilKlammern = kritik(meta, paketKlammern.slice(0, 3));
 pruefe('Fehlende Brace-Variante wird einzeln gemeldet', textTeilKlammern.includes('1 von 3 Referenzen fehlen'));
 
+// Fixture 8: foreign project layout (src/core, not PROPAKT's former fixed folders).
+const fremdesProjekt = [
+  datei('src/core/narrative/engine.ts',
+    "import { clock } from '@/systems/clock';\\n" +
+    "import { panel } from '@/render/panel';\\n" +
+    "import { store } from '@/persistence/store';\\n"),
+  datei('src/systems/clock.ts', 'export const clock = 1;\\n'),
+  datei('src/render/panel.ts', 'export const panel = 1;\\n'),
+  datei('src/persistence/store.ts', 'export const store = 1;\\n'),
+];
+const fremdeKritik = kritik(meta, fremdesProjekt);
+pruefe('unbekannte Domänenstruktur wird erkannt', fremdeKritik.includes('`src/core`'));
+pruefe('fremde Imports werden in unbekannter Struktur erkannt', fremdeKritik.includes('`src/core/narrative/engine.ts`'));
+
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);

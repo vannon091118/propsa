@@ -1,6 +1,9 @@
 //! Kritik-Linse: Godfiles, Logikmischung, Artefakte, Doku-Lügen.
 
-use crate::kritik_regeln::{artefakt_muster, datei_domain, import_domain, klammer_pfade_erweitern, prozent, GOD_GRENZE};
+use crate::kritik_regeln::{
+    artefakt_muster, datei_domain, import_domain, ist_lokaler_import,
+    klammer_pfade_erweitern, prozent, GOD_GRENZE,
+};
 use crate::scan::{DateiInfo, ScanErgebnis};
 use std::collections::{BTreeSet, HashSet};
 
@@ -50,37 +53,58 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
     }
 
     // 2. Logikmischung
-    text.push_str("\n## Logikmischung (≥ 3 fremde Domänen)\n\n");
+    text.push_str("\\n## Logikmischung (≥ 3 fremde Domänen)\\n\\n");
+    let domaenen: Vec<String> = scan.dateien.iter()
+        .filter_map(|d| datei_domain(&d.relativer_pfad, &d.sprache))
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
+    let erkannte = if domaenen.is_empty() {
+        "keine".to_string()
+    } else {
+        domaenen.iter().map(|d| format!("`{}`", d)).collect::<Vec<_>>().join(", ")
+    };
+    text.push_str(&format!("**Erkannte Domänen (Pfadheuristik):** {}\\n\\n", erkannte));
+    text.push_str("**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\\n\\n");
+
     let mut mischungen: Vec<(String, String, Vec<String>)> = Vec::new();
+    let mut nicht_zuordenbare_lokale_imports = 0usize;
     for d in &scan.dateien {
-        if let Some(eigen) = datei_domain(&d.relativer_pfad) {
+        if let Some(eigen) = datei_domain(&d.relativer_pfad, &d.sprache) {
             let mut fremde = BTreeSet::new();
             for teil in d.inhalt.split("from ") {
-                let rest = teil.trim().strip_prefix('\"').or_else(|| teil.trim().strip_prefix('\''));
+                let rest = teil.trim().strip_prefix('"').or_else(|| teil.trim().strip_prefix('\\''));
                 if let Some(rest) = rest {
-                    let spec = rest.split(['\"', '\'']).next().unwrap_or("");
-                    if let Some(dom) = import_domain(spec) {
+                    let spec = rest.split(['"', '\\'']).next().unwrap_or("");
+                    if let Some(dom) = import_domain(spec, &d.relativer_pfad, &domaenen) {
                         if dom != eigen {
-                            fremde.insert(dom.to_string());
+                            fremde.insert(dom);
                         }
+                    } else if ist_lokaler_import(spec) {
+                        nicht_zuordenbare_lokale_imports += 1;
                     }
                 }
             }
             if fremde.len() >= 3 {
-                mischungen.push((d.relativer_pfad.clone(), eigen.to_string(), fremde.into_iter().collect()));
+                mischungen.push((d.relativer_pfad.clone(), eigen, fremde.into_iter().collect()));
             }
         }
     }
-    if mischungen.is_empty() {
-        text.push_str("Keine Datei importiert aus ≥ 3 fremden Domänen.\n");
+    if domaenen.is_empty() {
+        text.push_str("Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\\n");
+    } else if mischungen.is_empty() {
+        text.push_str("Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\\n");
     } else {
         mischungen.sort_by(|a, b| a.0.cmp(&b.0));
-        text.push_str("| Datei | Eigen | Fremde Domänen |\n|---|---|---|---|\n");
+        text.push_str("| Datei | Eigen | Fremde Domänen |\\n|---|---|---|---|\\n");
         for (pfad, eigen, fremde) in &mischungen {
             let f = fremde.iter().map(|x| format!("`{}`", x)).collect::<Vec<_>>().join(", ");
-            text.push_str(&format!("| `{}` | `{}` | {} |\n", pfad, eigen, f));
+            text.push_str(&format!("| `{}` | `{}` | {} |\\n", pfad, eigen, f));
         }
-        text.push_str("\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\n");
+        text.push_str("\\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\\n");
+    }
+    if nicht_zuordenbare_lokale_imports > 0 {
+        text.push_str(&format!("\\nNicht eindeutig zuordenbare lokale Imports: {} (nicht als Entwarnung gewertet).\\n", nicht_zuordenbare_lokale_imports));
     }
 
     // 3. Repo-Sauberkeit

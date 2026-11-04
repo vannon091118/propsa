@@ -11,13 +11,14 @@ import { kopf } from './paketBasis';
 
 const GOD_GRENZE = 300;
 
-const DOMAENEN = [
-  'src/components',
-  'src/simulation',
-  'src/render',
-  'src/bus',
-  'src/persistence',
-] as const;
+// Conventional source containers are roots, not project-specific domain names.
+// The actual domains are inferred from the first module directory below them.
+const QUELLWURZELN = new Set([
+  'src', 'app', 'lib', 'source', 'modules', 'packages', 'server', 'client',
+]);
+const NICHT_QUELLSPRACHEN = new Set([
+  'Markdown', 'JSON', 'YAML', 'TOML', 'Text', 'XML', 'HTML', 'CSV', 'INI',
+]);
 
 const ARTEFAKTE: Array<{ muster: string; test: (p: string) => boolean }> = [
   { muster: 'context.md', test: p => p === 'context.md' || p.endsWith('/context.md') },
@@ -31,17 +32,70 @@ const ARTEFAKTE: Array<{ muster: string; test: (p: string) => boolean }> = [
   { muster: '.tmp/**', test: p => /(^|\/)\.tmp\//.test(p) },
 ];
 
-function dateiDomain(pfad: string): string | null {
-  for (const d of DOMAENEN) if (pfad.startsWith(d + '/') || pfad === d) return d;
+function pfadSegmente(pfad: string): string[] {
+  return pfad.replace(/\\/g, '/').split('/').filter(Boolean);
+}
+
+/** Infers a module boundary from a source file path; non-source documents are not domains. */
+function dateiDomain(pfad: string, sprache: string): string | null {
+  if (NICHT_QUELLSPRACHEN.has(sprache)) return null;
+  const teile = pfadSegmente(pfad);
+  if (teile.length < 2) return null;
+  if (QUELLWURZELN.has(teile[0].toLowerCase())) {
+    return teile.length >= 3 ? `${teile[0]}/${teile[1]}` : teile[0];
+  }
+  if (teile.length >= 3 && QUELLWURZELN.has(teile[1].toLowerCase())) {
+    return `${teile[0]}/${teile[1]}`;
+  }
+  return teile[0];
+}
+
+function domainFuerPfad(pfad: string, domaenen: string[]): string | null {
+  const treffer = domaenen
+    .filter(d => pfad === d || pfad.startsWith(d + '/'))
+    .sort((a, b) => b.length - a.length);
+  if (treffer.length === 0) return null;
+  if (treffer.length > 1 && treffer[0].length === treffer[1].length) return null;
+  return treffer[0];
+}
+
+function relativenImportAufloesen(importer: string, spec: string): string {
+  const teile = pfadSegmente(importer);
+  teile.pop();
+  for (const teil of pfadSegmente(spec)) {
+    if (teil === '.') continue;
+    if (teil === '..') teile.pop();
+    else teile.push(teil);
+  }
+  return teile.join('/');
+}
+
+/** Resolves only explicit local paths and common @/ or ~/ aliases; ambiguous imports stay unclassified. */
+function importDomain(spec: string, importer: string, domaenen: string[]): string | null {
+  const muster = spec.replace(/\\/g, '/');
+  if (muster.startsWith('./') || muster.startsWith('../')) {
+    return domainFuerPfad(relativenImportAufloesen(importer, muster), domaenen);
+  }
+  const alias = muster.startsWith('@/') || muster.startsWith('~/');
+  if (alias) {
+    const rest = muster.slice(2);
+    const treffer = [...new Set([...QUELLWURZELN]
+      .map(wurzel => domainFuerPfad(`${wurzel}/${rest}`, domaenen))
+      .filter((wert): wert is string => wert !== null))];
+    return treffer.length === 1 ? treffer[0] : null;
+  }
+  if (muster.startsWith('/')) return domainFuerPfad(muster.slice(1), domaenen);
+  if ([...QUELLWURZELN].some(wurzel => muster.startsWith(wurzel + '/'))) {
+    return domainFuerPfad(muster, domaenen);
+  }
   return null;
 }
 
-function importDomain(spec: string): string | null {
-  for (const d of DOMAENEN) {
-    const kurz = d.split('/').pop()!;
-    if (spec.includes(d) || spec.includes('/' + kurz + '/') || spec.includes(kurz + '/')) return d;
-  }
-  return null;
+function istLokalerImport(spec: string): boolean {
+  const muster = spec.replace(/\\/g, '/');
+  return muster.startsWith('./') || muster.startsWith('../') ||
+    muster.startsWith('@/') || muster.startsWith('~/') || muster.startsWith('/') ||
+    [...QUELLWURZELN].some(wurzel => muster.startsWith(wurzel + '/'));
 }
 
 function prozent(teil: number, gesamt: number): string {
@@ -84,29 +138,42 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   }
 
   // --- 2. Logikmischung
-  text += '\n## Logikmischung (≥ 3 fremde Domänen)\n\n';
+  text += '\\n## Logikmischung (≥ 3 fremde Domänen)\\n\\n';
+  const domaenen = [...new Set(dateien
+    .map(d => dateiDomain(d.relativerPfad, d.sprache))
+    .filter((wert): wert is string => wert !== null))].sort();
+  text += `**Erkannte Domänen (Pfadheuristik):** ${domaenen.length ? domaenen.map(d => `\`${d}\``).join(', ') : 'keine'}\\n\\n`;
+  text += '**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\\n\\n';
+
   const mischungen: Array<{ pfad: string; eigen: string; fremde: string[] }> = [];
-  const importRe = /import\s+.*?\s+from\s+['\"]([^'\"]+)['\"]/g;
+  let nichtZuordenbareLokaleImports = 0;
+  const importRe = /import\\s+.*?\\s+from\\s+['\\"]([^'\\"]+)['\\"]/g;
   for (const d of dateien) {
-    const eigen = dateiDomain(d.relativerPfad);
+    const eigen = dateiDomain(d.relativerPfad, d.sprache);
     if (!eigen) continue;
     const fremde = new Set<string>();
     let m: RegExpExecArray | null;
     importRe.lastIndex = 0;
     while ((m = importRe.exec(d.inhalt)) !== null) {
-      const dom = importDomain(m[1]);
+      const dom = importDomain(m[1], d.relativerPfad, domaenen);
       if (dom && dom !== eigen) fremde.add(dom);
+      else if (!dom && istLokalerImport(m[1])) nichtZuordenbareLokaleImports += 1;
     }
     if (fremde.size >= 3) mischungen.push({ pfad: d.relativerPfad, eigen, fremde: [...fremde].sort() });
   }
-  if (mischungen.length === 0) {
-    text += 'Keine Datei importiert aus ≥ 3 fremden Domänen.\n';
+  if (domaenen.length === 0) {
+    text += 'Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\\n';
+  } else if (mischungen.length === 0) {
+    text += 'Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\\n';
   } else {
-    text += '| Datei | Eigen | Fremde Domänen |\n|---|---|---|\n';
+    text += '| Datei | Eigen | Fremde Domänen |\\n|---|---|---|\\n';
     for (const r of mischungen.sort((a, b) => a.pfad.localeCompare(b.pfad))) {
-      text += `| \`${r.pfad}\` | \`${r.eigen}\` | ${r.fremde.map(f => `\`${f}\``).join(', ')} |\n`;
+      text += `| \`${r.pfad}\` | \`${r.eigen}\` | ${r.fremde.map(f => `\`${f}\``).join(', ')} |\\n`;
     }
-    text += `\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\n`;
+    text += '\\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\\n';
+  }
+  if (nichtZuordenbareLokaleImports > 0) {
+    text += `\\nNicht eindeutig zuordenbare lokale Imports: ${nichtZuordenbareLokaleImports} (nicht als Entwarnung gewertet).\\n`;
   }
 
   // --- 3. Repo-Sauberkeit

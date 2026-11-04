@@ -2,12 +2,12 @@
 
 pub const GOD_GRENZE: usize = 300;
 
-pub const DOMAENEN: &[&str] = &[
-    "src/components",
-    "src/simulation",
-    "src/render",
-    "src/bus",
-    "src/persistence",
+// Conventional source containers are roots; module names come from scanned paths.
+pub const QUELLWURZELN: &[&str] = &[
+    "src", "app", "lib", "source", "modules", "packages", "server", "client",
+];
+const NICHT_QUELLSPRACHEN: &[&str] = &[
+    "Markdown", "JSON", "YAML", "TOML", "Text", "XML", "HTML", "CSV", "INI",
 ];
 
 pub fn prozent(teil: usize, gesamt: usize) -> String {
@@ -46,26 +46,96 @@ pub fn artefakt_muster(pfad: &str) -> Option<&'static str> {
     None
 }
 
-pub fn datei_domain(pfad: &str) -> Option<&'static str> {
-    for d in DOMAENEN {
-        if pfad == *d || pfad.starts_with(&format!("{}/", d)) {
-            return Some(d);
+fn quellwurzel(name: &str) -> bool {
+    let klein = name.to_ascii_lowercase();
+    QUELLWURZELN.iter().any(|w| *w == klein)
+}
+
+fn pfad_segmente(pfad: &str) -> Vec<&str> {
+    pfad.replace('\\\\', "/").split('/').filter(|s| !s.is_empty()).collect()
+}
+
+pub fn datei_domain(pfad: &str, sprache: &str) -> Option<String> {
+    if NICHT_QUELLSPRACHEN.iter().any(|s| *s == sprache) {
+        return None;
+    }
+    let teile = pfad_segmente(pfad);
+    if teile.len() < 2 {
+        return None;
+    }
+    if quellwurzel(teile[0]) {
+        return Some(if teile.len() >= 3 {
+            format!("{}/{}", teile[0], teile[1])
+        } else {
+            teile[0].to_string()
+        });
+    }
+    if teile.len() >= 3 && quellwurzel(teile[1]) {
+        return Some(format!("{}/{}", teile[0], teile[1]));
+    }
+    Some(teile[0].to_string())
+}
+
+fn domain_fuer_pfad<'a>(pfad: &str, domaenen: &'a [String]) -> Option<&'a String> {
+    let mut treffer: Vec<&String> = domaenen
+        .iter()
+        .filter(|d| pfad == d.as_str() || pfad.starts_with(&format!("{}/", d)))
+        .collect();
+    treffer.sort_by_key(|d| std::cmp::Reverse(d.len()));
+    if treffer.is_empty() {
+        return None;
+    }
+    if treffer.len() > 1 && treffer[0].len() == treffer[1].len() {
+        return None;
+    }
+    treffer.into_iter().next()
+}
+
+fn relativen_import_aufloesen(importer: &str, spec: &str) -> String {
+    let mut teile: Vec<String> = pfad_segmente(importer)
+        .into_iter()
+        .map(str::to_string)
+        .collect();
+    teile.pop();
+    for teil in spec.replace('\\\\', "/").split('/') {
+        match teil {
+            "" | "." => {},
+            ".." => { teile.pop(); },
+            wert => teile.push(wert.to_string()),
         }
+    }
+    teile.join("/")
+}
+
+pub fn import_domain(spec: &str, importer: &str, domaenen: &[String]) -> Option<String> {
+    let muster = spec.replace('\\\\', "/");
+    if muster.starts_with("./") || muster.starts_with("../") {
+        return domain_fuer_pfad(&relativen_import_aufloesen(importer, &muster), domaenen).cloned();
+    }
+    if muster.starts_with("@/") || muster.starts_with("~/") {
+        let rest = &muster[2..];
+        let mut treffer = std::collections::BTreeSet::new();
+        for wurzel in QUELLWURZELN {
+            if let Some(domain) = domain_fuer_pfad(&format!("{}/{}", wurzel, rest), domaenen) {
+                treffer.insert(domain.clone());
+            }
+        }
+        return if treffer.len() == 1 { treffer.into_iter().next() } else { None };
+    }
+    if muster.starts_with('/') {
+        return domain_fuer_pfad(muster.trim_start_matches('/'), domaenen).cloned();
+    }
+    if QUELLWURZELN.iter().any(|w| muster.starts_with(&format!("{}/", w))) {
+        return domain_fuer_pfad(&muster, domaenen).cloned();
     }
     None
 }
 
-pub fn import_domain(spec: &str) -> Option<&'static str> {
-    for d in DOMAENEN {
-        let kurz = d.split('/').next_back().unwrap_or(d);
-        if spec.contains(*d)
-            || spec.contains(&format!("/{}/", kurz))
-            || spec.contains(&format!("{}/", kurz))
-        {
-            return Some(d);
-        }
-    }
-    None
+pub fn ist_lokaler_import(spec: &str) -> bool {
+    let muster = spec.replace('\\\\', "/");
+    muster.starts_with("./") || muster.starts_with("../") ||
+        muster.starts_with("@/") || muster.starts_with("~/") || muster.starts_with('/') ||
+        QUELLWURZELN.iter().any(|w| muster.starts_with(&format!("{}/", w)))
 }
 
 
