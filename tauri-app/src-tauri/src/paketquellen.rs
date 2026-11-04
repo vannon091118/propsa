@@ -19,7 +19,7 @@ fn code_fence(inhalt: &str) -> String {
 fn volltext(datei: &DateiInfo) -> String {
     let fence = code_fence(&datei.inhalt);
     format!(
-        "\n---\n\n### `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}\n{}\n",
+        "\n---\n\n### `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}{}{}\n",
         datei.relativer_pfad, datei.sprache, datei.zeilen, datei.zeichen,
         fence, code_block_sprache(&datei.sprache), datei.inhalt, fence
     )
@@ -47,7 +47,7 @@ pub fn dokumentation(scan: &ScanErgebnis) -> String {
     for datei in &dokumente {
         let fence = code_fence(&datei.inhalt);
         text.push_str(&format!(
-            "\n---\n\n## `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}\n{}\n",
+            "\n---\n\n## `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}{}{}\n",
             datei.relativer_pfad, datei.sprache, datei.zeilen, datei.zeichen,
             fence, code_block_sprache(&datei.sprache), datei.inhalt, fence
         ));
