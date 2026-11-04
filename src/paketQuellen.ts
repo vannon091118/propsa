@@ -11,14 +11,24 @@ import { GescannteDatei } from './scanner';
 import { SchemaMeta } from '@propakt/core';
 import { codeBlockSprache } from '@propakt/core';
 
-/** Eine Datei im Volltext. */
-function volltext(datei: GescannteDatei): string {
-  let text = `\n---\n\n### \`${datei.relativerPfad}\`\n\n`;
-  text += `**Sprache:** ${datei.sprache}  **Zeilen:** ${datei.zeilen}  **Zeichen:** ${datei.zeichen}\n\n`;
-  text += `\`\`\`${codeBlockSprache(datei.sprache)}\n${datei.inhalt}\n\`\`\`\n`;
-  return text;
+/** Selects an outer Markdown fence longer than every backtick run in the source. */
+function codeFence(inhalt: string): string {
+  let longest = 0;
+  let current = 0;
+  for (const character of inhalt) {
+    if (character === '`') { current += 1; longest = Math.max(longest, current); }
+    else current = 0;
+  }
+  return '`'.repeat(Math.max(3, longest + 1));
 }
 
+/** Eine Datei im Volltext. */
+function volltext(datei: GescannteDatei): string {
+  const fence = codeFence(datei.inhalt);
+  return '\n---\n\n### `' + datei.relativerPfad + '`\n\n' +
+    '**Sprache:** ' + datei.sprache + '  **Zeilen:** ' + datei.zeilen + '  **Zeichen:** ' + datei.zeichen + '\n\n' +
+    fence + codeBlockSprache(datei.sprache) + '\n' + datei.inhalt + '\n' + fence + '\n';
+}
 /** Alle Markdown-Dateien im Volltext (Doku-Linse). */
 export function dokumentation(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   const dokumente = dateien.filter(istDokumentation);
@@ -32,9 +42,10 @@ export function dokumentation(meta: SchemaMeta, dateien: GescannteDatei[]): stri
   }
 
   for (const datei of dokumente) {
-    text += `\n---\n\n## \`${datei.relativerPfad}\`\n\n`;
-    text += `**Sprache:** ${datei.sprache}  **Zeilen:** ${datei.zeilen}  **Zeichen:** ${datei.zeichen}\n\n`;
-    text += `\`\`\`${codeBlockSprache(datei.sprache)}\n${datei.inhalt}\n\`\`\`\n`;
+    const fence = codeFence(datei.inhalt);
+    text += '\n---\n\n## `' + datei.relativerPfad + '`\n\n';
+    text += '**Sprache:** ' + datei.sprache + '  **Zeilen:** ' + datei.zeilen + '  **Zeichen:** ' + datei.zeichen + '\n\n';
+    text += fence + codeBlockSprache(datei.sprache) + '\n' + datei.inhalt + '\n' + fence + '\n';
   }
 
   return text;

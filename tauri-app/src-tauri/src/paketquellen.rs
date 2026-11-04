@@ -9,19 +9,21 @@ use crate::paketbasis::{hinweisblock, kopf};
 use crate::scan::{DateiInfo, ScanErgebnis};
 use crate::sprache::code_block_sprache;
 
-/// Eine Datei im Volltext.
-fn volltext(datei: &DateiInfo) -> String {
-    format!(
-        "\n---\n\n### `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n```{}\n{}\n```\n",
-        datei.relativer_pfad,
-        datei.sprache,
-        datei.zeilen,
-        datei.zeichen,
-        code_block_sprache(&datei.sprache),
-        datei.inhalt
-    )
+/// Selects an outer Markdown fence longer than every backtick run in the source.
+fn code_fence(inhalt: &str) -> String {
+    let longest = inhalt.split(|zeichen| zeichen != '`').map(str::len).max().unwrap_or(0);
+    '`'.to_string().repeat(3.max(longest + 1))
 }
 
+/// Eine Datei im Volltext.
+fn volltext(datei: &DateiInfo) -> String {
+    let fence = code_fence(&datei.inhalt);
+    format!(
+        "\n---\n\n### `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}\n{}\n",
+        datei.relativer_pfad, datei.sprache, datei.zeilen, datei.zeichen,
+        fence, code_block_sprache(&datei.sprache), datei.inhalt, fence
+    )
+}
 /// Alle Markdown-Dateien im Volltext (Doku-Linse).
 pub fn dokumentation(scan: &ScanErgebnis) -> String {
     let dokumente: Vec<&DateiInfo> = scan
@@ -43,17 +45,13 @@ pub fn dokumentation(scan: &ScanErgebnis) -> String {
     }
 
     for datei in &dokumente {
+        let fence = code_fence(&datei.inhalt);
         text.push_str(&format!(
-            "\n---\n\n## `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n```{}\n{}\n```\n",
-            datei.relativer_pfad,
-            datei.sprache,
-            datei.zeilen,
-            datei.zeichen,
-            code_block_sprache(&datei.sprache),
-            datei.inhalt
+            "\n---\n\n## `{}`\n\n**Sprache:** {}  **Zeilen:** {}  **Zeichen:** {}\n\n{}{}\n{}\n",
+            datei.relativer_pfad, datei.sprache, datei.zeilen, datei.zeichen,
+            fence, code_block_sprache(&datei.sprache), datei.inhalt, fence
         ));
     }
-
     text
 }
 
@@ -101,4 +99,14 @@ pub fn quellen(scan: &ScanErgebnis, domaene: &Domaene<'_>) -> String {
     }
 
     text
+}
+
+#[cfg(test)]
+mod tests {
+    use super::code_fence;
+    #[test]
+    fn outer_fence_is_longer_than_embedded_backtick_run() {
+        assert_eq!(code_fence("```ts\nconst x = 1;\n```"), "````");
+        assert_eq!(code_fence("````rust\nfn main() {}\n````"), "`````".to_string());
+    }
 }

@@ -5,6 +5,7 @@
  * Aufruf: npx ts-node tests/paketKritik.test.ts
  */
 import { kritik } from '../src/paketKritik';
+import { dokumentation } from '../src/paketQuellen';
 import { GescannteDatei } from '../src/scanner';
 
 function datei(relativerPfad: string, inhalt: string): GescannteDatei {
@@ -89,6 +90,16 @@ const fremdeKritik = kritik(meta, fremdesProjekt);
 pruefe('unbekannte Domänenstruktur wird erkannt', fremdeKritik.includes('src/core'));
 pruefe('fremde Imports werden in unbekannter Struktur erkannt', fremdeKritik.includes('src/core/narrative/engine.ts'));
 
+// Markdown documentation may itself contain fenced code blocks.
+const verschachteltesMarkdown = datei('docs/Beispiel.md', '# Beispiel\n```ts\nconst wert = 1;\n```\n');
+const dokumentationsText = dokumentation(
+  { titel: 'Fixture', zeitstempel: '2026-11-04 00:00:00', uebersprungen: 0 } as never,
+  [verschachteltesMarkdown]
+);
+pruefe('äußerer Markdown-Fence ist länger als eingebetteter Fence',
+  dokumentationsText.includes('\n````markdown\n') && dokumentationsText.endsWith('\n````\n'));
+pruefe('eingebetteter Markdown-Codeblock bleibt unverändert',
+  dokumentationsText.includes('```ts\nconst wert = 1;\n```'));
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);
