@@ -148,7 +148,7 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
         .iter()
         .filter(|d| d.relativer_pfad.starts_with("docs/") && d.relativer_pfad.ends_with(".md"))
         .collect();
-    let mut erwaehnt = BTreeSet::new();
+    let mut erwaehnt: BTreeSet<String> = BTreeSet::new();
     for d in &docs {
         let mut i = 0;
         let b = d.inhalt.as_bytes();
