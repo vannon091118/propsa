@@ -161,12 +161,12 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   }
   if (docs.length === 0) {
     text += 'Keine `docs/**/*.md` im Paket – nichts zu prüfen.\n';
-  } else if (erwaehnt.size === 0) {
+  } else if (dateireferenzen.length === 0) {
     text += `${docs.length} Doku-Datei(en) ohne \`src/…\`-Pfadreferenz – nichts zu prüfen.\n`;
   } else if (fehlend.length === 0) {
     text += `Alle ${dateireferenzen.length} Datei-Referenzen existieren im Paket.\n`;
   } else {
-    text += `**${fehlend.length} von ${erwaehnt.size} Referenzen fehlen im Paket:**\n\n`;
+    text += `**${fehlend.length} von ${dateireferenzen.length} Referenzen fehlen im Paket:**\n\n`;
     for (const p of fehlend.slice(0, 30)) text += `- \`${p}\`\n`;
     if (fehlend.length > 30) text += `- … und ${fehlend.length - 30} weitere\n`;
   }

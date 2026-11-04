@@ -160,20 +160,23 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
                 })
                 && p.contains('/')
         };
+        let dateireferenzen: Vec<&String> = erwaehnt
+            .iter()
+            .filter(|p| ist_datei_referenz(p))
+            .collect();
         let mut fehlend: Vec<String> = Vec::new();
-        for p in &erwaehnt {
-            if !ist_datei_referenz(p) {
-                continue;
-            }
+        for p in &dateireferenzen {
             if !referenz_erfuellt(p) {
-                fehlend.push(p.clone());
+                fehlend.push((*p).clone());
             }
         }
-        if fehlend.is_empty() {
-            text.push_str(&format!("Alle {} Datei-Referenzen existieren im Paket.\n", erwaehnt.len()));
+        if dateireferenzen.is_empty() {
+            text.push_str(&format!("{} Doku-Datei(en) ohne konkrete Datei-Referenz – nichts zu prüfen.\n", docs.len()));
+        } else if fehlend.is_empty() {
+            text.push_str(&format!("Alle {} Datei-Referenzen existieren im Paket.\n", dateireferenzen.len()));
         } else {
             fehlend.sort();
-            text.push_str(&format!("**{} von {} Referenzen fehlen im Paket:**\n\n", fehlend.len(), erwaehnt.len()));
+            text.push_str(&format!("**{} von {} Referenzen fehlen im Paket:**\n\n", fehlend.len(), dateireferenzen.len()));
             for p in fehlend.iter().take(30) {
                 text.push_str(&format!("- `{}`\n", p));
             }
