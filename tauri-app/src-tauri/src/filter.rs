@@ -104,9 +104,6 @@ fn ist_ausgeschlossen(datei: &str, pfad: &str, include: &[String], exclude: &[St
             getroffen = true;
         }
     }
-    if !getroffen && AUSGESCHLOSSENE_DATEIEN.iter().any(|m| passt_muster(m, pfad, datei)) {
-        getroffen = true;
-    }
     getroffen || (!include.is_empty() && !include.iter().any(|m| !m.is_empty() && passt_muster(m, pfad, datei)))
 }
 
@@ -151,8 +148,10 @@ pub fn kandidaten_sammeln(
         .follow_links(false)
         .into_iter()
         .filter_entry(|eintrag| {
+            let name = eintrag.file_name().to_string_lossy().to_lowercase();
             !(eintrag.file_type().is_dir()
-                && ist_ignoriertes_verzeichnis(&eintrag.file_name().to_string_lossy()))
+                && ist_ignoriertes_verzeichnis(&name)
+                && !freigegebene.contains(&name))
         });
 
     let mut kandidaten: Vec<Kandidat> = Vec::new();
@@ -204,5 +203,58 @@ pub fn datei_lesen(absoluter_pfad: &Path) -> Option<String> {
         Some(inhalt)
     } else {
         None
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::tempdir;
+
+    fn standard_excludes() -> Vec<String> {
+        let mut muster: Vec<String> = IGNORIERTE_VERZEICHNISSE
+            .iter()
+            .map(|name| format!("{}/**", name))
+            .collect();
+        muster.extend(AUSGESCHLOSSENE_DATEIEN.iter().map(|muster| muster.to_string()));
+        muster
+    }
+
+    #[test]
+    fn negation_betritt_wieder_freigegebenes_ignorierverzeichnis() {
+        let temp = tempdir().expect("tempdir");
+        let datei = temp.path().join("vendor").join("paket").join("index.js");
+        fs::create_dir_all(datei.parent().expect("parent")).expect("mkdir");
+        fs::write(&datei, "export {};").expect("write");
+
+        let excludes = crate::filterignore::ausschluesse_mergen(
+            &standard_excludes(),
+            &vec!["!vendor/".to_string()],
+        );
+        let kandidaten = kandidaten_sammeln(temp.path(), &[], &excludes);
+
+        assert!(
+            kandidaten.iter().any(|k| k.relativer_pfad == "vendor/paket/index.js"),
+            "Eine explizite .propaktignore-Negation muss das Verzeichnis wieder betreten."
+        );
+    }
+
+    #[test]
+    fn negation_kann_auch_standard_dateimuster_wieder_freigeben() {
+        let temp = tempdir().expect("tempdir");
+        fs::write(temp.path().join("Cargo.lock"), "version = 3").expect("write");
+
+        let excludes = crate::filterignore::ausschluesse_mergen(
+            &standard_excludes(),
+            &vec!["!Cargo.lock".to_string()],
+        );
+        let kandidaten = kandidaten_sammeln(temp.path(), &[], &excludes);
+
+        assert!(
+            kandidaten.iter().any(|k| k.relativer_pfad == "Cargo.lock"),
+            "Eine explizite Negation darf nicht durch eine zweite harte Ausschlussliste überstimmt werden."
+        );
     }
 }

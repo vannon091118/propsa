@@ -151,6 +151,12 @@ jobs:
           workspaces: tauri-app/src-tauri
           shared-key: propakt-rust
 
+      # Rust-Integrationstests laufen im selben Release-Profil und auf
+      # demselben Runner wie der Installer-Build; der Cache wird weitergenutzt.
+      - name: Rust-Tests
+        run: cargo test --release
+        working-directory: tauri-app/src-tauri
+
       - name: Installer bauen
         run: npm run tauri build
         working-directory: tauri-app
