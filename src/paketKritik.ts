@@ -160,7 +160,7 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   if (docs.length === 0) {
     text += 'Keine `docs/**/*.md` im Paket – nichts zu prüfen.\n';
   } else if (dateireferenzen.length === 0) {
-    text += `${docs.length} Doku-Datei(en) ohne \`src/…\`-Pfadreferenz – nichts zu prüfen.\n`;
+    text += `${docs.length} Doku-Datei(en) ohne konkrete Datei-Referenz – nichts zu prüfen.\n`;
   } else if (fehlend.length === 0) {
     text += `Alle ${dateireferenzen.length} Datei-Referenzen existieren im Paket.\n`;
   } else {
