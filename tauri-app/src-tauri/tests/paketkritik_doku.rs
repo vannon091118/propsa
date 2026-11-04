@@ -81,3 +81,26 @@ fn ohne_doku_gibt_es_hinweis() {
     let scan = scan(vec![datei("src/a.ts", "export {};\n")]);
     assert!(kritik(&scan).contains("nichts zu prüfen"));
 }
+
+#[test]
+fn brace_liste_wird_in_einzelne_dateireferenzen_aufgeloest() {
+    let scan = scan(vec![
+        datei("docs/Anleitung.md", "Siehe `src/core/io/{issues,envelope,repair}.ts`.\\n"),
+        datei("src/core/io/issues.ts", "export {};\\n"),
+        datei("src/core/io/envelope.ts", "export {};\\n"),
+        datei("src/core/io/repair.ts", "export {};\\n"),
+    ]);
+    let text = kritik(&scan);
+    assert!(text.contains("Alle 3 Datei-Referenzen existieren im Paket."));
+    assert!(!text.contains("fehlen im Paket"));
+}
+
+#[test]
+fn fehlende_brace_variante_wird_einzeln_gemeldet() {
+    let scan = scan(vec![
+        datei("docs/Anleitung.md", "Siehe `src/core/io/{issues,envelope,repair}.ts`.\\n"),
+        datei("src/core/io/issues.ts", "export {};\\n"),
+        datei("src/core/io/envelope.ts", "export {};\\n"),
+    ]);
+    assert!(kritik(&scan).contains("1 von 3 Referenzen fehlen im Paket"));
+}

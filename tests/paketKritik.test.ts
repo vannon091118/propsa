@@ -61,6 +61,20 @@ pruefe('Verzeichnis-Abdeckung erfüllt', kritik(meta, paketAbdeckung).includes('
 const textOhneDoku = kritik(meta, [datei('src/a.ts', 'export {};\n')]);
 pruefe('Hinweis bei fehlender Doku', textOhneDoku.includes('nichts zu prüfen'));
 
+// Fixture 6: Brace-Expansion wird in einzelne Datei-Referenzen aufgelöst.
+const paketKlammern = [
+  datei('docs/Anleitung.md', 'Siehe `src/core/io/{issues,envelope,repair}.ts`.\\n'),
+  datei('src/core/io/issues.ts', 'export {};\\n'),
+  datei('src/core/io/envelope.ts', 'export {};\\n'),
+  datei('src/core/io/repair.ts', 'export {};\\n'),
+];
+const textKlammern = kritik(meta, paketKlammern);
+pruefe('Brace-Expansion erkennt alle vorhandenen Dateien', textKlammern.includes('Alle 3 Datei-Referenzen existieren'));
+pruefe('Brace-Expansion erzeugt keine falschen Fehlpfade', !textKlammern.includes('fehlen im Paket'));
+
+const textTeilKlammern = kritik(meta, paketKlammern.slice(0, 3));
+pruefe('Fehlende Brace-Variante wird einzeln gemeldet', textTeilKlammern.includes('1 von 3 Referenzen fehlen'));
+
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);

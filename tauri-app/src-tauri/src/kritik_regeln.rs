@@ -67,3 +67,17 @@ pub fn import_domain(spec: &str) -> Option<&'static str> {
     }
     None
 }
+
+
+/// Expands simple and nested brace lists used to abbreviate file paths.
+pub fn klammer_pfade_erweitern(pfad: &str) -> Vec<String> {
+    let Some(start) = pfad.find('{') else { return vec![pfad.to_string()]; };
+    let Some(rel_ende) = pfad[start + 1..].find('}') else { return vec![pfad.to_string()]; };
+    let ende = start + 1 + rel_ende;
+    let varianten: Vec<&str> = pfad[start + 1..ende].split(',').collect();
+    if varianten.len() < 2 { return vec![pfad.to_string()]; }
+    varianten.into_iter().flat_map(|variante| {
+        let erweitert = format!("{}{}{}", &pfad[..start], variante, &pfad[ende + 1..]);
+        klammer_pfade_erweitern(&erweitert)
+    }).collect()
+}

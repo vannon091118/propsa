@@ -49,6 +49,19 @@ function prozent(teil: number, gesamt: number): string {
   return `${Math.round((teil / b) * 100)} %`;
 }
 
+/** Expands shell-style comma lists such as {one,two}.ts into literal paths. */
+function klammerPfadeErweitern(pfad: string): string[] {
+  const start = pfad.indexOf('{');
+  if (start < 0) return [pfad];
+  const ende = pfad.indexOf('}', start + 1);
+  if (ende < 0) return [pfad];
+  const varianten = pfad.slice(start + 1, ende).split(',');
+  if (varianten.length < 2) return [pfad];
+  return varianten.flatMap(variante =>
+    klammerPfadeErweitern(pfad.slice(0, start) + variante + pfad.slice(ende + 1))
+  );
+}
+
 export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   const gesamtZeilen = dateien.reduce((s, d) => s + d.zeilen, 0);
   const vorhanden = new Set(dateien.map(d => d.relativerPfad));
@@ -135,13 +148,15 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   }
   // Referenz ist erfüllt, wenn ein echter Paket-Eintrag exakt passt oder
   // als Verzeichnis den referenzierten Pfad abdeckt.
-  const referenzErfuellt = (p: string): boolean =>
-    [...vorhanden].some(v => v === p || v.startsWith(p + '/') || p.startsWith(v + '/'));
+  // This branch handles file references only; a prefix is not file identity.
+  const referenzErfuellt = (p: string): boolean => vorhanden.has(p);
   const istDateireferenz = (p: string): boolean =>
     /\.[A-Za-z0-9]+$/.test(p) && !p.includes('*');
+  const dateireferenzen = [...new Set([...erwaehnt]
+    .filter(istDateireferenz)
+    .flatMap(klammerPfadeErweitern))].sort();
   const fehlend: string[] = [];
-  for (const p of [...erwaehnt].sort()) {
-    if (!istDateireferenz(p) || p.includes('*')) continue;
+  for (const p of dateireferenzen) {
     if (!referenzErfuellt(p)) fehlend.push(p);
   }
   if (docs.length === 0) {
@@ -149,7 +164,7 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   } else if (erwaehnt.size === 0) {
     text += `${docs.length} Doku-Datei(en) ohne \`src/…\`-Pfadreferenz – nichts zu prüfen.\n`;
   } else if (fehlend.length === 0) {
-    text += `Alle ${erwaehnt.size} Datei-Referenzen existieren im Paket.\n`;
+    text += `Alle ${dateireferenzen.length} Datei-Referenzen existieren im Paket.\n`;
   } else {
     text += `**${fehlend.length} von ${erwaehnt.size} Referenzen fehlen im Paket:**\n\n`;
     for (const p of fehlend.slice(0, 30)) text += `- \`${p}\`\n`;

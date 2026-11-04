@@ -1,6 +1,6 @@
 //! Kritik-Linse: Godfiles, Logikmischung, Artefakte, Doku-Lügen.
 
-use crate::kritik_regeln::{artefakt_muster, datei_domain, import_domain, prozent, GOD_GRENZE};
+use crate::kritik_regeln::{artefakt_muster, datei_domain, import_domain, klammer_pfade_erweitern, prozent, GOD_GRENZE};
 use crate::scan::{DateiInfo, ScanErgebnis};
 use std::collections::{BTreeSet, HashSet};
 
@@ -135,7 +135,7 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
                 }
                 let p = d.inhalt[i..j].trim_end_matches(&[',', '.', ';', ':'][..]).to_string();
                 if !p.is_empty() {
-                    erwaehnt.insert(p);
+                    erwaehnt.extend(klammer_pfade_erweitern(&p));
                 }
                 i = j;
             } else {
@@ -151,13 +151,8 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
         // Eine Referenz zählt nur als „fehlend“, wenn sie wie eine echte
         // Datei aussieht (mit Endung) und kein Eintrag im `dateien`-Array
         // passt – nicht schon, wenn sie nicht wörtlich im Paket steht.
-        let referenz_erfuellt = |p: &str| {
-            vorhanden.iter().any(|v| {
-                *v == p
-                    || v.starts_with(&format!("{}/", p))
-                    || p.starts_with(&format!("{}/", v))
-            })
-        };
+        // Only exact file-path identity can satisfy a file reference.
+        let referenz_erfuellt = |p: &str| vorhanden.contains(p);
         let ist_datei_referenz = |p: &str| {
             !p.contains('*')
                 && p.rsplit('.').next().map_or(false, |endung| {
