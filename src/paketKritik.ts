@@ -23,7 +23,6 @@ const NICHT_QUELLSPRACHEN = new Set([
 const ARTEFAKTE: Array<{ muster: string; test: (p: string) => boolean }> = [
   { muster: 'context.md', test: p => p === 'context.md' || p.endsWith('/context.md') },
   { muster: 'context.json', test: p => p === 'context.json' || p.endsWith('/context.json') },
-  { muster: 'package-lock.json', test: p => p.endsWith('package-lock.json') },
   { muster: '*.tsbuildinfo', test: p => p.endsWith('.tsbuildinfo') },
   { muster: '*.bak', test: p => p.endsWith('.bak') },
   { muster: 'playwright-report/**', test: p => p.includes('playwright-report/') },

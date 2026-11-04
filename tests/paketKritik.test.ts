@@ -6,6 +6,8 @@
  */
 import { kritik } from '../src/paketKritik';
 import { dokumentation } from '../src/paketQuellen';
+import { minimatch } from 'minimatch';
+import { resolveExcludes } from '@propakt/core';
 import { GescannteDatei } from '../src/scanner';
 
 function datei(relativerPfad: string, inhalt: string): GescannteDatei {
@@ -100,6 +102,13 @@ pruefe('äußerer Markdown-Fence ist länger als eingebetteter Fence',
   dokumentationsText.includes('\n````markdown\n') && dokumentationsText.endsWith('\n````\n'));
 pruefe('eingebetteter Markdown-Codeblock bleibt unverändert',
   dokumentationsText.includes('```ts\nconst wert = 1;\n```'));
+// Lockfiles are retained by default so the snapshot preserves dependency resolution.
+const lockfiles = ['package-lock.json', 'npm-shrinkwrap.json', 'yarn.lock', 'pnpm-lock.yaml', 'Cargo.lock'];
+const standardExcludes = resolveExcludes();
+pruefe('Lockfiles werden nicht standardmaessig ausgeschlossen',
+  lockfiles.every(pfad => !standardExcludes.some(muster =>
+    minimatch(pfad, muster, { dot: true, matchBase: true })
+  )));
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);

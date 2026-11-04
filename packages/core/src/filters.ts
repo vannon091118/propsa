@@ -82,12 +82,7 @@ export const AUSGESCHLOSSENE_DATEIEN = [
   'context.json',
   'kontext.md',
   'kontext.json',
-  // Lockfiles interessieren kein Sprachmodell (allein ~3.400 Zeilen).
-  'package-lock.json',
-  'npm-shrinkwrap.json',
-  'yarn.lock',
-  'pnpm-lock.yaml',
-  'Cargo.lock',
+  // Lockfiles bleiben im Snapshot: sie belegen die konkrete Dependency-Auflösung.
 ];
 
 /**

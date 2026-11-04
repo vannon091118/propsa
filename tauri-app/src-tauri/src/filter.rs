@@ -48,7 +48,6 @@ const IGNORIERTE_VERZEICHNISSE: &[&str] = &[
 const AUSGESCHLOSSENE_DATEIEN: &[&str] = &[
     ".DS_Store", "Thumbs.db", "*.log", "*.min.js", "*.min.css", "*.pyc", "*.bak",
     "context.md", "context.json", "kontext.md", "kontext.json",
-    "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "Cargo.lock",
 ];
 
 /// Ein Scan-Kandidat: Pfad und Name, noch ohne Inhalt.
@@ -222,6 +221,16 @@ mod tests {
         muster
     }
 
+    #[test]
+    fn lockfiles_gehoeren_standardmaessig_zum_snapshot() {
+        let temp = tempdir().expect("tempdir");
+        let namen = ["package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "Cargo.lock"];
+        for name in namen { fs::write(temp.path().join(name), "fixture").expect("write"); }
+        let kandidaten = kandidaten_sammeln(temp.path(), &[], &standard_excludes());
+        for name in namen {
+            assert!(kandidaten.iter().any(|k| k.relativer_pfad == name), "Lockfile {name} muss aufgenommen werden.");
+        }
+    }
     #[test]
     fn negation_betritt_wieder_freigegebenes_ignorierverzeichnis() {
         let temp = tempdir().expect("tempdir");

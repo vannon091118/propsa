@@ -22,9 +22,6 @@ pub fn artefakt_muster(pfad: &str) -> Option<&'static str> {
     if pfad == "context.json" || pfad.ends_with("/context.json") {
         return Some("context.json");
     }
-    if pfad.ends_with("package-lock.json") {
-        return Some("package-lock.json");
-    }
     if pfad.ends_with(".tsbuildinfo") {
         return Some("*.tsbuildinfo");
     }

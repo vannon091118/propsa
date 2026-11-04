@@ -30,6 +30,14 @@ npx ts-node src/propakt.ts <pfad> [optionen]
   unvollständiges Paket geschrieben.
 - `--no-limits` schaltet alle Guardrails ab (OOM-Risiko bewusst übernommen).
 
+## Lockfiles im Review-Snapshot
+
+Lockfiles werden standardmäßig **mit aufgenommen**. Sie belegen die konkret
+aufgelösten Abhängigkeiten und sind für reproduzierbare Builds und
+Dependency-Reviews relevant. Bei sehr großen Lockfiles können sie gezielt mit
+`-e` ausgeschlossen werden, zum Beispiel
+`-e "package-lock.json,Cargo.lock"`.
+
 ## Optionen
 
 | Flag | Bedeutung |
