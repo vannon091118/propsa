@@ -41,6 +41,15 @@ pub struct DateiInfo {
     pub sprache: String,
 }
 
+/// Shareable project label: the final directory name only, never its local parent path.
+fn projekt_titel(basis: &Path) -> String {
+    basis
+        .file_name()
+        .map(|name| name.to_string_lossy().into_owned())
+        .filter(|name| !name.is_empty())
+        .unwrap_or_else(|| "Projekt".to_string())
+}
+
 /// Optionen eines Scans.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ScanOptionen {
@@ -222,6 +231,7 @@ pub fn scan(
             // nicht zum gespeicherten Lauf (Spiegel zu `propakt.ts`).
             ergebnis.zeitstempel = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
             ergebnis.identitaet = identitaet;
+            ergebnis.titel = projekt_titel(basis);
             if delta {
                 ergebnis.delta_info = Some(lauf_verarbeiten(basis, &ergebnis));
             }
@@ -230,7 +240,7 @@ pub fn scan(
     }
 
     let mut ergebnis = scan_ausfuehren(&app, &kandidaten, &optionen)?;
-    ergebnis.titel = basis.display().to_string();
+    ergebnis.titel = projekt_titel(basis);
 
     // Speichern erst nach dem geglückten Lauf – ein Guardrail-Abbruch
     // (`Err`) hinterlässt nichts im Cache. Ein fehlgeschlagener Schreib-
@@ -288,4 +298,23 @@ fn treffer_versuch(
         optionen.max_zeilen,
     );
     cache_treffer(cache_laden(&cache_ordner(), &schluessel), &signatur)
+}
+
+#[cfg(test)]
+mod projekt_titel_tests {
+    use super::projekt_titel;
+    use std::path::Path;
+
+    #[test]
+    fn projekt_titel_enthaelt_keine_elternpfade() {
+        let pfad = Path::new("C:/Users/private/workspace/projekt");
+        let titel = projekt_titel(pfad);
+        assert_eq!(titel, "projekt");
+        assert!(!titel.contains('/') && !titel.contains('\\'));
+    }
+
+    #[test]
+    fn wurzelpfad_erhaelt_neutralen_titel() {
+        assert_eq!(projekt_titel(Path::new("/")), "Projekt");
+    }
 }

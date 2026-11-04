@@ -44,7 +44,7 @@ erhöhen die Version nicht.
 | Feld | Bedeutung |
 |---|---|
 | `schemaVersion` | Fassung dieses Vertrags. |
-| `titel` | Scan-Basis: absoluter Pfad bzw. Projektname. |
+| `titel` | Projektordnername ohne lokale Elternpfade; ein Laufwerks- oder Wurzelpfad erhält den neutralen Namen `Projekt`. |
 | `zeitstempel` | Lokale Zeit `YYYY-MM-DD HH:MM:SS`, einmal je Lauf erzeugt (Markdown und JSON desselben Laufs sind identisch gestempelt). |
 | `gesamt_dateien` | Anzahl der Einträge in `dateien`. |
 | `gesamt_zeilen` / `gesamt_zeichen` | Summen über `dateien`; Zeichen sind **Bytes** (UTF-8), nicht Zeichen im Sinne der Anzeige. |

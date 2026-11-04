@@ -6,6 +6,7 @@
  */
 import { kritik } from '../src/paketKritik';
 import { dokumentation } from '../src/paketQuellen';
+import { projektTitel } from '../src/paketBasis';
 import { minimatch } from 'minimatch';
 import { resolveExcludes } from '@propakt/core';
 import { GescannteDatei } from '../src/scanner';
@@ -109,6 +110,11 @@ pruefe('Lockfiles werden nicht standardmaessig ausgeschlossen',
   lockfiles.every(pfad => !standardExcludes.some(muster =>
     minimatch(pfad, muster, { dot: true, matchBase: true })
   )));
+// Export metadata is shareable: it must not disclose a local parent path.
+pruefe('Projekttitel enthält nur den letzten Verzeichnisnamen',
+  projektTitel('C:\\Users\\private\\workspace\\rigged-by-design') === 'rigged-by-design' &&
+  projektTitel('/home/private/workspace/rigged-by-design') === 'rigged-by-design');
+pruefe('Wurzelpfad erhält neutralen Projekttitel', projektTitel('/') === 'Projekt');
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);

@@ -76,3 +76,12 @@ export function baum(dateien: GescannteDatei[]): string[] {
 
   return zeilen;
 }
+
+
+/** Returns only a project folder name, never the local absolute path. */
+export function projektTitel(pfad: string): string {
+  const normalisiert = pfad.replace(/\\/g, '/').replace(/\/+$/, '');
+  const teile = normalisiert.split('/').filter(Boolean);
+  const name = teile[teile.length - 1];
+  return !name || /^[A-Za-z]:$/.test(name) ? 'Projekt' : name;
+}

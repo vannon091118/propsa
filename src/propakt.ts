@@ -4,6 +4,7 @@ import { formatContext } from './formatter';
 import { resolveExcludes, resolveIncludes } from '@propakt/core';
 import { ausschluesseMergen, PROPAKTIGNORE_DATEI } from './propaktignore';
 import { paketBauen, paketSchreiben } from './paket';
+import { projektTitel } from './paketBasis';
 import { kontextAlsJson, zeitstempelJetzt } from '@propakt/core';
 import { selektieren } from './slice';
 import { laufVerarbeiten } from './history';
@@ -117,7 +118,7 @@ program
 
       // Ein Zeitstempel für alle Dateien eines Laufs.
       const meta = {
-        titel: besuchterPfad,
+        titel: projektTitel(besuchterPfad),
         zeitstempel: zeitstempelJetzt(),
         uebersprungen: ergebnis.uebersprungen,
       };
