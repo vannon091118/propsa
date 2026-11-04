@@ -35,6 +35,7 @@ pub mod paketkritik;
 mod paketquellen;
 mod pakettexte;
 mod prozesse;
+mod projekt_titel;
 pub mod scan;
 mod schema;
 pub mod sprache;
