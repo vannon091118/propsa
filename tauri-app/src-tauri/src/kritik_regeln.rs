@@ -2,6 +2,15 @@
 
 pub const GOD_GRENZE: usize = 300;
 
+pub fn ist_logik_sprache(sprache: &str) -> bool {
+    matches!(
+        sprache,
+        "TypeScript" | "JavaScript" | "Python" | "Go" | "Rust" | "Java" |
+        "C++" | "C" | "Shell" | "SQL"
+    )
+}
+
+
 // Conventional source containers are roots; module names come from scanned paths.
 pub const QUELLWURZELN: &[&str] = &[
     "src", "app", "lib", "source", "modules", "packages", "server", "client",

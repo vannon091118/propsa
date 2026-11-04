@@ -29,12 +29,15 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
     );
 
     // 1. Godfiles
-    text.push_str("\n## Godfiles (> 300 Zeilen)\n\n");
+    text.push_str("\n## Große Quellmodule (> 300 Zeilen)\n\n");
     let mut godfiles: Vec<&DateiInfo> =
-        scan.dateien.iter().filter(|d| d.zeilen > GOD_GRENZE).collect();
+        scan.dateien
+            .iter()
+            .filter(|d| crate::kritik_regeln::ist_logik_sprache(&d.sprache) && d.zeilen > GOD_GRENZE)
+            .collect();
     godfiles.sort_by(|a, b| b.zeilen.cmp(&a.zeilen));
     if godfiles.is_empty() {
-        text.push_str("Keine Datei über 300 Zeilen – kompakte Module.\n");
+        text.push_str("Keine Quellcodedatei über 300 Zeilen – keine großen Quellmodule erkannt.\n");
     } else {
         text.push_str("| Datei | Sprache | Zeilen | Anteil |\n|---|---|---|---|\n");
         for d in &godfiles {
@@ -47,7 +50,7 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
             ));
         }
         text.push_str(&format!(
-            "\n{} Datei(en) über 300 Zeilen – Kandidaten für Schnitte.\n",
+            "\n{} Quellcodedatei(en) über 300 Zeilen – Kandidaten für eine Schnittanalyse, kein automatischer Architekturfehler.\n",
             godfiles.len()
         ));
     }

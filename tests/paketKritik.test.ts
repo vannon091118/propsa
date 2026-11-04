@@ -115,6 +115,12 @@ pruefe('Projekttitel enthält nur den letzten Verzeichnisnamen',
   projektTitel('C:\\Users\\private\\workspace\\rigged-by-design') === 'rigged-by-design' &&
   projektTitel('/home/private/workspace/rigged-by-design') === 'rigged-by-design');
 pruefe('Wurzelpfad erhält neutralen Projekttitel', projektTitel('/') === 'Projekt');
+// Long data registries are not source-code monoliths.
+const grossesQuellmodul = datei('src/large.ts', Array(301).fill('const wert = 1;').join('\n'));
+const grosseDatenregistry = { ...datei('content/registry.json', Array(301).fill('{}').join('\n')), sprache: 'JSON' };
+const groessenKritik = kritik(meta, [grossesQuellmodul, grosseDatenregistry]);
+pruefe('große Quellcodedatei bleibt Hotspot-Kandidat', groessenKritik.includes('src/large.ts'));
+pruefe('große JSON-Registry wird nicht als Godfile bewertet', !groessenKritik.includes('content/registry.json'));
 const fehlern = process.exitCode === 1 ? 'FEHLER' : 'ALLE PASSED';
 console.log(`Doku-Wahrheit-Fixtures: ${fehlern}`);
 if (process.exitCode === 1) process.exit(1);

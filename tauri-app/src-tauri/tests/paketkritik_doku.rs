@@ -111,6 +111,12 @@ fn quelle(relativer_pfad: &str, inhalt: &str) -> DateiInfo {
     d
 }
 
+fn daten_datei(relativer_pfad: &str, inhalt: &str) -> DateiInfo {
+    let mut d = datei(relativer_pfad, inhalt);
+    d.sprache = "JSON".to_string();
+    d
+}
+
 #[test]
 fn unbekannte_src_core_struktur_wird_als_domane_erkannt() {
     let scan = scan(vec![
@@ -125,4 +131,17 @@ fn unbekannte_src_core_struktur_wird_als_domane_erkannt() {
     let text = kritik(&scan);
     assert!(text.contains("src/core"));
     assert!(text.contains("src/core/narrative/engine.ts"));
+}
+
+#[test]
+fn grosse_datenregistry_ist_keine_godfile() {
+    let inhalt = vec!["{}"; 301].join("\n");
+    let quellcode = vec!["const wert = 1;"; 301].join("\n");
+    let scan = scan(vec![
+        quelle("src/large.ts", &quellcode),
+        daten_datei("content/registry.json", &inhalt),
+    ]);
+    let text = kritik(&scan);
+    assert!(text.contains("src/large.ts"));
+    assert!(!text.contains("content/registry.json"));
 }

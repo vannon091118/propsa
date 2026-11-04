@@ -11,6 +11,11 @@ import { kopf } from './paketBasis';
 
 const GOD_GRENZE = 300;
 
+const LOGIKSPRACHEN = new Set([
+  'TypeScript', 'JavaScript', 'Python', 'Go', 'Rust', 'Java', 'C++', 'C', 'Shell', 'SQL',
+]);
+
+
 // Conventional source containers are roots, not project-specific domain names.
 // The actual domains are inferred from the first module directory below them.
 const QUELLWURZELN = new Set([
@@ -124,16 +129,18 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   ]);
 
   // --- 1. Godfiles
-  text += '\n## Godfiles (> 300 Zeilen)\n\n';
-  const godfiles = [...dateien].filter(d => d.zeilen > GOD_GRENZE).sort((a, b) => b.zeilen - a.zeilen);
+  text += '\n## Große Quellmodule (> 300 Zeilen)\n\n';
+  const godfiles = [...dateien]
+    .filter(d => LOGIKSPRACHEN.has(d.sprache) && d.zeilen > GOD_GRENZE)
+    .sort((a, b) => b.zeilen - a.zeilen);
   if (godfiles.length === 0) {
-    text += 'Keine Datei über 300 Zeilen – kompakte Module.\n';
+    text += 'Keine Quellcodedatei über 300 Zeilen – keine großen Quellmodule erkannt.\n';
   } else {
     text += '| Datei | Sprache | Zeilen | Anteil |\n|---|---|---|---|\n';
     for (const d of godfiles) {
       text += `| \`${d.relativerPfad}\` | ${d.sprache} | ${d.zeilen} | ${prozent(d.zeilen, gesamtZeilen)} |\n`;
     }
-    text += `\n${godfiles.length} Datei(en) über 300 Zeilen – Kandidaten für Schnitte.\n`;
+    text += `\n${godfiles.length} Quellcodedatei(en) über 300 Zeilen – Kandidaten für eine Schnittanalyse, kein automatischer Architekturfehler.\n`;
   }
 
   // --- 2. Logikmischung
