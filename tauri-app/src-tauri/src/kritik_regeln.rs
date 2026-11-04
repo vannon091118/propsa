@@ -48,11 +48,15 @@ pub fn artefakt_muster(pfad: &str) -> Option<&'static str> {
 
 fn quellwurzel(name: &str) -> bool {
     let klein = name.to_ascii_lowercase();
-    QUELLWURZELN.iter().any(|w| *w == klein)
+    QUELLWURZELN.iter().any(|w| *w == klein.as_str())
 }
 
-fn pfad_segmente(pfad: &str) -> Vec<&str> {
-    pfad.replace('\\\\', "/").split('/').filter(|s| !s.is_empty()).collect()
+fn pfad_segmente(pfad: &str) -> Vec<String> {
+    pfad.replace('\\', "/")
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+        .collect()
 }
 
 pub fn datei_domain(pfad: &str, sprache: &str) -> Option<String> {
@@ -63,17 +67,17 @@ pub fn datei_domain(pfad: &str, sprache: &str) -> Option<String> {
     if teile.len() < 2 {
         return None;
     }
-    if quellwurzel(teile[0]) {
+    if quellwurzel(&teile[0]) {
         return Some(if teile.len() >= 3 {
             format!("{}/{}", teile[0], teile[1])
         } else {
-            teile[0].to_string()
+            teile[0].clone()
         });
     }
-    if teile.len() >= 3 && quellwurzel(teile[1]) {
+    if teile.len() >= 3 && quellwurzel(&teile[1]) {
         return Some(format!("{}/{}", teile[0], teile[1]));
     }
-    Some(teile[0].to_string())
+    Some(teile[0].clone())
 }
 
 fn domain_fuer_pfad<'a>(pfad: &str, domaenen: &'a [String]) -> Option<&'a String> {
@@ -92,12 +96,9 @@ fn domain_fuer_pfad<'a>(pfad: &str, domaenen: &'a [String]) -> Option<&'a String
 }
 
 fn relativen_import_aufloesen(importer: &str, spec: &str) -> String {
-    let mut teile: Vec<String> = pfad_segmente(importer)
-        .into_iter()
-        .map(str::to_string)
-        .collect();
+    let mut teile = pfad_segmente(importer);
     teile.pop();
-    for teil in spec.replace('\\\\', "/").split('/') {
+    for teil in spec.replace('\\', "/").split('/') {
         match teil {
             "" | "." => {},
             ".." => { teile.pop(); },
@@ -108,7 +109,7 @@ fn relativen_import_aufloesen(importer: &str, spec: &str) -> String {
 }
 
 pub fn import_domain(spec: &str, importer: &str, domaenen: &[String]) -> Option<String> {
-    let muster = spec.replace('\\\\', "/");
+    let muster = spec.replace('\\', "/");
     if muster.starts_with("./") || muster.starts_with("../") {
         return domain_fuer_pfad(&relativen_import_aufloesen(importer, &muster), domaenen).cloned();
     }
@@ -132,22 +133,8 @@ pub fn import_domain(spec: &str, importer: &str, domaenen: &[String]) -> Option<
 }
 
 pub fn ist_lokaler_import(spec: &str) -> bool {
-    let muster = spec.replace('\\\\', "/");
+    let muster = spec.replace('\\', "/");
     muster.starts_with("./") || muster.starts_with("../") ||
         muster.starts_with("@/") || muster.starts_with("~/") || muster.starts_with('/') ||
         QUELLWURZELN.iter().any(|w| muster.starts_with(&format!("{}/", w)))
-}
-
-
-/// Expands simple and nested brace lists used to abbreviate file paths.
-pub fn klammer_pfade_erweitern(pfad: &str) -> Vec<String> {
-    let Some(start) = pfad.find('{') else { return vec![pfad.to_string()]; };
-    let Some(rel_ende) = pfad[start + 1..].find('}') else { return vec![pfad.to_string()]; };
-    let ende = start + 1 + rel_ende;
-    let varianten: Vec<&str> = pfad[start + 1..ende].split(',').collect();
-    if varianten.len() < 2 { return vec![pfad.to_string()]; }
-    varianten.into_iter().flat_map(|variante| {
-        let erweitert = format!("{}{}{}", &pfad[..start], variante, &pfad[ende + 1..]);
-        klammer_pfade_erweitern(&erweitert)
-    }).collect()
 }

@@ -138,16 +138,16 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
   }
 
   // --- 2. Logikmischung
-  text += '\\n## Logikmischung (≥ 3 fremde Domänen)\\n\\n';
+  text += '\n## Logikmischung (≥ 3 fremde Domänen)\n\n';
   const domaenen = [...new Set(dateien
     .map(d => dateiDomain(d.relativerPfad, d.sprache))
     .filter((wert): wert is string => wert !== null))].sort();
-  text += `**Erkannte Domänen (Pfadheuristik):** ${domaenen.length ? domaenen.map(d => `\`${d}\``).join(', ') : 'keine'}\\n\\n`;
-  text += '**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\\n\\n';
+  text += '**Erkannte Domänen (Pfadheuristik):** ' + (domaenen.length ? domaenen.join(', ') : 'keine') + '\n\n';
+  text += '**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\n\n';
 
   const mischungen: Array<{ pfad: string; eigen: string; fremde: string[] }> = [];
   let nichtZuordenbareLokaleImports = 0;
-  const importRe = /import\\s+.*?\\s+from\\s+['\\"]([^'\\"]+)['\\"]/g;
+  const importRe = /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g;
   for (const d of dateien) {
     const eigen = dateiDomain(d.relativerPfad, d.sprache);
     if (!eigen) continue;
@@ -162,18 +162,18 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
     if (fremde.size >= 3) mischungen.push({ pfad: d.relativerPfad, eigen, fremde: [...fremde].sort() });
   }
   if (domaenen.length === 0) {
-    text += 'Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\\n';
+    text += 'Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\n';
   } else if (mischungen.length === 0) {
-    text += 'Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\\n';
+    text += 'Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\n';
   } else {
-    text += '| Datei | Eigen | Fremde Domänen |\\n|---|---|---|\\n';
+    text += '| Datei | Eigen | Fremde Domänen |\n|---|---|---|\n';
     for (const r of mischungen.sort((a, b) => a.pfad.localeCompare(b.pfad))) {
-      text += `| \`${r.pfad}\` | \`${r.eigen}\` | ${r.fremde.map(f => `\`${f}\``).join(', ')} |\\n`;
+      text += '| ' + r.pfad + ' | ' + r.eigen + ' | ' + r.fremde.join(', ') + ' |\n';
     }
-    text += '\\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\\n';
+    text += '\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\n';
   }
   if (nichtZuordenbareLokaleImports > 0) {
-    text += `\\nNicht eindeutig zuordenbare lokale Imports: ${nichtZuordenbareLokaleImports} (nicht als Entwarnung gewertet).\\n`;
+    text += '\nNicht eindeutig zuordenbare lokale Imports: ' + nichtZuordenbareLokaleImports + ' (nicht als Entwarnung gewertet).\n';
   }
 
   // --- 3. Repo-Sauberkeit

@@ -53,7 +53,7 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
     }
 
     // 2. Logikmischung
-    text.push_str("\\n## Logikmischung (≥ 3 fremde Domänen)\\n\\n");
+    text.push_str("\n## Logikmischung (≥ 3 fremde Domänen)\n\n");
     let domaenen: Vec<String> = scan.dateien.iter()
         .filter_map(|d| datei_domain(&d.relativer_pfad, &d.sprache))
         .collect::<BTreeSet<_>>()
@@ -62,10 +62,10 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
     let erkannte = if domaenen.is_empty() {
         "keine".to_string()
     } else {
-        domaenen.iter().map(|d| format!("`{}`", d)).collect::<Vec<_>>().join(", ")
+        domaenen.join(", ")
     };
-    text.push_str(&format!("**Erkannte Domänen (Pfadheuristik):** {}\\n\\n", erkannte));
-    text.push_str("**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\\n\\n");
+    text.push_str(&format!("**Erkannte Domänen (Pfadheuristik):** {}\n\n", erkannte));
+    text.push_str("**Grenze:** Statische ES-Importe sowie relative Pfade und eindeutige @/~/ Aliase; kein AST und kein vollständiger Laufzeit-Abhängigkeitsgraph.\n\n");
 
     let mut mischungen: Vec<(String, String, Vec<String>)> = Vec::new();
     let mut nicht_zuordenbare_lokale_imports = 0usize;
@@ -73,9 +73,10 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
         if let Some(eigen) = datei_domain(&d.relativer_pfad, &d.sprache) {
             let mut fremde = BTreeSet::new();
             for teil in d.inhalt.split("from ") {
-                let rest = teil.trim().strip_prefix('"').or_else(|| teil.trim().strip_prefix('\\''));
+                let rest = teil.trim();
+                let rest = rest.strip_prefix('"').or_else(|| rest.strip_prefix(char::from(39)));
                 if let Some(rest) = rest {
-                    let spec = rest.split(['"', '\\'']).next().unwrap_or("");
+                    let spec = rest.split(|c| c == '"' || c == char::from(39)).next().unwrap_or("");
                     if let Some(dom) = import_domain(spec, &d.relativer_pfad, &domaenen) {
                         if dom != eigen {
                             fremde.insert(dom);
@@ -91,20 +92,20 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
         }
     }
     if domaenen.is_empty() {
-        text.push_str("Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\\n");
+        text.push_str("Keine Quell-Domänen erkannt – Logikmischung nicht bewertet.\n");
     } else if mischungen.is_empty() {
-        text.push_str("Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\\n");
+        text.push_str("Keine Datei importiert aus ≥ 3 erkannten fremden Domänen.\n");
     } else {
         mischungen.sort_by(|a, b| a.0.cmp(&b.0));
-        text.push_str("| Datei | Eigen | Fremde Domänen |\\n|---|---|---|---|\\n");
+        text.push_str("| Datei | Eigen | Fremde Domänen |\n|---|---|---|\n");
         for (pfad, eigen, fremde) in &mischungen {
-            let f = fremde.iter().map(|x| format!("`{}`", x)).collect::<Vec<_>>().join(", ");
-            text.push_str(&format!("| `{}` | `{}` | {} |\\n", pfad, eigen, f));
+            let f = fremde.join(", ");
+            text.push_str(&format!("| {} | {} | {} |\n", pfad, eigen, f));
         }
-        text.push_str("\\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\\n");
+        text.push_str("\nEmpfehlung: Domänengrenzen schärfen oder Fassade einziehen.\n");
     }
     if nicht_zuordenbare_lokale_imports > 0 {
-        text.push_str(&format!("\\nNicht eindeutig zuordenbare lokale Imports: {} (nicht als Entwarnung gewertet).\\n", nicht_zuordenbare_lokale_imports));
+        text.push_str(&format!("\nNicht eindeutig zuordenbare lokale Imports: {} (nicht als Entwarnung gewertet).\n", nicht_zuordenbare_lokale_imports));
     }
 
     // 3. Repo-Sauberkeit
