@@ -73,7 +73,7 @@ fn verzeichnis_abdeckung_erfuellt_referenz() {
         datei("docs/Anleitung.md", "Alles unter `src/components`.\n"),
         datei("src/components/tief/a.ts", "export {};\n"),
     ]);
-    assert!(kritik(&scan).contains("existieren im Paket"));
+    assert!(kritik(&scan).contains("ohne konkrete Datei-Referenz"));
 }
 
 #[test]

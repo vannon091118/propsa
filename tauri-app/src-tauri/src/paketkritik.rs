@@ -148,9 +148,8 @@ pub fn kritik(scan: &ScanErgebnis) -> String {
     } else if erwaehnt.is_empty() {
         text.push_str(&format!("{} Doku-Datei(en) ohne `src/…`-Pfadreferenz – nichts zu prüfen.\n", docs.len()));
     } else {
-        // Eine Referenz zählt nur als „fehlend“, wenn sie wie eine echte
-        // Datei aussieht (mit Endung) und kein Eintrag im `dateien`-Array
-        // passt – nicht schon, wenn sie nicht wörtlich im Paket steht.
+        // Nur konkrete Datei-Referenzen mit Endung werden geprüft.
+        // Ordnerpfade und Pseudoreferenzen sind kein Existenznachweis.
         // Only exact file-path identity can satisfy a file reference.
         let referenz_erfuellt = |p: &str| vorhanden.contains(p);
         let ist_datei_referenz = |p: &str| {

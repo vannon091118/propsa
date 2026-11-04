@@ -55,7 +55,7 @@ const paketAbdeckung = [
   datei('docs/Anleitung.md', 'Alles unter `src/components` ist relevant.\n'),
   datei('src/components/tief/a.ts', 'export {};\n'),
 ];
-pruefe('Verzeichnis-Abdeckung erfüllt', kritik(meta, paketAbdeckung).includes('existieren im Paket'));
+pruefe('Ordnerpfad wird nicht als Dateinachweis ausgegeben', kritik(meta, paketAbdeckung).includes('ohne konkrete Datei-Referenz'));
 
 // Fixture 5: keine Doku → Hinweis statt Prüfbericht.
 const textOhneDoku = kritik(meta, [datei('src/a.ts', 'export {};\n')]);

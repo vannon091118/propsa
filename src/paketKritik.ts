@@ -130,11 +130,9 @@ export function kritik(meta: SchemaMeta, dateien: GescannteDatei[]): string {
 
   // --- 4. Doku-Wahrheit
   //
-  // Eine Referenz zählt nur als „fehlend“, wenn sie wie eine echte Datei
-  // aussieht (mit Endung) und kein Eintrag im `dateien`-Array passt – nicht
-  // schon, wenn sie nicht wörtlich im Paket steht. Verzeichnis- und
-  // Pseudo-Referenzen (`src/…`, Wildcards, Endpunkte ohne Endung) sind
-  // keine Behauptung über eine Datei.
+  // Diese Linse prüft konkrete Datei-Referenzen mit Endung.
+  // Ordnerpfade, Platzhalter und Pseudoreferenzen werden nicht als
+  // Existenznachweis ausgegeben.
   text += '\n## Doku-Wahrheit (Pfad-Referenzen in docs/**/*.md)\n\n';
   const docs = dateien.filter(d => d.relativerPfad.startsWith('docs/') && d.relativerPfad.endsWith('.md'));
   const pfadRe = /\b(src\/[^\s\"'`\)\]]+)/g;
